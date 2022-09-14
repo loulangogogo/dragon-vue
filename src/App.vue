@@ -1,28 +1,55 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div id="appHome">
+    <router-view/>
   </div>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
+<script setup lang="ts">
+
+import {onMounted, ref} from "vue";
+import {useStore} from "vuex";
+import * as $L from 'owner-tool-js';
+/***************************************************************************************************************/
+
+let screenHeight = ref(0);
+
+const store = useStore();
+
+/***************************************************************************************************************/
+onMounted(()=>{
+  // 浏览器的页面监听器不会再刚打开页面的时候监听，注释再页面宽高发生变化的时候才会监听，所以再这里额外的添加一个获取高度的代码
+  screenHeight.value = $L.windowsTool.pageViewHeight();
+  store.commit("setScreenHeight", screenHeight.value);
+  store.commit("setScreenWidth", $L.windowsTool.pageViewWidth());
+  $L.windowsTool.watchPageView((width:number,height:number)=>{
+    screenHeight.value = height;
+    store.commit("setScreenHeight", height);
+    store.commit("setScreenWidth", width);
+    console.log("当前高度为：" + height);
+  })
+})
+/***************************************************************************************************************/
+</script>
+
+<style lang="scss">
+#appHome {
+  height: v-bind("screenHeight+'px'");
+  overflow: auto;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+// 滚动条的样式设置
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+::-webkit-scrollbar-thumb {
+  border-radius: 7px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  background-color: #99a9bf;
+}
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  border-radius: 7px;
+  background-color: #d3dce6;
 }
 </style>
