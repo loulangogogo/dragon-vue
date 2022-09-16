@@ -21,11 +21,11 @@
 import {onMounted, reactive, ref} from "vue";
 import {FieldRule, Modal, ValidatedError} from "@arco-design/web-vue";
 import * as $L from 'owner-tool-js';
-import {getToken} from "../../common/api/login";
 import {LoginModeEnum} from "../../common/domain/login";
 import {generatePicCaptcha} from "../../common/api/common";
 import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
 
+// 事件对象
 const emit = defineEmits(["loginSubmit"]);
 
 // 表单ref
