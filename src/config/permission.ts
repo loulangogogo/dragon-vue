@@ -1,4 +1,6 @@
 import router from '../router/index';
+import * as $L from 'owner-tool-js';
+import {SessionStorageEnum} from "../common/domain/storage";
 
 /**
  * 路由全局前置守卫
@@ -8,8 +10,10 @@ import router from '../router/index';
  * @author     :loulan
  * */
 router.beforeEach((to, from) => {
-    if (to.path == '/') {
-        return '/test/js/windows';
+    if (to.path != '/login') {
+        if (!$L.windowsTool.sessionStorageTool.get(SessionStorageEnum.token)) {
+            return "/login";
+        }
     }
     return true;
 });

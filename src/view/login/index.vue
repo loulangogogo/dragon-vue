@@ -1,28 +1,28 @@
 <template>
   <div id="loginFrameDiv">
-    <a-tabs :default-active-key="LoginMode.account" size="large" :animation="true" @change="loginChange">
-      <a-tab-pane :key="LoginMode.account">
+    <a-tabs :default-active-key="LoginModeEnum.account" size="large" :animation="true" @change="loginChange">
+      <a-tab-pane :key="LoginModeEnum.account">
         <template #title>
           <span class="spanTitle">账号登录</span>
         </template>
         <div class="contentDiv">
-          <login-account></login-account>
+          <login-account @loginSubmit="login"></login-account>
         </div>
       </a-tab-pane>
-      <a-tab-pane :key="LoginMode.phone">
+      <a-tab-pane :key="LoginModeEnum.phone">
         <template #title>
           <span class="spanTitle">手机登录</span>
         </template>
         <div class="contentDiv">
-          <login-phone></login-phone>
+          <login-phone @loginSubmit="login"></login-phone>
         </div>
       </a-tab-pane>
-      <a-tab-pane :key="LoginMode.email">
+      <a-tab-pane :key="LoginModeEnum.email">
         <template #title>
           <span class="spanTitle">邮箱登录</span>
         </template>
         <div class="contentDiv">
-          <login-email></login-email>
+          <login-email @loginSubmit="login"></login-email>
         </div>
       </a-tab-pane>
     </a-tabs>
@@ -33,8 +33,16 @@
 import loginAccount from './account.vue';
 import loginPhone from './phone.vue';
 import loginEmail from './email.vue';
-import {LoginMode} from "../../common/domain/login";
+import {Modal, ValidatedError} from "_@arco-design_web-vue@2.36.1@@arco-design/web-vue";
+import * as $L from "_owner-tool-js@2.0.3@owner-tool-js";
+import {LoginData, LoginModeEnum} from "../../common/domain/login";
+import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
+import {getToken} from "../../common/api/login";
+import {useRouter} from "vue-router";
+import {SessionStorageEnum} from "../../common/domain/storage";
 
+
+let router = useRouter();
 
 /**
  * 当登录方式发生变化的时候
@@ -44,6 +52,21 @@ import {LoginMode} from "../../common/domain/login";
  * */
 const loginChange = (key: string|number) => {
   console.error(key);
+}
+
+/**
+ * 点击登录提交数据
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+const login = (loginData:LoginData) => {
+  getToken(loginData).then((res: ResponseResult) => {
+    if (res.status == ResponseStatusEnum.OK) {
+      $L.windowsTool.sessionStorageTool.set(SessionStorageEnum.token, res.data.tokenType+" "+res.data.accessToken);
+      router.push("/");
+    }
+  })
 }
 </script>
 

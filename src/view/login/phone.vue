@@ -24,7 +24,7 @@
 import {reactive, ref} from "vue";
 import {FieldRule, ValidatedError,Message} from "@arco-design/web-vue";
 import * as $L from 'owner-tool-js';
-import {LoginMode} from "../../common/domain/login";
+import {LoginModeEnum} from "../../common/domain/login";
 
 const accountFormRef:any = ref(null);
 
@@ -32,7 +32,7 @@ const accountFormRef:any = ref(null);
 const loginData = reactive({
   account: undefined,
   password: undefined,
-  mode: LoginMode.phone,
+  mode: LoginModeEnum.phone,
 });
 
 // 表单校验规则

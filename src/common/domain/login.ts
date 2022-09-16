@@ -11,7 +11,7 @@ export interface LoginData {
     // 必填，可以是密码，手机验证码，邮箱验证码
     password: string;
     // 登录方式
-    mode: LoginMode;
+    mode: LoginModeEnum;
     captchaUuid?: string;
     captchaCode?: string;
 }
@@ -23,7 +23,7 @@ export interface LoginData {
  ** @author loulan
  ** @version 0.0.0
  *********************************************************/
-export enum LoginMode{
+export enum LoginModeEnum{
     account = 1,
     phone = 2,
     email = 3

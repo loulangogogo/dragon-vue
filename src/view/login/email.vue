@@ -20,7 +20,7 @@
 import {reactive, ref} from "vue";
 import {FieldRule, ValidatedError,Message} from "@arco-design/web-vue";
 import * as $L from 'owner-tool-js';
-import {LoginMode} from "../../common/domain/login";
+import {LoginModeEnum} from "../../common/domain/login";
 
 const accountFormRef:any = ref(null);
 
@@ -28,7 +28,7 @@ const accountFormRef:any = ref(null);
 const loginData = reactive({
   account: "",
   password: "",
-  mode: LoginMode.email,
+  mode: LoginModeEnum.email,
 });
 
 // 表单校验规则
