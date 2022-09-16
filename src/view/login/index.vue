@@ -33,7 +33,6 @@
 import loginAccount from './account.vue';
 import loginPhone from './phone.vue';
 import loginEmail from './email.vue';
-import {Modal, ValidatedError} from "_@arco-design_web-vue@2.36.1@@arco-design/web-vue";
 import * as $L from "_owner-tool-js@2.0.3@owner-tool-js";
 import {LoginData, LoginModeEnum} from "../../common/domain/login";
 import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
