@@ -28,7 +28,7 @@ router.beforeEach((to, from) => {
  * @author     :loulan
  * */
 router.afterEach((to, from, failure) => {
-
+    console.log("afterEach-"+to.path);
 })
 
 /**

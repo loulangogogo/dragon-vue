@@ -83,7 +83,7 @@ const submit = () => {
 </script>
 
 <style scoped>
-/deep/.arco-input-suffix{
+:deep .arco-input-suffix{
   display: none;
 }
 </style>

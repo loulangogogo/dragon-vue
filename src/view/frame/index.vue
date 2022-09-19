@@ -22,7 +22,6 @@ import frameHeader from './header.vue';
 import frameSider from './sider.vue';
 import frameContent from './content.vue';
 import frameFooter from './footer.vue';
-
 import {useStore} from 'vuex';
 
 const storeGetters = useStore().getters;

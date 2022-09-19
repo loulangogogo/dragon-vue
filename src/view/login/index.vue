@@ -6,7 +6,7 @@
           <span class="spanTitle">账号登录</span>
         </template>
         <div class="contentDiv">
-          <login-account @loginSubmit="login"></login-account>
+          <login-account @loginSubmit="login" :loginButtonLoading="loginButtonLoading"></login-account>
         </div>
       </a-tab-pane>
       <a-tab-pane :key="LoginModeEnum.phone">
@@ -39,7 +39,11 @@ import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
 import {getToken} from "../../common/api/login";
 import {useRouter} from "vue-router";
 import {SessionStorageEnum} from "../../common/domain/storage";
+import {ref} from "vue";
 
+
+// 登录按钮的加载状态
+const loginButtonLoading = ref(false);
 
 let router = useRouter();
 
@@ -60,10 +64,14 @@ const loginChange = (key: string|number) => {
  * @author     :loulan
  * */
 const login = (loginData:LoginData) => {
+  loginButtonLoading.value = true;
   getToken(loginData).then((res: ResponseResult) => {
     if (res.status == ResponseStatusEnum.OK) {
-      $L.windowsTool.sessionStorageTool.set(SessionStorageEnum.token, res.data.tokenType+" "+res.data.accessToken);
+      $L.windowsTool.sessionStorageTool.set(SessionStorageEnum.token, res.data.tokenType + " " + res.data.accessToken);
       router.push("/");
+      loginButtonLoading.value = false;
+    } else {
+      loginButtonLoading.value = false;
     }
   })
 }
@@ -76,9 +84,9 @@ const login = (loginData:LoginData) => {
   background-color: rgba(44, 239, 14, 0.2);
   border-radius: 10px;
   padding: 10px;
-  position: relative;
+  position: absolute;
   top: 100px;
-  left: 200px;
+  right: 200px;
 
   .spanTitle {
     font-weight: bolder;
@@ -89,7 +97,7 @@ const login = (loginData:LoginData) => {
     margin-top: 30px;
   }
 
-  ::v-deep .arco-tabs-nav-tab-list {
+  :deep .arco-tabs-nav-tab-list {
     margin: auto;
   }
 }

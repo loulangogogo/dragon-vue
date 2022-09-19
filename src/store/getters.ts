@@ -20,5 +20,6 @@ export default {
     frameSiderMaxWidth: (state: any): number => state.frameSiderMaxWidth,
     // 获取框架内容部分高度(浏览器可视高度-头部高度-脚部高度)
     frameContentHeight: (state: any): number => state.screenHeight - state.frameHeaderHeight - state.frameFooterHeight,
-
+    // 获取框架菜单部分高度(浏览器可视高度-头部高度-脚部高度)
+    frameSiderHeight: (state: any): number => state.screenHeight - state.frameHeaderHeight - state.frameFooterHeight,
 }
