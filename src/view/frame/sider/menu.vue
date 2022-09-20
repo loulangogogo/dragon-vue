@@ -2,7 +2,6 @@
   <a-menu
       class="menuClass"
       theme="dark"
-      :collapsed="collapsed"
       :default-open-keys="['0']"
       :default-selected-keys="['0_2']">
     <!--    <a-sub-menu key="0">
@@ -30,7 +29,8 @@ import {Menu} from "../../../common/domain/common";
 const storeGetters = useStore().getters;
 const frameSiderHeight = computed(() => storeGetters.frameSiderHeight);
 const menus = computed(() => {
-  return $L.arrayTool.arrayToTree(storeGetters.menus, "id", "pid", -1);
+  return storeGetters.menus;
+  // return $L.arrayTool.arrayToTree(storeGetters.menus, "id", "pid", -1);
 });
 </script>
 

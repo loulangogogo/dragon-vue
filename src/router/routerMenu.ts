@@ -14,6 +14,7 @@ import {RouteRecordRaw,} from "vue-router";
 import {Menu} from "../common/domain/common";
 import {currentUserMenu} from "../common/api/frame";
 import {ResponseResult, ResponseStatusEnum} from "../common/domain/response";
+import {defineAsyncComponent} from "vue";
 
 /**
  * Description :创建当前用户的路由
@@ -39,7 +40,7 @@ const createrMenuRouter = (menus:Array<Menu>):RouteRecordRaw => {
                 path: menu.code + "-" + menu.id,
                 name: menu.name,
                 /* @vite-ignore */
-                component: () => import('../' + menu.path),
+                component: () => import(/* @vite-ignore */'../' + menu.path),
                 meta:{
                     keepAlive: menu.keepAlive
                 }
