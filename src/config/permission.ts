@@ -1,6 +1,8 @@
 import router from '../router/index';
+import store from "../store";
 import * as $L from 'owner-tool-js';
-import {SessionStorageEnum} from "../common/domain/storage";
+import {LocalStorageEnum} from "../common/domain/storage";
+import {generateMenuRouter} from "../router/routerMenu";
 
 /**
  * 路由全局前置守卫
@@ -9,10 +11,15 @@ import {SessionStorageEnum} from "../common/domain/storage";
  * @return
  * @author     :loulan
  * */
-router.beforeEach((to, from) => {
+router.beforeEach(async (to, from) => {
     if (to.path != '/login') {
-        if (!$L.windowsTool.sessionStorageTool.get(SessionStorageEnum.token)) {
-            return "/login";
+        if (!$L.windowsTool.sessionStorageTool.get(LocalStorageEnum.token)) {
+            return  "/login";
+        }
+
+        if ($L.core.isEmpty(store.getters.menus)) {
+            await generateMenuRouter();
+            return {...to,replace: true};
         }
     }
     return true;
@@ -28,7 +35,7 @@ router.beforeEach((to, from) => {
  * @author     :loulan
  * */
 router.afterEach((to, from, failure) => {
-    console.log("afterEach-"+to.path);
+    console.log("afterEach-" + to.path);
 })
 
 /**
@@ -40,6 +47,6 @@ router.afterEach((to, from, failure) => {
  * @return
  * @author     :loulan
  * */
-router.onError((error,to,from)=>{
-    console.error("进入路由错误");
+router.onError((error, to, from) => {
+    console.error("进入路由错误，错误信息--->"+error);
 });

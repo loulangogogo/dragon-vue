@@ -6,6 +6,7 @@
  ** @version 0.0.0
  *********************************************************/
 import state from "./state";
+import {Menu} from "../common/domain/common";
 
 export default {
     // 获取浏览器可视部分高度
@@ -22,4 +23,9 @@ export default {
     frameContentHeight: (state: any): number => state.screenHeight - state.frameHeaderHeight - state.frameFooterHeight,
     // 获取框架菜单部分高度(浏览器可视高度-头部高度-脚部高度)
     frameSiderHeight: (state: any): number => state.screenHeight - state.frameHeaderHeight - state.frameFooterHeight,
+
+
+    // 获取当前登录用户的菜单
+    menus: (state: any): Array<Menu> => state.menus,
+
 }

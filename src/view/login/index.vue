@@ -38,7 +38,7 @@ import {LoginData, LoginModeEnum} from "../../common/domain/login";
 import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
 import {getToken} from "../../common/api/login";
 import {useRouter} from "vue-router";
-import {SessionStorageEnum} from "../../common/domain/storage";
+import {LocalStorageEnum} from "../../common/domain/storage";
 import {ref} from "vue";
 
 
@@ -67,7 +67,9 @@ const login = (loginData:LoginData) => {
   loginButtonLoading.value = true;
   getToken(loginData).then((res: ResponseResult) => {
     if (res.status == ResponseStatusEnum.OK) {
-      $L.windowsTool.sessionStorageTool.set(SessionStorageEnum.token, res.data.tokenType + " " + res.data.accessToken);
+      $L.windowsTool.sessionStorageTool.set(LocalStorageEnum.token, res.data.tokenType + " " + res.data.accessToken);
+
+      // 路由生成完成之后进行跳转
       router.push("/");
       loginButtonLoading.value = false;
     } else {

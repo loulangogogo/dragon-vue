@@ -16,7 +16,7 @@
 <script lang="ts" setup>
 import {useStore} from 'vuex';
 import * as $L from 'owner-tool-js';
-import {SessionStorageEnum} from "../../../common/domain/storage";
+import {LocalStorageEnum} from "../../../common/domain/storage";
 import {useRouter} from "vue-router";
 import {computed, onMounted} from "vue";
 import {currentUserInfo} from "../../../common/api/frame";
@@ -33,13 +33,13 @@ const frameHeaderHeight = computed(() => storeGetters.frameHeaderHeight);
  * @return
  * @author     :loulan
  * */
-const selectOption = (value: number,ev: Event) => {
+const selectOption = (value: any,ev: Event) => {
   if (value == 1) {
 
   }else if (value == 2) {
 
   }else if (value == 3) {
-    $L.windowsTool.sessionStorageTool.del(SessionStorageEnum.token);
+    $L.windowsTool.sessionStorageTool.del(LocalStorageEnum.token);
     router.push("/login");
   }
 }

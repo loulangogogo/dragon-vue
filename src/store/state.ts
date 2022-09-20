@@ -11,4 +11,7 @@ export default {
     frameHeaderHeight: 75,  // 框架头部高度
     frameFooterHeight: 0,  // 框架脚部高度
     frameSiderMaxWidth: 300,// 框架菜单栏部分最大宽度
+
+    menus:[],               // 当前用户的菜单
+    userInfo: {},           // 当前用户信息
 };
