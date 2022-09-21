@@ -17,4 +17,5 @@ export interface Menu{
     icon?:string;
     iconType?:number;
     orderNum?:number;
+    children?: Array<Menu>;
 }

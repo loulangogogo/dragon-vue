@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import user from './header/user.vue';
+import User from './header/user.vue';
 </script>
 
 <style scoped>

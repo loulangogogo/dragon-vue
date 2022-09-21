@@ -3,7 +3,7 @@
 </template>
 
 <script lang="ts" setup>
-import dgMenu from './sider/menu.vue'
+import DgMenu from './sider/menu.vue'
 </script>
 
 <style scoped>

@@ -30,9 +30,9 @@
 </template>
 
 <script lang="ts" setup>
-import loginAccount from './account.vue';
-import loginPhone from './phone.vue';
-import loginEmail from './email.vue';
+import LoginAccount from './account.vue';
+import LoginPhone from './phone.vue';
+import LoginEmail from './email.vue';
 import * as $L from "_owner-tool-js@2.0.3@owner-tool-js";
 import {LoginData, LoginModeEnum} from "../../common/domain/login";
 import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
@@ -67,7 +67,7 @@ const login = (loginData:LoginData) => {
   loginButtonLoading.value = true;
   getToken(loginData).then((res: ResponseResult) => {
     if (res.status == ResponseStatusEnum.OK) {
-      $L.windowsTool.sessionStorageTool.set(LocalStorageEnum.token, res.data.tokenType + " " + res.data.accessToken);
+      $L.windowsTool.localStorageTool.set(LocalStorageEnum.token, res.data.tokenType + " " + res.data.accessToken);
 
       // 路由生成完成之后进行跳转
       router.push("/");

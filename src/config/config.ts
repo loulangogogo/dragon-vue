@@ -8,10 +8,12 @@ import store from '../store/index';
 import './permission';
 // ui组件
 import ArcoVue from '@arco-design/web-vue';
+import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 import '@arco-themes/vue-owner/css/arco.css';
 
 
 app.use(router)
     .use(store)
     .use(ArcoVue)
+    .use(ArcoVueIcon)
     .mount('#app');

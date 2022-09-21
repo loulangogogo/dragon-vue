@@ -39,7 +39,7 @@ const selectOption = (value: any,ev: Event) => {
   }else if (value == 2) {
 
   }else if (value == 3) {
-    $L.windowsTool.sessionStorageTool.del(LocalStorageEnum.token);
+    $L.windowsTool.localStorageTool.del(LocalStorageEnum.token);
     router.push("/login");
   }
 }

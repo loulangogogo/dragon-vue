@@ -6,7 +6,6 @@
  ** @version 0.0.0
  *********************************************************/
 
-/*这个的导入主要是为了区分出来路由视图的嵌套，是一部分路径跳转到指定的路由下面*/
 import frame from '../view/frame/index.vue';
 import store from "../store";
 import router from "./index";
@@ -14,7 +13,8 @@ import {RouteRecordRaw,} from "vue-router";
 import {Menu} from "../common/domain/common";
 import {currentUserMenu} from "../common/api/frame";
 import {ResponseResult, ResponseStatusEnum} from "../common/domain/response";
-import {defineAsyncComponent} from "vue";
+
+const viteComponents = import.meta.glob("../**/*.vue");
 
 /**
  * Description :创建当前用户的路由
@@ -39,8 +39,8 @@ const createrMenuRouter = (menus:Array<Menu>):RouteRecordRaw => {
             const routerObj:RouteRecordRaw = {
                 path: menu.code + "-" + menu.id,
                 name: menu.name,
-                /* @vite-ignore */
-                component: () => import(/* @vite-ignore */'../' + menu.path),
+                // component: () => import(/* @vite-ignore */'../' + menu.path),  // 在vite中打包无法使用
+                component: viteComponents['../'+(menu.path?.replace(/^\//g, ''))], // 如果变量开头是‘/’那么就去掉（替换为空）
                 meta:{
                     keepAlive: menu.keepAlive
                 }
