@@ -13,6 +13,7 @@ import {RouteRecordRaw,} from "vue-router";
 import {Menu} from "../common/domain/common";
 import {currentUserMenu} from "../common/api/frame";
 import {ResponseResult, ResponseStatusEnum} from "../common/domain/response";
+import {defineAsyncComponent} from "vue";
 
 const viteComponents = import.meta.glob("../**/*.vue");
 
@@ -39,7 +40,7 @@ const createrMenuRouter = (menus:Array<Menu>):RouteRecordRaw => {
             const routerObj:RouteRecordRaw = {
                 path: menu.code + "-" + menu.id,
                 name: menu.name,
-                // component: () => import(/* @vite-ignore */'../' + menu.path),  // 在vite中打包无法使用
+                // component: () => import('../' + menu.path),  // 在vite中打包无法使用
                 component: viteComponents['../'+(menu.path?.replace(/^\//g, ''))], // 如果变量开头是‘/’那么就去掉（替换为空）
                 meta:{
                     keepAlive: menu.keepAlive
