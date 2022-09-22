@@ -7,18 +7,8 @@
             <icon-menu-unfold :size="height*4/6" v-else/>
         </span>
       </td>
-      <td style="overflow: hidden;white-space: nowrap">
-        <template v-for="(a,index) in 20" :key="index">
-          <a-tag size="large"
-                 style="margin-left: 10px"
-                 :bordered="true"
-                 closable>
-            <template #icon>
-              <icon-star/>
-            </template>
-            Tag
-          </a-tag>
-        </template>
+      <td style="position: relative">
+        <title-block-middle></title-block-middle>
       </td>
     </tr>
   </table>
@@ -26,8 +16,13 @@
 
 <script lang="ts" setup>
 import {ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
+import TitleBlockMiddle from './title-block-middle.vue';
+import * as $L from 'owner-tool-js';
 
 const emit = defineEmits(["changeCollapsed"]);
+
+const route = useRoute()
 
 // 是否折叠
 const collapsed = ref(false);
@@ -65,5 +60,6 @@ defineProps({
 .collapsedSpanClass:hover {
   color: blue;
 }
+
 
 </style>

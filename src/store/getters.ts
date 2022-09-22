@@ -5,7 +5,8 @@
  ** @author loulan
  ** @version 0.0.0
  *********************************************************/
-import {Menu} from "../common/domain/common";
+import {Menu, UserInfo} from "../common/domain/common";
+import state from "./state";
 
 export default {
     // 获取浏览器可视部分高度
@@ -28,5 +29,7 @@ export default {
 
     // 获取当前登录用户的菜单
     menus: (state: any): Array<Menu> => state.menus,
+    // 获取用户信息
+    userInfo: (state: any): UserInfo => state.userInfo,
 
 }

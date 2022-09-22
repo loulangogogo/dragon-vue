@@ -19,3 +19,22 @@ export interface Menu{
     orderNum?:number;
     children?: Array<Menu>;
 }
+
+/*********************************************************
+ ** 用户信息接口
+ ** <br><br>
+ ** Date: Created in 2022/9/22 14:00
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export interface UserInfo{
+    id?: number;
+    username?: string;
+    name?: string;
+    phone?: string;
+    email?: string;
+    status?: number;
+    sex?: number;
+    birthday?: string;
+    idCard?: string;
+}

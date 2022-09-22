@@ -6,11 +6,11 @@
  ** @version 0.0.0
  *********************************************************/
 import state from "./state";
-import {Menu} from "../common/domain/common";
+import {Menu, UserInfo} from "../common/domain/common";
 
 export default {
     setScreenHeight: (state:any, param: number) => state.screenHeight = param,
     setScreenWidth: (state:any, param: number) => state.screenWidth = param,
     setMenus: (state: any, param: Array<Menu>) => state.menus = param,
-    setUserInfo: (state: any, param: undefined) => state.userInfo = param,
+    setUserInfo: (state: any, param: UserInfo) => state.userInfo = param,
 }

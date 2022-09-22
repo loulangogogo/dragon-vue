@@ -34,5 +34,6 @@ defineProps({
 <style scoped>
 .menuClass {
   height: v-bind(frameSiderHeight+ 'px');
+  user-select: none;
 }
 </style>
