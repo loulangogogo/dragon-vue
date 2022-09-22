@@ -20,7 +20,7 @@ let outerDivScrollMouseDownPositionX: any = 0;
 let outerDivMouseDownMousePositionX: number = 0;
 
 // 鼠标移动监听事件
-let watcher: any = null;
+let watcher: $L.Watcher;
 
 /**
  * outerDiv被鼠标点下去的事件

@@ -33,7 +33,7 @@
 import LoginAccount from './account.vue';
 import LoginPhone from './phone.vue';
 import LoginEmail from './email.vue';
-import * as $L from "_owner-tool-js@2.0.3@owner-tool-js";
+import * as $L from "owner-tool-js";
 import {LoginData, LoginModeEnum} from "../../common/domain/login";
 import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
 import {getToken} from "../../common/api/login";

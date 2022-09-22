@@ -12,7 +12,7 @@
     "@arco-design/web-vue": "^2.36.1",
     "@arco-themes/vue-owner": "^0.0.2",
     "axios": "^0.27.2",
-    "owner-tool-js": "^2.0.4",
+    "owner-tool-js": "^2.0.5",
     "vue": "^3.2.37",
     "vue-router": "^4.0.16",
     "vuex": "^4.0.2"
