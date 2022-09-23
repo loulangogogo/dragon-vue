@@ -13,7 +13,6 @@ import {RouteRecordRaw,} from "vue-router";
 import {Menu} from "../common/domain/common";
 import {currentUserMenu} from "../common/api/frame";
 import {ResponseResult, ResponseStatusEnum} from "../common/domain/response";
-import {defineAsyncComponent} from "vue";
 
 const viteComponents = import.meta.glob("../**/*.vue");
 

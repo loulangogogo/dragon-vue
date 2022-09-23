@@ -3,7 +3,7 @@
     <title-block :height="frameContentTitleHeight" @change-collapsed="(collapsed:boolean)=>$emit('changeCollapsed',collapsed)"/>
   </div>
   <div class="contentDiv">
-    <router-view/>
+    <router-view :content-height="frameContentHeight"/>
   </div>
 </template>
 

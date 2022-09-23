@@ -68,9 +68,8 @@ const login = (loginData:LoginData) => {
   getToken(loginData).then((res: ResponseResult) => {
     if (res.status == ResponseStatusEnum.OK) {
       $L.windowsTool.localStorageTool.set(LocalStorageEnum.token, res.data.tokenType + " " + res.data.accessToken);
-
-      // 路由生成完成之后进行跳转
-      router.push("/");
+      // 将token保存完成之后进行跳转
+      router.push({path:"/", replace: true});
       loginButtonLoading.value = false;
     } else {
       loginButtonLoading.value = false;
