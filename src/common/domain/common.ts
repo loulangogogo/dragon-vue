@@ -38,3 +38,15 @@ export interface UserInfo{
     birthday?: string;
     idCard?: string;
 }
+
+/*********************************************************
+ ** 分页查询的条件参数
+ ** <br><br>
+ ** Date: Created in 2022/9/26 12:45
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export interface pageQuery{
+    pageCurrent: number;
+    pageSize: number;
+}
