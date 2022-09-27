@@ -41,6 +41,7 @@
 import {onMounted, reactive, ref} from "vue";
 import {pageUserList} from "../../../common/api/system/user";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
+import {TableColumnData} from "@arco-design/web-vue";
 
 const props = defineProps({
   contentHeight: {
@@ -53,55 +54,55 @@ const props = defineProps({
 // 表格数据
 const tableData = ref();
 // 表格列配置
-const columns = reactive([
+const columns:Array<TableColumnData> = [
   {
-    title: '姓名',
-    dataIndex: 'name',
+    title: "姓名",
+    dataIndex: "name",
     width: 150,
-    fixed: 'left',
+    fixed: "left",
   },
   {
-    title: '用户名',
-    dataIndex: 'username',
+    title: "用户名",
+    dataIndex: "username",
     width: 300,
   },
   {
-    title: '手机号码',
-    dataIndex: 'phone',
+    title: "手机号码",
+    dataIndex: "phone",
     width: 200,
   },
   {
-    title: '邮箱',
-    dataIndex: 'email',
+    title: "邮箱",
+    dataIndex: "email",
     width: 300,
   },
   {
-    title: '状态',
-    dataIndex: 'status',
+    title: "状态",
+    dataIndex: "status",
     width: 100,
   },
   {
-    title: '性别',
-    dataIndex: 'sex',
+    title: "性别",
+    dataIndex: "sex",
     width: 100,
   },
   {
-    title: '出生日期',
-    dataIndex: 'birthday',
+    title: "出生日期",
+    dataIndex: "birthday",
     width: 300,
   },
   {
-    title: '身份证号码',
-    dataIndex: 'idCard',
+    title: "身份证号码",
+    dataIndex: "idCard",
     width: 300,
   },
   {
-    title: '操作',
+    title: "操作",
     width: 150,
-    fixed: 'right',
+    fixed: "right",
     slotName: "operate"
   },
-]);
+];
 // 查询参数
 const queryParam = reactive({
   username: undefined,
