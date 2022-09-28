@@ -1,5 +1,5 @@
 <template>
-  <div style="background: linear-gradient(to right,green, blue);height: 100%;width: 100%">
+  <div style="background: linear-gradient(to right,#07f807, blue);height: 100%;width: 100%">
     <user></user>
   </div>
 </template>
