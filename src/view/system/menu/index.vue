@@ -3,17 +3,17 @@
     <a-split class="menuSplitH" default-size="0.3" min="0.2" max="0.6">
       <template #first>
         <div style="padding: 5px">
-          <dragon-menu :height="contentHeight-5"></dragon-menu>
+          <dragon-menu :height="contentHeight-5" @select-menu="selectMenu"></dragon-menu>
         </div>
       </template>
       <template #second>
         <div>
           <a-split class="menuSplitV" v-model:size="menuSplitSizeV" direction="vertical" min="0.3" max="0.7">
             <template #first>
-              <dragon-permission :height="contentHeight*menuSplitSizeV-3"></dragon-permission>
+              <dragon-permission :height="contentHeight*menuSplitSizeV-3" ref="permissionRef"></dragon-permission>
             </template>
             <template #second>
-              <dragon-component :height="contentHeight*(1-menuSplitSizeV)-3"></dragon-component>
+              <dragon-component :height="contentHeight*(1-menuSplitSizeV)-3" ref="componentRef"></dragon-component>
             </template>
           </a-split>
         </div>
@@ -36,7 +36,22 @@ const props = defineProps({
   }
 });
 
+// 纵向分割比
 const menuSplitSizeV = ref(0.5);
+
+const permissionRef = ref();
+const componentRef = ref();
+
+/**
+ * 当菜单被点击的时候
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+const selectMenu = async (menuId:number)=>{
+  permissionRef.value.init(menuId);
+  componentRef.value.init(menuId);
+}
 
 </script>
 

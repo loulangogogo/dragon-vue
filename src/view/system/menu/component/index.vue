@@ -1,10 +1,7 @@
 <template>
   <div class="headerDiv">
-    <a-input v-model="queryParam.username" style="width: 200px" placeholder="请输入用户名" allow-clear/>
-    <a-input v-model="queryParam.name" style="width: 200px;margin-left: 20px" placeholder="请输入姓名" allow-clear/>
-    <a-input v-model="queryParam.phone" style="width: 200px;margin-left: 20px" placeholder="请输入手机号码" allow-clear/>
-    <a-button type="primary" style="margin-left: 20px" @click="search">查询</a-button>
-    <a-button type="primary" status="success" style="margin-left: 20px" @click="search">添加</a-button>
+    <a-input-search v-model="searchKey" placeholder="请输入要进行搜索的名称" style="width: 50%" allow-clear/>
+    <a-button type="primary" status="success" style="margin-left: 20px">添加</a-button>
   </div>
   <div class="bodyDiv">
     <a-table :columns="columns"
@@ -13,28 +10,15 @@
              :show-header="false"
              size="medium"
              page-position="bottom"
-             :pagination="{
-                total: queryParam.pageTotal,
-                showTotal: true,
-                showJumper: true,
-                showPageSize: true,
-                pageSizeOptions:[10,20,30,40,50],
-                current:queryParam.pageCurrent,
-                pageSize: queryParam.pageSize,
-              }"
+             :pagination="false"
              :scroll="{
                 y:'100%'
               }"
              column-resizable
-             :bordered="{cell:true}"
-             :loading="loading"
-             @page-size-change="pageSizeChange"
-             @page-change="pageChange">
+             :bordered="{cell:true}">
       <template #operate>
         <icon-edit class="operateIcon" style="color: blue"/>
         <icon-delete class="operateIcon" style="color: red"/>
-        <!--<a-button type="primary" size="mini" >编辑</a-button>-->
-        <!--<a-button type="primary" status="danger" size="mini" style="margin-left: 10px">删除</a-button>-->
       </template>
     </a-table>
   </div>
@@ -42,10 +26,11 @@
 
 <script lang="ts" setup>
 
-import {onMounted, reactive, ref} from "vue";
-import {pageUserList} from "../../../../common/api/system/user";
+import {computed, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {TableColumnData} from "@arco-design/web-vue";
+import {getPermissionByMenuId} from "../../../../common/api/system/menu";
+import * as $L from "owner-tool-js";
 
 const props = defineProps({
   height: {
@@ -54,244 +39,29 @@ const props = defineProps({
     default: 0
   }
 });
-
-// 表格数据
-const tableData = ref([
-  {
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },{
-    name: "测试",
-    code: "user-manager",
-    path: "view/user/index.vue",
-    method: "post"
-  },
-]);
 // 表格列配置
-const columns:Array<TableColumnData> = [
+const columns: Array<TableColumnData> = [
   {
     title: "名称",
     dataIndex: "name",
     tooltip: true,
-    width: 150,
+    width: 300,
   },
-  {
-    title: "编码(URL)",
-    dataIndex: "code",
-    tooltip: true,
-    width: 150,
-  },
-  {
+   {
+     title: "编码(URL)",
+     dataIndex: "code",
+     tooltip: true,
+     width: 300,
+   },
+/*  {
     title: "组件路径",
-    dataIndex: "path",
+    dataIndex: "url",
     tooltip: true
-  },
+  },*/
   {
-    title: "请求类型",
-    dataIndex: "method",
-    width: 100,
+    title: "状态",
+    dataIndex: "status",
+    width: 80,
   },
   {
     title: "操作",
@@ -301,36 +71,18 @@ const columns:Array<TableColumnData> = [
   },
 ];
 // 查询参数
-const queryParam = reactive({
-  username: undefined,
-  name: undefined,
-  phone: undefined,
-  pageCurrent: 1,
-  pageSize: 10,
-  pageTotal: 30
+const searchKey = ref();
+const originTableData = ref();
+const tableData = computed(() => {
+  if ($L.core.isEmpty(searchKey.value)) {
+    return originTableData.value;
+  } else {
+    return originTableData.value.filter((o:any) => o.name.includes(searchKey.value));
+  }
 })
+// 记录传输过来的菜单id
+const menuId = ref();
 
-const loading = ref(true);
-
-/**
- * 分页查询数据
- * @param
- * @return
- * @author     :loulan
- * */
-const pageList = () => {
-  // 查询之前进入加载状态
-  loading.value = true;
-  pageUserList(queryParam).then((res:ResponseResult) => {
-    if (res.status === ResponseStatusEnum.OK) {
-      const data = res.data;
-      // tableData.value = data.records;
-      // queryParam.pageTotal = data.total;
-    }
-    // 查询无论成功与否退出加载状态
-    loading.value = false;
-  })
-}
 
 /**
  * 点击查询按钮的时候
@@ -338,36 +90,23 @@ const pageList = () => {
  * @return
  * @author     :loulan
  * */
-const search = ()=>{
-  queryParam.pageCurrent = 1;
-  pageList();
+const query = async () => {
+  const res: ResponseResult = await getPermissionByMenuId(menuId.value,20);
+  if (res.status === ResponseStatusEnum.OK) {
+    const datas: Array<any> = res.data;
+    if ($L.core.isNotEmpty(datas)) {
+      originTableData.value = datas;
+    } else {
+      originTableData.value = [];
+    }
+  }
 }
 
-/**
- * 当页码发生变化的时候
- * @param
- * @return
- * @author     :loulan
- * */
-const pageChange = (pageCurrent: number) => {
-  queryParam.pageCurrent = pageCurrent;
-  pageList();
-}
-
-/**
- * 当每页的数目发生变化的时候
- * @param
- * @return
- * @author     :loulan
- * */
-const pageSizeChange = (pageSize: number) => {
-  queryParam.pageSize = pageSize;
-  pageList();
-}
-
-
-onMounted(() => {
-  pageList();
+defineExpose({
+  init: (paramMenuId: number) => {
+    menuId.value = paramMenuId;
+    query();
+  }
 })
 </script>
 
