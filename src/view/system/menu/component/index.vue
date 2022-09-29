@@ -16,6 +16,9 @@
               }"
              column-resizable
              :bordered="{cell:true}">
+      <template #fieldStatus="{record}">
+        <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF"/>
+      </template>
       <template #operate>
         <icon-edit class="operateIcon" style="color: blue"/>
         <icon-delete class="operateIcon" style="color: red"/>
@@ -28,6 +31,7 @@
 
 import {computed, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
+import {StatusEnum,PermissionTypeEnum} from "../../../../common/domain/enums";
 import {TableColumnData} from "@arco-design/web-vue";
 import {getPermissionByMenuId} from "../../../../common/api/system/menu";
 import * as $L from "owner-tool-js";
@@ -44,24 +48,19 @@ const columns: Array<TableColumnData> = [
   {
     title: "名称",
     dataIndex: "name",
-    tooltip: true,
     width: 300,
   },
    {
      title: "编码(URL)",
      dataIndex: "code",
+     ellipsis: true,
      tooltip: true,
-     width: 300,
    },
-/*  {
-    title: "组件路径",
-    dataIndex: "url",
-    tooltip: true
-  },*/
   {
     title: "状态",
     dataIndex: "status",
-    width: 80,
+    width: 60,
+    slotName: "fieldStatus",
   },
   {
     title: "操作",
@@ -91,7 +90,7 @@ const menuId = ref();
  * @author     :loulan
  * */
 const query = async () => {
-  const res: ResponseResult = await getPermissionByMenuId(menuId.value,20);
+  const res: ResponseResult = await getPermissionByMenuId(menuId.value,PermissionTypeEnum.COMPONENT);
   if (res.status === ResponseStatusEnum.OK) {
     const datas: Array<any> = res.data;
     if ($L.core.isNotEmpty(datas)) {
@@ -102,6 +101,7 @@ const query = async () => {
   }
 }
 
+// 定义开放的方法
 defineExpose({
   init: (paramMenuId: number) => {
     menuId.value = paramMenuId;

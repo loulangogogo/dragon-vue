@@ -20,4 +20,24 @@ export const getPermissionByMenuId = (menuId:number,type:number=NaN) => {
     return ask.get(`/system/permission/getPermissionByMenuId/${menuId}?type=${type}`);
 }
 
+/**
+ * 菜单的插入
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const save = (data:any) => {
+    return ask.put(`/system/menu/save`,data);
+}
+
+/**
+ * 菜单的更新
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const update = (data:any) => {
+    return ask.put(`/system/menu/update`,data);
+}
+
 

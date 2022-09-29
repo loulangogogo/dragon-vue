@@ -42,12 +42,16 @@
       </template>
     </a-tree>
   </div>
+  <div v-show="false">
+    <Info ref="infoRef" :menu-data="originListData" @query-menu="getMenus"></Info>
+  </div>
 </template>
 <script lang="ts" setup>
-import {ref, computed, onMounted, nextTick} from 'vue';
 import * as $L from 'owner-tool-js';
+import {ref, computed, onMounted, nextTick} from 'vue';
 import {getAllMenu} from "../../../../common/api/system/menu";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
+import Info from './info.vue';
 
 const emit = defineEmits(["selectMenu"]);
 
@@ -58,10 +62,13 @@ const props = defineProps({
     default: 0
   }
 });
+// 添加编辑组件的ref
+const infoRef = ref();
 // 菜单树的ref
 const menuTreeRef = ref();
 // 原始树数据
 const originTreeData = ref([]);
+const originListData = ref([]);
 // 搜索值
 const searchKey = ref();
 // 树数据
@@ -89,6 +96,7 @@ const treeData = computed(() => {
 const getMenus = ()=>{
   getAllMenu().then((res:ResponseResult) => {
     if (res.status === ResponseStatusEnum.OK && res.data) {
+      originListData.value = res.data;
       originTreeData.value = $L.arrayTool.arrayToTree(res.data, "id", "pid", -1);
     }
   })
@@ -152,16 +160,17 @@ const getTitleHtml = (name: string) => {
  * @author     :loulan
  * */
 const add = () => {
+  infoRef.value.init();
 }
 
 /**
  * 点击编辑按钮的时候
- * @param
+ * @param     nodeData 节点数据
  * @return
  * @author     :loulan
  * */
 const edit = (nodeData: any) => {
-  console.error(nodeData)
+  infoRef.value.init(nodeData);
 }
 
 /**
