@@ -37,7 +37,7 @@ onMounted(()=>{
   overflow: auto;
 }
 
-// 滚动条的样式设置
+/*滚动条的样式设置*/
 ::-webkit-scrollbar {
   width: 7px;
   height: 7px;

@@ -36,7 +36,7 @@
             <icon-edit class="treeNodeOperateIcon" style="color: blue" @click="edit(nodeData)"/>
           </div>
           <div class="treeNodeOperateIconDiv" align="center">
-            <icon-delete class="treeNodeOperateIcon" style="color: red" @click="del"/>
+            <icon-delete class="treeNodeOperateIcon" style="color: red" @click="del(nodeData)"/>
           </div>
         </a-space>
       </template>
@@ -49,9 +49,10 @@
 <script lang="ts" setup>
 import * as $L from 'owner-tool-js';
 import {ref, computed, onMounted, nextTick} from 'vue';
-import {getAllMenu} from "../../../../common/api/system/menu";
+import {getAllMenu, menuDel} from "../../../../common/api/system/menu";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import Info from './info.vue';
+import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
 
 const emit = defineEmits(["selectMenu"]);
 
@@ -180,7 +181,16 @@ const edit = (nodeData: any) => {
  * @author     :loulan
  * */
 const del = (nodeData: any) => {
-
+  dragonConfirm({
+    title: '确认提示',
+    content: '您确认删除这条数据吗？'
+  }).then(async ()=>{
+    const res:ResponseResult = await menuDel(nodeData.id);
+    if (res.status === ResponseStatusEnum.OK) {
+      getMenus();
+      DragonNotice.success("删除成功");
+    }
+  })
 }
 
 /**

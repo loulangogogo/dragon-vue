@@ -77,8 +77,9 @@
 import {arrayTool, core as coreTool,functionTool} from 'owner-tool-js';
 import {computed, reactive, ref} from "vue";
 import {AddEditEnum, MenuIconTypeEnum, MenuTypeEnum, StatusEnum} from "../../../../common/domain/enums";
-import {save,update} from "../../../../common/api/system/menu";
+import {menuSave, menuDel, menuUpdate} from "../../../../common/api/system/menu";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
+import {DragonNotice} from "../../../../common/domain/component";
 
 const emits = defineEmits(["queryMenu"]);
 
@@ -158,8 +159,9 @@ const submit = () => {
   formRef.value.validate(async (errors:any)=>{
     // 如果没有错误进行提交
     if (coreTool.isUndefined(errors)) {
-      const res:ResponseResult = (isAddEdit.value==AddEditEnum.ADD? await save(formData):await update(formData));
+      const res:ResponseResult = (isAddEdit.value==AddEditEnum.ADD? await menuSave(formData):await menuUpdate(formData));
       if (res.status === ResponseStatusEnum.OK) {
+        DragonNotice.success("操作成功");
         emits("queryMenu");
         modalVisible.value = false;
       }

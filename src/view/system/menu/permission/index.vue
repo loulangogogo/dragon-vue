@@ -1,7 +1,7 @@
 <template>
   <div class="headerDiv">
-      <a-input-search v-model="searchKey" placeholder="请输入要进行搜索的名称" style="width: 50%" allow-clear/>
-      <a-button type="primary" status="success" style="margin-left: 20px">添加</a-button>
+    <a-input-search v-model="searchKey" placeholder="请输入要进行搜索的名称" style="width: 50%" allow-clear/>
+    <a-button type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
   </div>
   <div class="bodyDiv">
     <a-table :columns="columns"
@@ -19,22 +19,26 @@
       <template #fieldStatus="{record}">
         <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF"/>
       </template>
-      <template #operate>
-        <icon-edit class="operateIcon" style="color: blue"/>
-        <icon-delete class="operateIcon" style="color: red"/>
+      <template #operate="{record}">
+        <icon-edit class="operateIcon" style="color: blue" @click="edit(record)"/>
+        <icon-delete class="operateIcon" style="color: red" @click="del(record)"/>
       </template>
     </a-table>
+  </div>
+  <div v-show="false">
+    <Info ref="infoRef" @query-permission="query" :menu-id="menuId"></Info>
   </div>
 </template>
 
 <script lang="ts" setup>
-
+import Info from './info.vue';
 import {computed, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
-import {StatusEnum,PermissionTypeEnum} from "../../../../common/domain/enums";
+import {StatusEnum, PermissionTypeEnum} from "../../../../common/domain/enums";
 import {TableColumnData} from "@arco-design/web-vue";
-import {getPermissionByMenuId} from "../../../../common/api/system/menu";
+import {getPermissionByMenuId, permissionDel} from "../../../../common/api/system/menu";
 import * as $L from "owner-tool-js";
+import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
 
 const props = defineProps({
   height: {
@@ -43,6 +47,9 @@ const props = defineProps({
     default: 0
   }
 });
+
+const infoRef = ref();
+
 // 表格列配置
 const columns: Array<TableColumnData> = [
   {
@@ -61,12 +68,12 @@ const columns: Array<TableColumnData> = [
   {
     title: "请求类型",
     dataIndex: "method",
-    width: 80,
+    width: 100,
   },
   {
     title: "状态",
     dataIndex: "status",
-    width: 60,
+    width: 70,
     slotName: "fieldStatus",
   },
   {
@@ -83,7 +90,7 @@ const tableData = computed(() => {
   if ($L.core.isEmpty(searchKey.value)) {
     return originTableData.value;
   } else {
-    return originTableData.value.filter((o:any) => o.name.includes(searchKey.value));
+    return originTableData.value.filter((o: any) => o.name.includes(searchKey.value));
   }
 })
 // 记录传输过来的菜单id
@@ -97,7 +104,7 @@ const menuId = ref();
  * @author     :loulan
  * */
 const query = async () => {
-  const res: ResponseResult = await getPermissionByMenuId(menuId.value,PermissionTypeEnum.URL);
+  const res: ResponseResult = await getPermissionByMenuId(menuId.value, PermissionTypeEnum.URL);
   if (res.status === ResponseStatusEnum.OK) {
     const datas: Array<any> = res.data;
     if ($L.core.isNotEmpty(datas)) {
@@ -106,6 +113,45 @@ const query = async () => {
       originTableData.value = [];
     }
   }
+}
+
+/**
+ * 点击添加按钮的时候
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+const add = () => {
+  infoRef.value.init();
+}
+
+/**
+ * 点击编辑按钮的时候
+ * @param     nodeData 节点数据
+ * @return
+ * @author     :loulan
+ * */
+const edit = (data: any) => {
+  infoRef.value.init(data);
+}
+
+/**
+ * 点击删除按钮的时候
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+const del = (data: any) => {
+  dragonConfirm({
+    title: '确认提示',
+    content: '您确认删除这条数据吗？'
+  }).then(async ()=>{
+    const res:ResponseResult = await permissionDel(data.id);
+    if (res.status === ResponseStatusEnum.OK) {
+      query();
+      DragonNotice.success("删除成功");
+    }
+  })
 }
 
 defineExpose({

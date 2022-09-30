@@ -26,7 +26,7 @@ export const getPermissionByMenuId = (menuId:number,type:number=NaN) => {
  * @return
  * @author     :loulan
  * */
-export const save = (data:any) => {
+export const menuSave = (data:any) => {
     return ask.put(`/system/menu/save`,data);
 }
 
@@ -36,8 +36,48 @@ export const save = (data:any) => {
  * @return
  * @author     :loulan
  * */
-export const update = (data:any) => {
+export const menuUpdate = (data:any) => {
     return ask.put(`/system/menu/update`,data);
+}
+
+/**
+ * 根据菜单的id删除菜单
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const menuDel = (id:number) => {
+    return ask.delete(`/system/menu/delete/${id}`);
+}
+
+/**
+ * 插入
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const permissionSave = (data:any) => {
+    return ask.put(`/system/permission/save`,data);
+}
+
+/**
+ * 更新
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const permissionUpdate = (data:any) => {
+    return ask.put(`/system/permission/update`,data);
+}
+
+/**
+ * 根据id删除
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const permissionDel = (id:number) => {
+    return ask.delete(`/system/permission/delete/${id}`);
 }
 
 
