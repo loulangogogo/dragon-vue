@@ -8,24 +8,13 @@
     <a-table :columns="columns"
              :data="tableData"
              :stripe="true"
-             page-position="bottom"
-             :pagination="{
-                total: queryParam.pageTotal,
-                showTotal: true,
-                showJumper: true,
-                showPageSize: true,
-                pageSizeOptions:[10,20,30,40,50],
-                current:queryParam.pageCurrent,
-                pageSize: queryParam.pageSize,
-              }"
+             :pagination="false"
              :scroll="{
                 y:'100%'
               }"
              column-resizable
              :bordered="{cell:true}"
-             :loading="loading"
-             @page-size-change="pageSizeChange"
-             @page-change="pageChange">
+             :loading="loading">
       <template #operate>
         <a-space>
           <a-button type="primary" status="warning" size="mini">权限编辑</a-button>
@@ -43,12 +32,18 @@ import {onMounted, reactive, ref} from "vue";
 import {pageUserList} from "../../../../common/api/system/user";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {TableColumnData} from "@arco-design/web-vue";
+import {getRoleByType} from "../../../../common/api/role";
 
 const props = defineProps({
   height: {
     type: Number,
     required: true,
     default: 0
+  },
+  roleTypeId: {
+    type: Number,
+    required: true,
+    default: undefined
   }
 });
 
@@ -64,7 +59,7 @@ const columns:Array<TableColumnData> = [
   },
   {
     title: "备注",
-    dataIndex: "username",
+    dataIndex: "nt",
   },
   {
     title: "状态",
@@ -80,12 +75,7 @@ const columns:Array<TableColumnData> = [
 ];
 // 查询参数
 const queryParam = reactive({
-  username: undefined,
   name: undefined,
-  phone: undefined,
-  pageCurrent: 1,
-  pageSize: 10,
-  pageTotal: 0
 })
 
 const loading = ref(true);
@@ -96,18 +86,15 @@ const loading = ref(true);
  * @return
  * @author     :loulan
  * */
-const pageList = () => {
+const queryRole = async () => {
   // 查询之前进入加载状态
   loading.value = true;
-  pageUserList(queryParam).then((res:ResponseResult) => {
-    if (res.status === ResponseStatusEnum.OK) {
-      const data = res.data;
-      tableData.value = data.records;
-      queryParam.pageTotal = data.total;
-    }
-    // 查询无论成功与否退出加载状态
-    loading.value = false;
-  })
+  const res: ResponseResult = await getRoleByType(<number>props.roleTypeId);
+  if (res.status === ResponseStatusEnum.OK) {
+    tableData.value = res.data;
+  }
+
+  loading.value = false;
 }
 
 /**
@@ -117,35 +104,12 @@ const pageList = () => {
  * @author     :loulan
  * */
 const search = ()=>{
-  queryParam.pageCurrent = 1;
-  pageList();
-}
-
-/**
- * 当页码发生变化的时候
- * @param
- * @return
- * @author     :loulan
- * */
-const pageChange = (pageCurrent: number) => {
-  queryParam.pageCurrent = pageCurrent;
-  pageList();
-}
-
-/**
- * 当每页的数目发生变化的时候
- * @param
- * @return
- * @author     :loulan
- * */
-const pageSizeChange = (pageSize: number) => {
-  queryParam.pageSize = pageSize;
-  pageList();
+  queryRole();
 }
 
 
 onMounted(() => {
-  pageList();
+  queryRole();
 })
 </script>
 

@@ -200,7 +200,7 @@ const del = (nodeData: any) => {
  * @author     :loulan
  * */
 const treeSelect = (selectedKeys: Array<string | number>)=>{
-  const menuId = selectedKeys.pop();
+  const menuId = selectedKeys[0];
   emit("selectMenu", menuId);
 }
 

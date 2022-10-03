@@ -121,18 +121,17 @@ const loading = ref(true);
  * @return
  * @author     :loulan
  * */
-const pageList = () => {
+const pageList =async () => {
   // 查询之前进入加载状态
   loading.value = true;
-  pageUserList(queryParam).then((res:ResponseResult) => {
-    if (res.status === ResponseStatusEnum.OK) {
-      const data = res.data;
-      tableData.value = data.records;
-      queryParam.pageTotal = data.total;
-    }
-    // 查询无论成功与否退出加载状态
-    loading.value = false;
-  })
+  const res:ResponseResult = await pageUserList(queryParam);
+  if (res.status === ResponseStatusEnum.OK) {
+    const data = res.data;
+    tableData.value = data.records;
+    queryParam.pageTotal = data.total;
+  }
+  // 查询无论成功与否退出加载状态
+  loading.value = false;
 }
 
 /**

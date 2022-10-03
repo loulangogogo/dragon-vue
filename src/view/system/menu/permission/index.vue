@@ -17,7 +17,7 @@
              column-resizable
              :bordered="{cell:true}">
       <template #fieldStatus="{record}">
-        <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF"/>
+        <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF" @change="(val:number)=>statusChange(val,record)"/>
       </template>
       <template #operate="{record}">
         <icon-edit class="operateIcon" style="color: blue" @click="edit(record)"/>
@@ -36,9 +36,9 @@ import {computed, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {StatusEnum, PermissionTypeEnum} from "../../../../common/domain/enums";
 import {TableColumnData} from "@arco-design/web-vue";
-import {getPermissionByMenuId, permissionDel} from "../../../../common/api/system/menu";
+import {getPermissionByMenuId, permissionDel,permissionUpdate} from "../../../../common/api/system/menu";
 import * as $L from "owner-tool-js";
-import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
+import {dragonConfirm, DragonMessage, DragonNotice} from "../../../../common/domain/component";
 
 const props = defineProps({
   height: {
@@ -113,6 +113,19 @@ const query = async () => {
       originTableData.value = [];
     }
   }
+}
+
+/**
+ * 当状态发生切换的时候
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+const statusChange = async (val:number,data:any) => {
+  const res: ResponseResult = await permissionUpdate({
+    id: data.id,
+    status: val
+  });
 }
 
 /**

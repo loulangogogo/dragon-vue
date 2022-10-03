@@ -16,7 +16,7 @@
       </template>
       <template v-for="(roleType,index) in roleTypes" :key="roleType.id">
         <a-tab-pane  :title="roleType.name">
-          <role :height="contentHeight-10-32"></role>
+          <role :height="contentHeight-10-32" :role-type-id="roleType.id"></role>
         </a-tab-pane>
       </template>
     </a-tabs>
@@ -26,7 +26,9 @@
 <script lang="ts" setup>
 import Role from './role/index.vue';
 
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import {getRoleType} from "../../../common/api/role";
+import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 
 const props = defineProps({
   contentHeight: {
@@ -36,27 +38,7 @@ const props = defineProps({
   }
 });
 
-const roleTypes = [
-  {
-    id: 1,
-    code: 'asdf',
-    name: '661'
-  },{
-    id: 2,
-    code: 'asdf1',
-    name: '662'
-  },{
-    id: 3,
-    code: 'asdf2',
-    name: '663'
-  },{
-    id: 4,
-    code: 'asdf3',
-    name: '664'
-  }
-];
-
-
+const roleTypes = ref();
 
 /**
  * 点击删除按钮的时候
@@ -67,6 +49,23 @@ const roleTypes = [
 const del = (key:any)=>{
 
 }
+
+/**
+ * 查询角色类型
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+const queryRoleType = async ()=>{
+  const res: ResponseResult = await getRoleType();
+  if (res.status === ResponseStatusEnum.OK) {
+    roleTypes.value = res.data;
+  }
+}
+
+onMounted(async ()=>{
+  queryRoleType();
+})
 </script>
 
 <style scoped>

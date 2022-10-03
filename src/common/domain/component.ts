@@ -1,4 +1,4 @@
-import {Modal, ModalConfig, Space,Notification } from '@arco-design/web-vue';
+import {Modal, ModalConfig, Space,Notification,Message } from '@arco-design/web-vue';
 import {h} from "vue";
 import {IconInfoCircleFill} from '@arco-design/web-vue/es/icon';
 
@@ -57,5 +57,27 @@ export namespace DragonNotice{
     }
     export const info = (msg:string)=>{
         Notification.info(msg)
+    }
+}
+
+/*********************************************************
+ ** 信息提示
+ ** <br><br>
+ ** Date: Created in 2022/10/2 17:20
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export namespace DragonMessage{
+    export const success = (msg:string)=>{
+        Message.success(msg)
+    }
+    export const error = (msg:string)=>{
+        Message.error(msg)
+    }
+    export const warning = (msg:string)=>{
+        Message.warning(msg)
+    }
+    export const info = (msg:string)=>{
+        Message.info(msg)
     }
 }
