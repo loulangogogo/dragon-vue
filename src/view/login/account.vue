@@ -27,7 +27,7 @@ import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
 
 
 // 事件对象
-const emit = defineEmits(["loginSubmit"]);
+const emits = defineEmits(['loginSubmit']);
 
 // 表单ref
 const accountFormRef: any = ref(null);
@@ -89,7 +89,7 @@ const submit = () => {
   accountFormRef.value.validate((errors: undefined | Record<string, ValidatedError>) => {
     // 当errors为undefined的时候表示校验成功没有错误
     if ($L.core.isUndefined(errors)) {
-      emit("loginSubmit", loginData);
+      emits('loginSubmit', loginData);
     }
   });
 }

@@ -20,7 +20,7 @@
       <a-form-item  field="url" label="URL">
         <a-input v-model="formData.url" placeholder="请输入请求url"/>
       </a-form-item>
-      <a-form-item v-if="isAddEdit===AddEditEnum.EDIT" field="type" label="是否启用">
+      <a-form-item v-if="isAddEdit === AddEditEnum.EDIT" field="type" label="是否启用">
         <a-radio-group v-model="formData.status">
           <a-radio :value="StatusEnum.ON">是</a-radio>
           <a-radio :value="StatusEnum.OFF">否</a-radio>
@@ -45,13 +45,9 @@ import {DragonNotice} from "../../../../common/domain/component";
 
 const emits = defineEmits(["queryPermission"]);
 
-const props = defineProps({
-  menuId: {
-    type: Number,
-    required: true,
-    default: undefined
-  }
-});
+const props = defineProps<{
+  menuId: any
+}>();
 
 // 当前是添加还是编辑，默认添加
 const isAddEdit = ref(AddEditEnum.ADD);

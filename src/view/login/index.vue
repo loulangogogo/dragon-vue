@@ -14,7 +14,7 @@
           <span class="spanTitle">手机登录</span>
         </template>
         <div class="contentDiv">
-          <login-phone @loginSubmit="login"></login-phone>
+          <login-phone></login-phone>
         </div>
       </a-tab-pane>
       <a-tab-pane :key="LoginModeEnum.email">
@@ -22,7 +22,7 @@
           <span class="spanTitle">邮箱登录</span>
         </template>
         <div class="contentDiv">
-          <login-email @loginSubmit="login"></login-email>
+          <login-email></login-email>
         </div>
       </a-tab-pane>
     </a-tabs>

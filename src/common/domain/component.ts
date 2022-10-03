@@ -11,7 +11,7 @@ import {IconInfoCircleFill} from '@arco-design/web-vue/es/icon';
 export const dragonConfirm = (config: ModalConfig) => {
     return new Promise((resolve, reject) => {
         Modal.confirm({
-            title: () => h(Space, {}, [
+            title: () => h(Space, {}, ()=>[
                 h(IconInfoCircleFill, {
                     style:{
                         "font-weight": "bolder",

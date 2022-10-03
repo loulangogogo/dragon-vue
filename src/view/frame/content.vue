@@ -11,6 +11,7 @@
 import TitleBlock from "./content/title-block.vue";
 import {useStore} from "vuex";
 import {computed, getCurrentInstance, ref} from "vue";
+defineEmits(["changeCollapsed"]);
 
 
 const storeGetters = useStore().getters;

@@ -37,13 +37,10 @@ import {DragonNotice} from "../../../../common/domain/component";
 
 const emits = defineEmits(["queryPermission"]);
 
-const props = defineProps({
-  menuId: {
-    type: Number,
-    required: true,
-    default: undefined
-  }
-});
+const props = defineProps<{
+  menuId: any
+}>();
+
 
 // 当前是添加还是编辑，默认添加
 const isAddEdit = ref(AddEditEnum.ADD);
