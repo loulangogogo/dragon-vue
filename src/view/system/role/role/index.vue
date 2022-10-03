@@ -34,18 +34,10 @@ import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/resp
 import {TableColumnData} from "@arco-design/web-vue";
 import {getRoleByType} from "../../../../common/api/role";
 
-const props = defineProps({
-  height: {
-    type: Number,
-    required: true,
-    default: 0
-  },
-  roleTypeId: {
-    type: Number,
-    required: true,
-    default: undefined
-  }
-});
+const props = defineProps<{
+  height:number,
+  roleTypeId:number
+}>();
 
 // 表格数据
 const tableData = ref();
@@ -89,7 +81,7 @@ const loading = ref(true);
 const queryRole = async () => {
   // 查询之前进入加载状态
   loading.value = true;
-  const res: ResponseResult = await getRoleByType(<number>props.roleTypeId);
+  const res: ResponseResult = await getRoleByType(props.roleTypeId);
   if (res.status === ResponseStatusEnum.OK) {
     tableData.value = res.data;
   }

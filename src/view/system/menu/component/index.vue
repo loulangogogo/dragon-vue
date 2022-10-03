@@ -16,7 +16,7 @@
              column-resizable
              :bordered="{cell:true}">
       <template #fieldStatus="{record}">
-        <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF" @change="(val:number)=>statusChange(val,record)"/>
+        <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF" @change="(val:any)=>statusChange(val,record)"/>
       </template>
       <template #operate="{record}">
         <icon-edit class="operateIcon" style="color: blue" @click="edit(record)"/>
