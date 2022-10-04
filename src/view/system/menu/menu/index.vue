@@ -19,6 +19,8 @@
               key: 'id',
               title: 'name'
             }"
+            :checkable="true"
+            :check-strictly="true"
             @select="treeSelect">
       <template #switcher-icon="{ isLeaf }">
         <icon-caret-right class="treeSwitcherIcon" v-if="isLeaf"/>
@@ -61,6 +63,11 @@ const props = defineProps({
     type: Number,
     required: true,
     default: 0
+  },
+  isRolePermission: {
+    type: Boolean,
+    required: false,
+    default: false
   }
 });
 // 添加编辑组件的ref
@@ -206,6 +213,18 @@ const treeSelect = (selectedKeys: Array<string | number>)=>{
 
 onMounted(()=>{
   getMenus();
+})
+
+defineExpose({
+  /**
+   * 获取复选框选中的值
+   * @param
+   * @return
+   * @author     :loulan
+   * */
+  getCheckedNodes: ()=>{
+    return menuTreeRef.value.getCheckedNodes();
+  }
 })
 </script>
 

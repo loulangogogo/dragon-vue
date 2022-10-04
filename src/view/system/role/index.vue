@@ -16,7 +16,8 @@
       </template>
       <template v-for="(roleType,index) in roleTypes" :key="index">
         <a-tab-pane  :title="roleType.name">
-          <role :height="contentHeight-10-32" :role-type-id="roleType.id"></role>
+          <!--20是padding,32是type,16是tab-pane的padding-->
+          <role :height="contentHeight-20-32-16" :role-type-id="roleType.id"></role>
         </a-tab-pane>
       </template>
     </a-tabs>

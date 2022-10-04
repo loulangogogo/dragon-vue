@@ -14,6 +14,14 @@
                 y:'100%'
               }"
              column-resizable
+             row-key="id"
+             :default-selected-keys="selectedKeys"
+             :row-selection="{
+               type: 'checkbox',
+               fixed: true,
+               width: 50
+             }"
+             @selection-change="(keys:any)=>$emit('checkboxChange',keys)"
              :bordered="{cell:true}">
       <template #fieldStatus="{record}">
         <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF" @change="(val:any)=>statusChange(val,record)"/>
@@ -39,11 +47,18 @@ import {getPermissionByMenuId, permissionDel, permissionUpdate} from "../../../.
 import * as $L from "owner-tool-js";
 import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
 
+defineEmits(["checkboxChange"]);
+
 const props = defineProps({
   height: {
     type: Number,
     required: true,
     default: 0
+  },
+  selectedKeys:{
+    type: Array,
+    required: false,
+    default: []
   }
 });
 
