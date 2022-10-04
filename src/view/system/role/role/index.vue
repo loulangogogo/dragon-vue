@@ -20,7 +20,7 @@
       </template>
       <template #operate="{record}">
         <a-space>
-          <a-button type="primary" status="warning" size="mini">权限编辑</a-button>
+          <a-button type="primary" status="warning" size="mini" @click="permissionEdit">权限编辑</a-button>
           <a-button type="primary" size="mini" @click="edit(record)">编辑</a-button>
           <a-button type="primary" status="danger" size="mini" @click="del(record)">删除</a-button>
         </a-space>
@@ -29,11 +29,13 @@
   </div>
   <div v-show="false">
     <Info ref="infoRef" :role-type-id="roleTypeId" @query-role="queryRole"></Info>
+    <permission ref="permissionRef"></permission>
   </div>
 </template>
 
 <script lang="ts" setup>
 import Info from './info.vue';
+import Permission from './permission.vue';
 import {onMounted, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {TableColumnData} from "@arco-design/web-vue";
@@ -48,6 +50,7 @@ const props = defineProps<{
 
 // 添加编辑组件的ref
 const infoRef = ref();
+const permissionRef = ref();
 // 表格数据
 const tableData = ref();
 // 表格列配置
@@ -161,6 +164,16 @@ const del = (data:any)=>{
       DragonNotice.success("删除成功");
     }
   })
+}
+
+/**
+ * 进行权限编辑
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+const permissionEdit = ()=>{
+  permissionRef.value.init();
 }
 
 
