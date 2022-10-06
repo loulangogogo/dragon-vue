@@ -4,6 +4,7 @@
       <template #first>
         <div style="padding: 5px">
           <dragon-menu ref="menuRef" :height="contentHeight-5"
+                       :is-role-permission="isRolePermission"
                        v-model:selectedKeys="menuCheckSelectedKeys"
                        @select-menu="selectMenu"></dragon-menu>
         </div>
@@ -13,10 +14,12 @@
           <a-split class="menuSplitV" v-model:size="menuSplitSizeV" direction="vertical" min="0.3" max="0.7">
             <template #first>
               <dragon-permission :height="contentHeight*menuSplitSizeV-3" ref="permissionRef"
+                                 :is-role-permission="isRolePermission"
                                  v-model:selectedKeys="tableCheckSelectedKeys"></dragon-permission>
             </template>
             <template #second>
               <dragon-component :height="contentHeight*(1-menuSplitSizeV)-3" ref="componentRef"
+                                :is-role-permission="isRolePermission"
                                 v-model:selectedKeys="tableCheckSelectedKeys"></dragon-component>
             </template>
           </a-split>

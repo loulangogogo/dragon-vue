@@ -4,7 +4,7 @@
       <a-col :span="20">
         <a-input-search v-model="searchKey"  placeholder="请输入要进行搜索的名称" allow-clear/>
       </a-col>
-      <a-col :span="4">
+      <a-col :span="4" v-if="!isRolePermission">
         <div align="right">
           <a-button type="primary" status="success" @click="add">添加</a-button>
         </div>
@@ -19,7 +19,7 @@
               key: 'id',
               title: 'name'
             }"
-            :checkable="true"
+            :checkable="isRolePermission"
             :check-strictly="true"
             v-model:checked-keys="selectedKeys"
             @select="treeSelect">
@@ -33,7 +33,7 @@
           <span v-html="getTitleHtml(nodeData?.name)"></span>
         </template>
       </template>
-      <template #extra="nodeData">
+      <template #extra="nodeData" v-if="!isRolePermission">
         <a-space align="center">
           <div class="treeNodeOperateIconDiv" align="center">
             <icon-edit class="treeNodeOperateIcon" style="color: blue" @click="edit(nodeData)"/>

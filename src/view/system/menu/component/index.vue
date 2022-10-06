@@ -1,7 +1,7 @@
 <template>
   <div class="headerDiv">
     <a-input-search v-model="searchKey" placeholder="请输入要进行搜索的名称" style="width: 50%" allow-clear/>
-    <a-button type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
+    <a-button v-if="!isRolePermission" type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
   </div>
   <div class="bodyDiv">
     <a-table :columns="columns"
@@ -15,11 +15,11 @@
               }"
              column-resizable
              row-key="id"
-             :row-selection="{
+             :row-selection="isRolePermission?{
                type: 'checkbox',
                fixed: true,
                width: 50
-             }"
+             }:undefined"
              v-model:selectedKeys="selectedKeys"
              :bordered="{cell:true}">
       <template #fieldStatus="{record}">
@@ -55,6 +55,11 @@ const props = defineProps({
     required: true,
     default: 0
   },
+  isRolePermission: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
   selectedKeys:{
     type: Array,
     required: false,
@@ -75,14 +80,26 @@ watch(() => props.selectedKeys,
 const infoRef = ref();
 
 // 表格列配置
-const columns: Array<TableColumnData> = [
+const columns: Array<TableColumnData> = props.isRolePermission?[
+  {
+    title: "名称",
+    dataIndex: "name",
+    width: 300,
+  },
+  {
+    title: "编码",
+    dataIndex: "code",
+    ellipsis: true,
+    tooltip: true,
+  }
+]:[
   {
     title: "名称",
     dataIndex: "name",
     width: 300,
   },
    {
-     title: "编码(URL)",
+     title: "编码",
      dataIndex: "code",
      ellipsis: true,
      tooltip: true,
