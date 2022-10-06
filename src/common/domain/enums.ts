@@ -64,4 +64,18 @@ export enum AddEditEnum {
     EDIT = 1,
 }
 
+/*********************************************************
+ ** 资源角色中间表中关于资源类型的枚举数据
+ ** <br><br>
+ ** Date: Created in 2022/10/6 17:18
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export enum RoleResourcesTypeEnum {
+    CLIENT = 10,
+    USER = 20,
+    MENU = 30,
+    PERMISSION = 40
+}
+
 

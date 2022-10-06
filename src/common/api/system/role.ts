@@ -79,3 +79,23 @@ export const roleUpdate = (data:any) => {
 export const roleDel = (id:number) => {
     return ask.delete(`/system/role/delete/${id}`);
 }
+
+/**
+ * 角色关联权限和菜单
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const permissionMenuSaveAndUpdate = (roleId:number,data:any) => {
+    return ask.put(`/system/resourcesRole/permissionMenuSaveAndUpdate/${roleId}`,data);
+}
+
+/**
+ * 通过角色id获取权限菜单关联数据
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const getPermissionMenuByRoleId = (roleId:number) => {
+    return ask.get(`/system/resourcesRole/getPermissionMenuByRoleId/${roleId}`);
+}

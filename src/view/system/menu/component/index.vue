@@ -15,13 +15,12 @@
               }"
              column-resizable
              row-key="id"
-             :default-selected-keys="selectedKeys"
              :row-selection="{
                type: 'checkbox',
                fixed: true,
                width: 50
              }"
-             @selection-change="(keys:any)=>$emit('checkboxChange',keys)"
+             v-model:selectedKeys="selectedKeys"
              :bordered="{cell:true}">
       <template #fieldStatus="{record}">
         <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF" @change="(val:any)=>statusChange(val,record)"/>
@@ -46,8 +45,9 @@ import {TableColumnData} from "@arco-design/web-vue";
 import {getPermissionByMenuId, permissionDel, permissionUpdate} from "../../../../common/api/system/menu";
 import * as $L from "owner-tool-js";
 import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
+import {watch} from "_vue@3.2.39@vue";
 
-defineEmits(["checkboxChange"]);
+const emits = defineEmits(['update:selectedKeys']);
 
 const props = defineProps({
   height: {
@@ -61,6 +61,16 @@ const props = defineProps({
     default: []
   }
 });
+
+watch(() => props.selectedKeys,
+    (val: any) => {
+      emits("update:selectedKeys", val);
+    },
+    {
+      deep: true,
+      immediate: true
+    }
+);
 
 const infoRef = ref();
 

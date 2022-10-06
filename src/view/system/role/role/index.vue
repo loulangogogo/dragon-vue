@@ -20,7 +20,7 @@
       </template>
       <template #operate="{record}">
         <a-space>
-          <a-button type="primary" status="warning" size="mini" @click="permissionEdit">权限编辑</a-button>
+          <a-button type="primary" status="warning" size="mini" @click="permissionEdit(record)">权限编辑</a-button>
           <a-button type="primary" size="mini" @click="edit(record)">编辑</a-button>
           <a-button type="primary" status="danger" size="mini" @click="del(record)">删除</a-button>
         </a-space>
@@ -172,8 +172,8 @@ const del = (data:any)=>{
  * @return
  * @author     :loulan
  * */
-const permissionEdit = ()=>{
-  permissionRef.value.init();
+const permissionEdit = (data:any)=>{
+  permissionRef.value.init(data.id);
 }
 
 

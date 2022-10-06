@@ -21,6 +21,7 @@
             }"
             :checkable="true"
             :check-strictly="true"
+            v-model:checked-keys="selectedKeys"
             @select="treeSelect">
       <template #switcher-icon="{ isLeaf }">
         <icon-caret-right class="treeSwitcherIcon" v-if="isLeaf"/>
@@ -55,8 +56,9 @@ import {getAllMenu, menuDel} from "../../../../common/api/system/menu";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import Info from './info.vue';
 import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
+import {watch} from "_vue@3.2.39@vue";
 
-const emit = defineEmits(["selectMenu"]);
+const emit = defineEmits(["selectMenu",'update:selectedKeys']);
 
 const props = defineProps({
   height: {
@@ -68,8 +70,24 @@ const props = defineProps({
     type: Boolean,
     required: false,
     default: false
+  },
+  selectedKeys:{
+    type: Array,
+    required: false,
+    default: []
   }
 });
+
+watch(() => props.selectedKeys,
+    (val: any) => {
+      emit("update:selectedKeys", val);
+    },
+    {
+      deep: true,
+      immediate: true
+    }
+);
+
 // 添加编辑组件的ref
 const infoRef = ref();
 // 菜单树的ref
