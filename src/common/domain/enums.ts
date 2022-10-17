@@ -78,4 +78,16 @@ export enum RoleResourcesTypeEnum {
     PERMISSION = 40
 }
 
+/*********************************************************
+ **
+ ** <br><br>
+ ** Date: Created in 2022/10/7 18:39
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export enum SexEnum {
+    MEN = 0,
+    MAN = 1,
+}
+
 

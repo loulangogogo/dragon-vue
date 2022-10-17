@@ -4,7 +4,7 @@
     <a-input v-model="queryParam.name" style="width: 200px;margin-left: 20px" placeholder="请输入姓名" allow-clear/>
     <a-input v-model="queryParam.phone" style="width: 200px;margin-left: 20px" placeholder="请输入手机号码" allow-clear/>
     <a-button type="primary" style="margin-left: 20px" @click="search">查询</a-button>
-    <a-button type="primary" status="success" style="margin-left: 20px" @click="search">添加</a-button>
+    <a-button type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
   </div>
   <div class="bodyDiv">
     <a-table :columns="columns"
@@ -34,10 +34,14 @@
       </template>
     </a-table>
   </div>
+  <div v-show="false">
+    <info ref="infoRef"></info>
+  </div>
 </template>
 
 <script lang="ts" setup>
 
+import Info from './info.vue';
 import {onMounted, reactive, ref} from "vue";
 import {pageUserList} from "../../../common/api/system/user";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
@@ -50,6 +54,8 @@ const props = defineProps({
     default: 0
   }
 });
+
+const infoRef = ref();
 
 // 表格数据
 const tableData = ref();
@@ -165,6 +171,16 @@ const pageChange = (pageCurrent: number) => {
 const pageSizeChange = (pageSize: number) => {
   queryParam.pageSize = pageSize;
   pageList();
+}
+
+/**
+ * 添加操作
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+const add = ()=>{
+  infoRef.value.init();
 }
 
 
