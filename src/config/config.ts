@@ -6,6 +6,8 @@ import router from '../router/index';
 import store from '../store/index';
 // 引入权限管理配置
 import './permission';
+// 引入自定义指令配置
+import './directives';
 // ui组件
 import ArcoVue from '@arco-design/web-vue';
 import ArcoVueIcon from '@arco-design/web-vue/es/icon';
