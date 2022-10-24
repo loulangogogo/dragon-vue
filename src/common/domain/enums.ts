@@ -13,13 +13,29 @@ export enum StatusEnum {
 }
 
 /*********************************************************
+ ** 用户账号的状态
+ ** <br><br>
+ ** Date: Created in 2022/10/24 10:49
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export enum UserStatusEnum {
+    // 正常
+    NORMAL = 10,
+    // 挂起
+    HANG_UP = 20,
+    // 注销
+    CANCEL = 30
+}
+
+/*********************************************************
  ** 权限表状态字段的枚举值
  ** <br><br>
  ** Date: Created in 2022/9/29 11:16
  ** @author loulan
  ** @version 0.0.0
  *********************************************************/
-export enum PermissionTypeEnum{
+export enum PermissionTypeEnum {
     URL = 10,
     COMPONENT = 20,
 }
