@@ -39,10 +39,11 @@ const formRef = ref();
 // 模态框的显示状态
 const modalVisible = ref(false);
 // 表单数据
-const formData = reactive({
+const initFormData = {
   name: undefined,
-  nt:undefined
-})
+  nt: undefined
+};
+const formData = ref({...initFormData})
 const formRules = {
   name: {
     required: true,
@@ -64,7 +65,7 @@ const submit = () => {
   formRef.value.validate(async (errors:any)=>{
     // 如果没有错误进行提交
     if (coreTool.isUndefined(errors)) {
-      const res:ResponseResult = (isAddEdit.value==AddEditEnum.ADD? await roleTypeSave(formData):await roleTypeUpdate(formData));
+      const res:ResponseResult = (isAddEdit.value==AddEditEnum.ADD? await roleTypeSave(formData.value):await roleTypeUpdate(formData.value));
       if (res.status === ResponseStatusEnum.OK) {
         DragonNotice.success("操作成功");
         emits("queryRoleType");
@@ -83,7 +84,7 @@ const submit = () => {
  * */
 const close = () => {
   // 清空表单数据
-  formRef.value.resetFields();
+  formData.value = {...initFormData};
   // 回复默认
   isAddEdit.value = AddEditEnum.ADD;
 }
@@ -97,7 +98,7 @@ defineExpose({
     } else {
       // 数据存在是编辑
       isAddEdit.value = AddEditEnum.EDIT;
-      functionTool.combineObj(formData, data);
+      functionTool.combineObj(formData.value, data);
       modalVisible.value = true;
     }
   }

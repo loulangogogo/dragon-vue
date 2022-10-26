@@ -50,7 +50,7 @@ const formRef = ref();
 // 模态框的显示状态
 const modalVisible = ref(false);
 // 表单数据
-const formData = reactive({
+const initFormData = {
   name: undefined,
   type: PermissionTypeEnum.URL,
   code: undefined,
@@ -58,7 +58,8 @@ const formData = reactive({
   method: undefined,
   menuId: props.menuId,
   status: StatusEnum.ON
-})
+};
+const formData = ref({...initFormData})
 const formRules = {
   name: {
     required: true,
@@ -100,9 +101,9 @@ const submit = () => {
   formRef.value.validate(async (errors:any)=>{
     // 如果没有错误进行提交
     if (coreTool.isUndefined(errors)) {
-      formData.menuId = props.menuId;
-      formData.type = PermissionTypeEnum.COMPONENT;
-      const res:ResponseResult = (isAddEdit.value==AddEditEnum.ADD? await permissionSave(formData):await permissionUpdate(formData));
+      formData.value.menuId = props.menuId;
+      formData.value.type = PermissionTypeEnum.COMPONENT;
+      const res:ResponseResult = (isAddEdit.value==AddEditEnum.ADD? await permissionSave(formData.value):await permissionUpdate(formData.value));
       if (res.status === ResponseStatusEnum.OK) {
         DragonNotice.success("操作成功");
         emits("queryPermission");
@@ -121,7 +122,7 @@ const submit = () => {
  * */
 const close = () => {
   // 清空表单数据
-  formRef.value.resetFields();
+  formData.value = {...initFormData};
   // 回复默认
   isAddEdit.value = AddEditEnum.ADD;
 }
@@ -135,7 +136,7 @@ defineExpose({
     } else {
       // 数据存在是编辑
       isAddEdit.value = AddEditEnum.EDIT;
-      functionTool.combineObj(formData, data);
+      functionTool.combineObj(formData.value, data);
       modalVisible.value = true;
     }
   }

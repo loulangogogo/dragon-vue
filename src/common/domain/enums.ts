@@ -106,4 +106,19 @@ export enum SexEnum {
     MAN = 1,
 }
 
+/*********************************************************
+ ** 授权类型枚举
+ ** <br><br>
+ ** Date: Created in 2022/10/25 12:04
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export enum GrantTypeEnum {
+    AUTHORIZATION_CODE="authorization_code",
+    IMPLICIT="implicit",
+    PASSWORD="password",
+    REFRESH_TOKEN="refresh_token",
+    CLIENT_CREDENTIALS="client_credentials"
+}
+
 

@@ -30,7 +30,7 @@
       <a-form-item v-if="false" field="idCard" label="身份证号码">
         <a-input v-model="formData.idCard" placeholder="请输入身份证号码"/>
       </a-form-item>
-      <a-form-item v-if="isAddEdit===AddEditEnum.EDIT" field="type" label="是否启用">
+      <a-form-item v-if="isAddEdit===AddEditEnum.EDIT" field="status" label="是否启用">
         <a-radio-group v-model="formData.status">
           <a-radio :value="UserStatusEnum.NORMAL">正常</a-radio>
           <a-radio :value="UserStatusEnum.HANG_UP">挂起</a-radio>
@@ -65,7 +65,7 @@ const formRef = ref();
 // 模态框的显示状态
 const modalVisible = ref(false);
 // 表单数据
-const formData = reactive({
+const initFormData = {
   username: undefined,
   name: undefined,
   phone: undefined,
@@ -73,7 +73,8 @@ const formData = reactive({
   sex: undefined,
   birthday: undefined,
   status: StatusEnum.ON
-})
+};
+const formData = ref({...initFormData});
 const formRules = {
   name: {
     required: true,
@@ -86,6 +87,10 @@ const formRules = {
   sex: {
     required: true,
     message: "性别不能为空"
+  },
+  status: {
+    required: true,
+    message: "状态不能为空"
   }
 };
 
@@ -99,7 +104,7 @@ const submit = () => {
   formRef.value.validate(async (errors: any) => {
     // 如果没有错误进行提交
     if (coreTool.isUndefined(errors)) {
-      const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await userSave(formData) : await userUpdate(formData));
+      const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await userSave(formData.value) : await userUpdate(formData.value));
       if (res.status === ResponseStatusEnum.OK) {
         DragonNotice.success("操作成功");
         emits("query");
@@ -118,7 +123,7 @@ const submit = () => {
  * */
 const close = () => {
   // 清空表单数据
-  formRef.value.resetFields();
+  formData.value = {...initFormData};
   // 回复默认
   isAddEdit.value = AddEditEnum.ADD;
 }
@@ -132,7 +137,7 @@ defineExpose({
     } else {
       // 数据存在是编辑
       isAddEdit.value = AddEditEnum.EDIT;
-      functionTool.combineObj(formData, data);
+      functionTool.combineObj(formData.value, data);
       modalVisible.value = true;
     }
   }

@@ -1,8 +1,10 @@
 <template>
   <div class="headerDiv">
-    <a-input v-model="queryParam.username" style="width: 200px" placeholder="请输入用户名" allow-clear/>
-    <a-input v-model="queryParam.name" style="width: 200px;margin-left: 20px" placeholder="请输入姓名" allow-clear/>
-    <a-input v-model="queryParam.phone" style="width: 200px;margin-left: 20px" placeholder="请输入手机号码" allow-clear/>
+    <a-input v-model="queryParam.code" style="width: 200px" placeholder="请输入用编码" allow-clear/>
+    <a-select v-model="queryParam.status" style="width: 200px;margin-left: 20px" placeholder="请输入状态" allow-clear>
+      <a-option :value="StatusEnum.ON">启用</a-option>
+      <a-option :value="StatusEnum.OFF">禁用</a-option>
+    </a-select>
     <a-button type="primary" style="margin-left: 20px" @click="search">查询</a-button>
     <a-button type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
   </div>
@@ -28,6 +30,16 @@
              :loading="loading"
              @page-size-change="pageSizeChange"
              @page-change="pageChange">
+      <template #authorizedGrantTypes="{record}">
+        <template v-for="(type,index) in record.authorizedGrantTypes">
+          &emsp;
+          <span v-if="type==GrantTypeEnum.PASSWORD">密码模式</span>
+          <span v-if="type==GrantTypeEnum.REFRESH_TOKEN">REFRESH_TOKEN</span>
+          <span v-if="type==GrantTypeEnum.IMPLICIT">简单模式</span>
+          <span v-if="type==GrantTypeEnum.CLIENT_CREDENTIALS">客户端模式</span>
+          <span v-if="type==GrantTypeEnum.AUTHORIZATION_CODE">授权码模式</span>
+        </template>
+      </template>
       <template #operate="{record}">
         <a-button type="primary" size="mini" @click="edit(record)">编辑</a-button>
         <a-button type="primary" status="danger" size="mini" style="margin-left: 10px" @click="del(record)">删除</a-button>
@@ -43,10 +55,11 @@
 
 import Info from './info.vue';
 import {onMounted, reactive, ref} from "vue";
-import {pageUserList, userDel} from "../../../common/api/system/user";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
+import {GrantTypeEnum,StatusEnum} from "../../../common/domain/enums";
 import {TableColumnData} from "@arco-design/web-vue";
 import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
+import {clientDel, pageClientList} from "../../../common/api/system/client";
 
 const props = defineProps({
   contentHeight: {
@@ -63,45 +76,46 @@ const tableData = ref();
 // 表格列配置
 const columns:Array<TableColumnData> = [
   {
-    title: "姓名",
-    dataIndex: "name",
+    title: "编码",
+    dataIndex: "code",
     width: 150,
     fixed: "left",
   },
   {
-    title: "用户名",
-    dataIndex: "username",
+    title: "授权类型",
+    dataIndex: "authorizedGrantTypes",
+    width: 150,
+    slotName: 'authorizedGrantTypes'
+  },
+  {
+    title: "重定向URI",
+    dataIndex: "redirectUri",
     width: 300,
   },
   {
-    title: "手机号码",
-    dataIndex: "phone",
-    width: 200,
+    title: "token有效时间",
+    dataIndex: "accessTokenValidity",
+    width: 150,
   },
   {
-    title: "邮箱",
-    dataIndex: "email",
-    width: 300,
+    title: "refreshToken有效时间",
+    dataIndex: "refreshTokenValidity",
+    width: 180,
+  },
+  {
+    title: "是否自动授权",
+    dataIndex: "autoApprove",
+    width: 130,
   },
   {
     title: "状态",
     dataIndex: "statusName",
-    width: 100,
+    width: 80,
   },
   {
-    title: "性别",
-    dataIndex: "sexName",
-    width: 100,
-  },
-  {
-    title: "出生日期",
-    dataIndex: "birthday",
-    width: 300,
-  },
-  {
-    title: "身份证号码",
-    dataIndex: "idCard",
-    width: 300,
+    title: "创建时间",
+    dataIndex: "crtTime",
+    width: 200,
   },
   {
     title: "操作",
@@ -112,9 +126,8 @@ const columns:Array<TableColumnData> = [
 ];
 // 查询参数
 const queryParam = reactive({
-  username: undefined,
-  name: undefined,
-  phone: undefined,
+  code: undefined,
+  status: undefined,
   pageCurrent: 1,
   pageSize: 10,
   pageTotal: 0
@@ -131,7 +144,7 @@ const loading = ref(true);
 const pageList =async () => {
   // 查询之前进入加载状态
   loading.value = true;
-  const res:ResponseResult = await pageUserList(queryParam);
+  const res:ResponseResult = await pageClientList(queryParam);
   if (res.status === ResponseStatusEnum.OK) {
     const data = res.data;
     tableData.value = data.records;
@@ -199,7 +212,7 @@ const del = (data:any) => {
     title: '确认提示',
     content: '您确认删除这条数据吗？'
   }).then(async ()=>{
-    const res:ResponseResult = await userDel(data.id);
+    const res:ResponseResult = await clientDel(data.id);
     if (res.status === ResponseStatusEnum.OK) {
       search();
       DragonNotice.success("删除成功");

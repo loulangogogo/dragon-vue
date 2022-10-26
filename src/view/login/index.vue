@@ -70,7 +70,7 @@ const login = (loginData:LoginData) => {
       $L.windowsTool.localStorageTool.set(LocalStorageEnum.token, res.data.tokenType + " " + res.data.accessToken);
       // 将token保存完成之后进行跳转
       router.push({path:"/", replace: true});
-      loginButtonLoading.value = false;
+      // loginButtonLoading.value = false;
     } else {
       loginButtonLoading.value = false;
     }
