@@ -110,6 +110,10 @@ const formRules = {
     required: true,
     message: "授权类型不能为空"
   },
+  roleIds: {
+    required: true,
+    message: "角色不能为空"
+  },
   status: {
     required: true,
     message: "状态不能为空"
