@@ -23,11 +23,28 @@
       <a-form-item field="redirectUri" label="重定向URI">
         <a-input v-model="formData.redirectUri" placeholder="请输入重定向地址"/>
       </a-form-item>
+      <a-form-item field="roleIds" label="角色">
+        <a-select v-model="formData.roleIds" placeholder="请选择角色数据" multiple>
+          <a-optgroup v-for="(roleType,index) in roleSelectData.roleTypeOptions" :label="roleType.name" :key="index">
+            <template  v-for="(role,index) in roleSelectData.roleOptions" :key="index">
+              <a-option v-if="role.typeId==roleType.id" :value="role.id">{{role.name}}</a-option>
+            </template>
+          </a-optgroup>
+        </a-select>
+      </a-form-item>
       <a-form-item field="accessTokenValidity" label="token有效时间" :label-col-props="{span: 6, offset: 0}" :wrapper-col-props="{span: 18, offset: 0}">
-        <a-input v-model="formData.accessTokenValidity" placeholder="请输入token有效时间"/>
+        <a-input-number v-model="formData.accessTokenValidity" placeholder="请输入token有效时间"  hide-button>
+          <template #suffix>
+            <span>秒</span>
+          </template>
+        </a-input-number>
       </a-form-item>
       <a-form-item field="refreshTokenValidity" label="refreshToken有效时间" :label-col-props="{span: 8, offset: 0}" :wrapper-col-props="{span: 16, offset: 0}">
-        <a-input v-model="formData.refreshTokenValidity" placeholder="请输入refreshToken有效时间" />
+        <a-input-number v-model="formData.refreshTokenValidity" placeholder="请输入refreshToken有效时间"  hide-button>
+          <template #suffix>
+            <span>秒</span>
+          </template>
+        </a-input-number>
       </a-form-item>
       <a-form-item field="autoApprove" label="自动授权">
         <a-radio-group v-model="formData.autoApprove">
@@ -57,6 +74,8 @@ import {AddEditEnum, GrantTypeEnum, StatusEnum} from "../../../common/domain/enu
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {DragonNotice} from "../../../common/domain/component";
 import {clientSave, clientUpdate} from "../../../common/api/system/client";
+import {onMounted} from "_vue@3.2.39@vue";
+import {getRoleList, getRoleType} from "../../../common/api/system/role";
 
 const emits = defineEmits(["query"]);
 
@@ -76,7 +95,8 @@ const initFormData = {
   accessTokenValidity: 3600,
   refreshTokenValidity: 3600,
   autoApprove: false,
-  status: StatusEnum.ON
+  status: StatusEnum.ON,
+  roleIds: undefined
 };
 // 表单数据
 const formData = ref({...initFormData})
@@ -95,6 +115,12 @@ const formRules = {
     message: "状态不能为空"
   }
 };
+
+// 角色下拉框的数据
+const roleSelectData = reactive({
+  roleTypeOptions: undefined,
+  roleOptions: undefined
+})
 
 /**
  * 点击确定按钮
@@ -128,6 +154,18 @@ const close = () => {
   // 回复默认
   isAddEdit.value = AddEditEnum.ADD;
 }
+
+onMounted(async ()=>{
+  if (coreTool.isEmpty(<any>roleSelectData.roleTypeOptions)) {
+    const res: ResponseResult = await getRoleType();
+    roleSelectData.roleTypeOptions = res.data;
+  }
+
+  if (coreTool.isEmpty(<any>roleSelectData.roleOptions)) {
+    const res: ResponseResult = await getRoleList();
+    roleSelectData.roleOptions = res.data;
+  }
+})
 
 defineExpose({
   init: (data: object) => {

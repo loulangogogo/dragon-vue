@@ -11,6 +11,26 @@ export const getRoleType = () => {
 }
 
 /**
+ * 获取所有状态正常角色
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const getRoleList = () => {
+    return ask.get(`system/role/getList`);
+}
+
+/**
+ * 获取所有的角色
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const getRoleAllList = () => {
+    return ask.get(`system/role/getAllList`);
+}
+
+/**
  * 根据角色类型获取角色数据
  * @param
  * @return

@@ -18,15 +18,6 @@
           <a-radio :value="SexEnum.MEN">女</a-radio>
         </a-radio-group>
       </a-form-item>
-      <a-form-item field="roleIds" label="角色">
-        <a-select v-model="formData.roleIds" placeholder="请选择角色数据" multiple>
-          <a-optgroup v-for="(roleType,index) in roleSelectData.roleTypeOptions" :label="roleType.name" :key="index">
-            <template  v-for="(role,index) in roleSelectData.roleOptions" :key="index">
-              <a-option v-if="role.typeId==roleType.id" :value="role.id">{{role.name}}</a-option>
-            </template>
-          </a-optgroup>
-        </a-select>
-      </a-form-item>
       <a-form-item field="phone" label="手机号码">
         <a-input v-model="formData.phone" placeholder="请输入手机号码"/>
       </a-form-item>
@@ -57,12 +48,11 @@
 <script lang="ts" setup>
 
 import {core as coreTool, functionTool} from 'owner-tool-js';
-import {onMounted, reactive, ref} from "vue";
+import {reactive, ref} from "vue";
 import {AddEditEnum, MenuTypeEnum, StatusEnum, UserStatusEnum,SexEnum} from "../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {DragonNotice} from "../../../common/domain/component";
 import {userSave, userUpdate} from "../../../common/api/system/user";
-import {getRoleList, getRoleType} from "../../../common/api/system/role";
 
 const emits = defineEmits(["query"]);
 
@@ -82,8 +72,7 @@ const initFormData = {
   email: undefined,
   sex: undefined,
   birthday: undefined,
-  status: StatusEnum.ON,
-  roleIds: undefined
+  status: StatusEnum.ON
 };
 const formData = ref({...initFormData});
 const formRules = {
@@ -104,13 +93,6 @@ const formRules = {
     message: "状态不能为空"
   }
 };
-
-// 角色下拉框的数据
-const roleSelectData = reactive({
-  roleTypeOptions: undefined,
-  roleOptions: undefined
-})
-
 
 /**
  * 点击确定按钮
@@ -145,18 +127,6 @@ const close = () => {
   // 回复默认
   isAddEdit.value = AddEditEnum.ADD;
 }
-
-onMounted(async ()=>{
-  if (coreTool.isEmpty(<any>roleSelectData.roleTypeOptions)) {
-    const res: ResponseResult = await getRoleType();
-    roleSelectData.roleTypeOptions = res.data;
-  }
-
-  if (coreTool.isEmpty(<any>roleSelectData.roleOptions)) {
-    const res: ResponseResult = await getRoleList();
-    roleSelectData.roleOptions = res.data;
-  }
-})
 
 defineExpose({
   init: (data: object) => {

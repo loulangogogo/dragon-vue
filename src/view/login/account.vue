@@ -4,7 +4,7 @@
       <a-input v-model="loginData.account" placeholder="请输入你的用户名……" allow-clear/>
     </a-form-item>
     <a-form-item field="password" label="密码">
-      <a-input-password v-model="loginData.password" placeholder="请输入密码……" allow-clear/>
+      <a-input-password v-model="loginData.password" placeholder="请输入密码……" allow-clear autocomplete/>
     </a-form-item>
     <a-form-item field="captchaCode" label="验证码">
       <a-input v-model="loginData.captchaCode" placeholder="验证码……" allow-clear/>
