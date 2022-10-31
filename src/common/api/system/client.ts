@@ -8,7 +8,7 @@ import {pageQuery} from "../../domain/common";
  * @author     :loulan
  * */
 export const pageClientList = <T extends pageQuery>(query: T) => {
-    return ask.post(`/system/client/pageList`, query);
+    return ask.post(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/client/pageList`, query);
 }
 
 /**
@@ -18,7 +18,7 @@ export const pageClientList = <T extends pageQuery>(query: T) => {
  * @author     :loulan
  * */
 export const clientSave = (data:any) => {
-    return ask.put(`/system/client/save`,data);
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/client/save`,data);
 }
 
 /**
@@ -28,7 +28,7 @@ export const clientSave = (data:any) => {
  * @author     :loulan
  * */
 export const clientUpdate = (data:any) => {
-    return ask.put(`/system/client/update`,data);
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/client/update`,data);
 }
 
 /**
@@ -38,5 +38,5 @@ export const clientUpdate = (data:any) => {
  * @author     :loulan
  * */
 export const clientDel = (id:number) => {
-    return ask.delete(`/system/client/delete/${id}`);
+    return ask.delete(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/client/delete/${id}`);
 }

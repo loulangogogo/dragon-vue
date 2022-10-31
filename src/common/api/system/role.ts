@@ -7,7 +7,7 @@ import ask from "../../ask";
  * @author     :loulan
  * */
 export const getRoleType = () => {
-    return ask.get(`system/roleType/getRoleType`);
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/roleType/getRoleType`);
 }
 
 /**
@@ -17,7 +17,7 @@ export const getRoleType = () => {
  * @author     :loulan
  * */
 export const getRoleList = () => {
-    return ask.get(`system/role/getList`);
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/getList`);
 }
 
 /**
@@ -27,7 +27,7 @@ export const getRoleList = () => {
  * @author     :loulan
  * */
 export const getRoleAllList = () => {
-    return ask.get(`system/role/getAllList`);
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/getAllList`);
 }
 
 /**
@@ -37,7 +37,7 @@ export const getRoleAllList = () => {
  * @author     :loulan
  * */
 export const getRoleByType = (roleTypeId:number) => {
-    return ask.get(`system/role/getRoleByType/${roleTypeId}`);
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/getRoleByType/${roleTypeId}`);
 }
 
 /**
@@ -47,7 +47,7 @@ export const getRoleByType = (roleTypeId:number) => {
  * @author     :loulan
  * */
 export const roleTypeSave = (data:any) => {
-    return ask.put(`/system/roleType/save`,data);
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/roleType/save`,data);
 }
 
 /**
@@ -57,7 +57,7 @@ export const roleTypeSave = (data:any) => {
  * @author     :loulan
  * */
 export const roleTypeUpdate = (data:any) => {
-    return ask.put(`/system/roleType/update`,data);
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/roleType/update`,data);
 }
 
 /**
@@ -67,7 +67,7 @@ export const roleTypeUpdate = (data:any) => {
  * @author     :loulan
  * */
 export const roleTypeDel = (id:number) => {
-    return ask.delete(`/system/roleType/delete/${id}`);
+    return ask.delete(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/roleType/delete/${id}`);
 }
 
 /**
@@ -77,7 +77,7 @@ export const roleTypeDel = (id:number) => {
  * @author     :loulan
  * */
 export const roleSave = (data:any) => {
-    return ask.put(`/system/role/save`,data);
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/save`,data);
 }
 
 /**
@@ -87,7 +87,7 @@ export const roleSave = (data:any) => {
  * @author     :loulan
  * */
 export const roleUpdate = (data:any) => {
-    return ask.put(`/system/role/update`,data);
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/update`,data);
 }
 
 /**
@@ -97,7 +97,7 @@ export const roleUpdate = (data:any) => {
  * @author     :loulan
  * */
 export const roleDel = (id:number) => {
-    return ask.delete(`/system/role/delete/${id}`);
+    return ask.delete(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/delete/${id}`);
 }
 
 /**
@@ -107,7 +107,7 @@ export const roleDel = (id:number) => {
  * @author     :loulan
  * */
 export const permissionMenuSaveAndUpdate = (roleId:number,data:any) => {
-    return ask.put(`/system/resourcesRole/permissionMenuSaveAndUpdate/${roleId}`,data);
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/resourcesRole/permissionMenuSaveAndUpdate/${roleId}`,data);
 }
 
 /**
@@ -117,5 +117,5 @@ export const permissionMenuSaveAndUpdate = (roleId:number,data:any) => {
  * @author     :loulan
  * */
 export const getPermissionMenuByRoleId = (roleId:number) => {
-    return ask.get(`/system/resourcesRole/getPermissionMenuByRoleId/${roleId}`);
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/resourcesRole/getPermissionMenuByRoleId/${roleId}`);
 }

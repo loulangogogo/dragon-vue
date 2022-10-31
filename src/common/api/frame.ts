@@ -7,7 +7,7 @@ import ask from "../ask";
  * @author     :loulan
  * */
 export const currentUserInfo = () => {
-    return ask.get(`system/user/currentUserInfo`);
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserInfo`);
 }
 
 /**
@@ -17,7 +17,7 @@ export const currentUserInfo = () => {
  * @author     :loulan
  * */
 export const currentUserMenu = () => {
-    return ask.get(`system/menu/getCurrentUserMenu`);
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/menu/getCurrentUserMenu`);
 }
 
 

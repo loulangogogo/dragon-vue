@@ -8,7 +8,7 @@ import {pageQuery} from "../../domain/common";
  * @author     :loulan
  * */
 export const pageUserList = <T extends pageQuery>(query: T) => {
-    return ask.post(`/system/user/pageUserList`, query);
+    return ask.post(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/pageUserList`, query);
 }
 
 /**
@@ -18,7 +18,7 @@ export const pageUserList = <T extends pageQuery>(query: T) => {
  * @author     :loulan
  * */
 export const userSave = (data:any) => {
-    return ask.put(`/system/user/save`,data);
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/save`,data);
 }
 
 /**
@@ -28,7 +28,7 @@ export const userSave = (data:any) => {
  * @author     :loulan
  * */
 export const userUpdate = (data:any) => {
-    return ask.put(`/system/user/update`,data);
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/update`,data);
 }
 
 /**
@@ -38,5 +38,5 @@ export const userUpdate = (data:any) => {
  * @author     :loulan
  * */
 export const userDel = (id:number) => {
-    return ask.delete(`/system/user/delete/${id}`);
+    return ask.delete(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/delete/${id}`);
 }

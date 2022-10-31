@@ -7,5 +7,5 @@ import ask from "../ask";
  * @author     :loulan
  * */
 export const generatePicCaptcha = () => {
-    return ask.get(`/auth/verify/generatePicCaptcha`);
+    return ask.get(`${import.meta.env.VITE_REQUEST_AUTH_PRE}/verify/generatePicCaptcha`);
 }

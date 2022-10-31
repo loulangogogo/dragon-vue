@@ -7,7 +7,7 @@ import ask from "../../ask";
  * @author     :loulan
  * */
 export const getAllMenu = () => {
-    return ask.get(`/system/menu/getAllMenu`);
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/menu/getAllMenu`);
 }
 
 /**
@@ -17,7 +17,7 @@ export const getAllMenu = () => {
  * @author     :loulan
  * */
 export const getPermissionByMenuId = (menuId:number,type:number=NaN) => {
-    return ask.get(`/system/permission/getPermissionByMenuId/${menuId}?type=${type}`);
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/permission/getPermissionByMenuId/${menuId}?type=${type}`);
 }
 
 /**
@@ -27,7 +27,7 @@ export const getPermissionByMenuId = (menuId:number,type:number=NaN) => {
  * @author     :loulan
  * */
 export const menuSave = (data:any) => {
-    return ask.put(`/system/menu/save`,data);
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/menu/save`,data);
 }
 
 /**
@@ -37,7 +37,7 @@ export const menuSave = (data:any) => {
  * @author     :loulan
  * */
 export const menuUpdate = (data:any) => {
-    return ask.put(`/system/menu/update`,data);
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/menu/update`,data);
 }
 
 /**
@@ -47,7 +47,7 @@ export const menuUpdate = (data:any) => {
  * @author     :loulan
  * */
 export const menuDel = (id:number) => {
-    return ask.delete(`/system/menu/delete/${id}`);
+    return ask.delete(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/menu/delete/${id}`);
 }
 
 /**
@@ -57,7 +57,7 @@ export const menuDel = (id:number) => {
  * @author     :loulan
  * */
 export const permissionSave = (data:any) => {
-    return ask.put(`/system/permission/save`,data);
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/permission/save`,data);
 }
 
 /**
@@ -67,7 +67,7 @@ export const permissionSave = (data:any) => {
  * @author     :loulan
  * */
 export const permissionUpdate = (data:any) => {
-    return ask.put(`/system/permission/update`,data);
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/permission/update`,data);
 }
 
 /**
@@ -77,7 +77,7 @@ export const permissionUpdate = (data:any) => {
  * @author     :loulan
  * */
 export const permissionDel = (id:number) => {
-    return ask.delete(`/system/permission/delete/${id}`);
+    return ask.delete(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/permission/delete/${id}`);
 }
 
 

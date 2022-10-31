@@ -8,5 +8,5 @@ import {LoginData} from "../domain/login";
  * @author     :loulan
  * */
 export const getToken = (loginData:LoginData) => {
-    return ask.post(`auth/security/token?grant_type=password&client_id=DRAGON_PC&client_secret=123&username=${loginData.account}&password=${loginData.password}`,loginData)
+    return ask.post(`${import.meta.env.VITE_REQUEST_AUTH_PRE}/security/token?grant_type=password&client_id=DRAGON_PC&client_secret=123&username=${loginData.account}&password=${loginData.password}`,loginData)
 }
