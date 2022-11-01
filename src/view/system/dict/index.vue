@@ -1,8 +1,11 @@
 <template>
   <div class="headerDiv">
-    <a-input v-model="queryParam.username" style="width: 200px" placeholder="请输入用户名" allow-clear/>
-    <a-input v-model="queryParam.name" style="width: 200px;margin-left: 20px" placeholder="请输入姓名" allow-clear/>
-    <a-input v-model="queryParam.phone" style="width: 200px;margin-left: 20px" placeholder="请输入手机号码" allow-clear/>
+    <a-input v-model="queryParam.name" style="width: 200px" placeholder="请输入名称" allow-clear/>
+    <a-input v-model="queryParam.type" style="width: 200px;margin-left: 20px" placeholder="请输入类型" allow-clear/>
+    <a-select v-model="queryParam.status" style="width: 200px;margin-left: 20px" placeholder="请输入状态" allow-clear>
+      <a-option :value="StatusEnum.ON">启用</a-option>
+      <a-option :value="StatusEnum.OFF">禁用</a-option>
+    </a-select>
     <a-button type="primary" style="margin-left: 20px" @click="search">查询</a-button>
     <a-button type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
   </div>
@@ -43,10 +46,11 @@
 
 import Info from './info.vue';
 import {onMounted, reactive, ref} from "vue";
-import {pageUserList, userDel} from "../../../common/api/system/user";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {TableColumnData} from "@arco-design/web-vue";
 import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
+import {dictDel, pageDictList} from "../../../common/api/system/dict";
+import {StatusEnum} from "../../../common/domain/enums";
 
 const props = defineProps({
   contentHeight: {
@@ -63,45 +67,30 @@ const tableData = ref();
 // 表格列配置
 const columns:Array<TableColumnData> = [
   {
-    title: "姓名",
+    title: "名称",
     dataIndex: "name",
     width: 150,
     fixed: "left",
   },
   {
-    title: "用户名",
-    dataIndex: "username",
+    title: "编码",
+    dataIndex: "code",
     width: 300,
   },
   {
-    title: "手机号码",
-    dataIndex: "phone",
+    title: "类型",
+    dataIndex: "type",
     width: 200,
   },
   {
-    title: "邮箱",
-    dataIndex: "email",
+    title: "排序",
+    dataIndex: "orderNum",
     width: 300,
   },
   {
     title: "状态",
     dataIndex: "statusName",
     width: 100,
-  },
-  {
-    title: "性别",
-    dataIndex: "sexName",
-    width: 100,
-  },
-  {
-    title: "出生日期",
-    dataIndex: "birthday",
-    width: 300,
-  },
-  {
-    title: "身份证号码",
-    dataIndex: "idCard",
-    width: 300,
   },
   {
     title: "操作",
@@ -112,9 +101,9 @@ const columns:Array<TableColumnData> = [
 ];
 // 查询参数
 const queryParam = reactive({
-  username: undefined,
+  type: undefined,
   name: undefined,
-  phone: undefined,
+  status: undefined,
   pageCurrent: 1,
   pageSize: 10,
   pageTotal: 0
@@ -131,7 +120,7 @@ const loading = ref(true);
 const pageList =async () => {
   // 查询之前进入加载状态
   loading.value = true;
-  const res:ResponseResult = await pageUserList(queryParam);
+  const res:ResponseResult = await pageDictList(queryParam);
   if (res.status === ResponseStatusEnum.OK) {
     const data = res.data;
     tableData.value = data.records;
@@ -199,7 +188,7 @@ const del = (data:any) => {
     title: '确认提示',
     content: '您确认删除这条数据吗？'
   }).then(async ()=>{
-    const res:ResponseResult = await userDel(data.id);
+    const res:ResponseResult = await dictDel(data.id);
     if (res.status === ResponseStatusEnum.OK) {
       search();
       DragonNotice.success("删除成功");

@@ -6,35 +6,22 @@
            :mask-closable="false"
            @close="close">
     <a-form ref="formRef" :model="formData" :rules="formRules">
-      <a-form-item field="username" label="用户名">
-        <a-input v-model="formData.username" placeholder="请输入用户名"/>
+      <a-form-item field="name" label="名称">
+        <a-input v-model="formData.name" placeholder="请输入名称"/>
       </a-form-item>
-      <a-form-item field="name" label="姓名">
-        <a-input v-model="formData.name" placeholder="请输入姓名"/>
+      <a-form-item field="code" label="编码">
+        <a-input v-model="formData.code" placeholder="请输入编码"/>
       </a-form-item>
-      <a-form-item field="sex" label="性别">
-        <a-radio-group v-model="formData.sex">
-          <a-radio :value="SexEnum.MAN">男</a-radio>
-          <a-radio :value="SexEnum.MEN">女</a-radio>
-        </a-radio-group>
+      <a-form-item field="type" label="类型">
+        <a-input v-model="formData.type" placeholder="请输入所属类型"/>
       </a-form-item>
-      <a-form-item field="phone" label="手机号码">
-        <a-input v-model="formData.phone" placeholder="请输入手机号码"/>
-      </a-form-item>
-      <a-form-item field="email" label="邮箱">
-        <a-input v-model="formData.email" placeholder="请输入邮箱"/>
-      </a-form-item>
-      <a-form-item field="birthday" label="出生日期">
-        <a-date-picker v-model="formData.birthday" placeholder="请输入出生日期" style="width: 100%"/>
-      </a-form-item>
-      <a-form-item v-if="false" field="idCard" label="身份证号码">
-        <a-input v-model="formData.idCard" placeholder="请输入身份证号码"/>
+      <a-form-item field="orderNum" label="排序">
+        <a-input-number v-model="formData.orderNum" placeholder="请输入排序号码"  hide-button></a-input-number>
       </a-form-item>
       <a-form-item v-if="isAddEdit===AddEditEnum.EDIT" field="status" label="是否启用">
         <a-radio-group v-model="formData.status">
-          <a-radio :value="UserStatusEnum.NORMAL">正常</a-radio>
-          <a-radio :value="UserStatusEnum.HANG_UP">挂起</a-radio>
-          <a-radio :value="UserStatusEnum.CANCEL">注销</a-radio>
+          <a-radio :value="StatusEnum.ON">启用</a-radio>
+          <a-radio :value="StatusEnum.OFF">禁止</a-radio>
         </a-radio-group>
       </a-form-item>
     </a-form>
@@ -48,11 +35,11 @@
 <script lang="ts" setup>
 
 import {core as coreTool, functionTool} from 'owner-tool-js';
-import {reactive, ref} from "vue";
-import {AddEditEnum, MenuTypeEnum, StatusEnum, UserStatusEnum,SexEnum} from "../../../common/domain/enums";
+import {ref} from "vue";
+import {AddEditEnum, StatusEnum} from "../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {DragonNotice} from "../../../common/domain/component";
-import {userSave, userUpdate} from "../../../common/api/system/user";
+import {dictSave, dictUpdate} from "../../../common/api/system/dict";
 
 const emits = defineEmits(["query"]);
 
@@ -66,27 +53,25 @@ const formRef = ref();
 const modalVisible = ref(false);
 // 表单数据
 const initFormData = {
-  username: undefined,
+  code: undefined,
   name: undefined,
-  phone: undefined,
-  email: undefined,
-  sex: undefined,
-  birthday: undefined,
+  type: undefined,
+  orderNum: undefined,
   status: StatusEnum.ON
 };
 const formData = ref({...initFormData});
 const formRules = {
   name: {
     required: true,
-    message: "姓名不能为空"
+    message: "名称不能为空"
   },
-  username: {
+  code: {
     required: true,
-    message: "用户名不能为空"
+    message: "编码不能为空"
   },
-  sex: {
+  type: {
     required: true,
-    message: "性别不能为空"
+    message: "类型不能为空"
   },
   status: {
     required: true,
@@ -104,7 +89,7 @@ const submit = () => {
   formRef.value.validate(async (errors: any) => {
     // 如果没有错误进行提交
     if (coreTool.isUndefined(errors)) {
-      const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await userSave(formData.value) : await userUpdate(formData.value));
+      const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await dictSave(formData.value) : await dictUpdate(formData.value));
       if (res.status === ResponseStatusEnum.OK) {
         DragonNotice.success("操作成功");
         emits("query");
@@ -122,6 +107,8 @@ const submit = () => {
  * @author     :loulan
  * */
 const close = () => {
+  // 清除表单提示数据
+  formRef.value.clearValidate();
   // 清空表单数据
   formData.value = {...initFormData};
   // 回复默认
