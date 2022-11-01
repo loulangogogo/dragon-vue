@@ -11,9 +11,18 @@
       <icon-caret-down v-else/>
     </span>
     <template #content>
-      <a-doption :value="1">个人信息</a-doption>
-      <a-doption :value="2">测试</a-doption>
-      <a-doption :value="3">退出登录</a-doption>
+      <a-doption :value="1">
+        <template #icon><icon-user/></template>
+        <template #default>个人信息</template>
+      </a-doption>
+      <a-doption :value="2">
+        <template #icon><icon-drag-arrow /></template>
+        <template #default>测试</template>
+      </a-doption>
+      <a-doption :value="3">
+        <template #icon><icon-reply /></template>
+        <template #default>退出登录</template>
+      </a-doption>
     </template>
   </a-dropdown>
 </template>
@@ -46,10 +55,12 @@ const dropdownStatus = ref();
  * */
 const selectOption = (value: any,ev: Event) => {
   if (value == 1) {
-
+    // 个人信息
+    router.push("/personal")
   }else if (value == 2) {
-
+    // 测试
   }else if (value == 3) {
+    // 退出登录
     $L.windowsTool.localStorageTool.del(LocalStorageEnum.token);
     router.push("/login");
   }

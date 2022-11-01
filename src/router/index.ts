@@ -15,9 +15,13 @@ const routes: Array<RouteRecordRaw> = [
         children:[
             {
                 path: "/",
-                name: "home",
+                name: "首页",
                 component: () => import("../view/home/index.vue")
-            }
+            },{
+                path: "/personal",
+                name: "个人信息",
+                component: () => import("../view/frame/header/user-components/personal.vue")
+            },
         ]
     }
 ];
