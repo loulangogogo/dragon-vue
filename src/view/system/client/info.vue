@@ -154,6 +154,8 @@ const submit = () => {
  * @author     :loulan
  * */
 const close = () => {
+  // 清除表单提示数据
+  formRef.value.clearValidate();
   formData.value = {...initFormData};
   // 回复默认
   isAddEdit.value = AddEditEnum.ADD;

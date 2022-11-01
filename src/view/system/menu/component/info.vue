@@ -121,6 +121,8 @@ const submit = () => {
  * @author     :loulan
  * */
 const close = () => {
+  // 清除表单提示数据
+  formRef.value.clearValidate();
   // 清空表单数据
   formData.value = {...initFormData};
   // 回复默认
