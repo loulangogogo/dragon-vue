@@ -6,14 +6,14 @@
              class="userImg"
              :preview="false" />-->
     <span class="userTitleSpan">
-      {{userInfoName}}
+      {{userInfo.name}}
       <icon-caret-left v-if="!dropdownStatus"/>
       <icon-caret-down v-else/>
     </span>
     <template #content>
       <a-doption :value="1">
         <template #icon><icon-user/></template>
-        <template #default>个人信息</template>
+        <template #default>个人中心</template>
       </a-doption>
       <a-doption :value="2">
         <template #icon><icon-drag-arrow /></template>
@@ -42,7 +42,7 @@ const store = useStore();
 const frameHeaderHeight = computed(() => store.getters.frameHeaderHeight);
 
 // 用户的姓名进行展示
-const userInfoName = ref();
+const userInfo = computed(() => store.getters.userInfo);
 
 // 下拉弹框的显示状态
 const dropdownStatus = ref();
@@ -67,18 +67,16 @@ const selectOption = (value: any,ev: Event) => {
 }
 
 
-onMounted(()=>{
+onMounted(async ()=>{
   // 登录之后获取当前用户个人信息
-  currentUserInfo().then((res:ResponseResult) => {
-    if (res.status == ResponseStatusEnum.OK && res.data) {
-      const userInfo: UserInfo = res.data;
-      userInfoName.value = userInfo.name;
-      store.commit("setUserInfo", userInfo);
-    } else {
-      // 获取当前用户信息失败，理论上因该退出重新登录的
-      console.error("获取用户信息错误。");
-    }
-  })
+  const res:ResponseResult = await currentUserInfo();
+  if (res.status == ResponseStatusEnum.OK && res.data) {
+    const userInfo: UserInfo = res.data;
+    store.commit("setUserInfo", userInfo);
+  } else {
+    // 获取当前用户信息失败，理论上因该退出重新登录的
+    console.error("获取用户信息错误。");
+  }
 })
 </script>
 
