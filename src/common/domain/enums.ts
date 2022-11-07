@@ -95,7 +95,7 @@ export enum RoleResourcesTypeEnum {
 }
 
 /*********************************************************
- **
+ ** 性别枚举
  ** <br><br>
  ** Date: Created in 2022/10/7 18:39
  ** @author loulan
