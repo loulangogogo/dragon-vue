@@ -32,12 +32,17 @@ import {nextTick, onMounted, onUnmounted, ref, watch} from "vue";
 import * as $L from 'owner-tool-js';
 import {useRoute, useRouter} from "vue-router";
 
+interface routeTag {
+  name: any,
+  path: any
+}
+
 const outerDivRef = ref();
 // 用户获取当前路由的数据
 const route = useRoute();
 const router = useRouter();
 // 标签选项显示
-const tagOptions = ref([]);
+const tagOptions = ref<Array<routeTag>>([]);
 
 
 // outerDiv被鼠标点下去的时候的滚动轴位置
@@ -97,11 +102,11 @@ watch(() => route.path,
     (val: any) => {
       // 先判断当前的路由是否已经在标签表中存在，如果存在就不需要再进行添加了（首页是肯定存在的，所以如果路由的首页是不需要添加标签的）
       if (!(val == '/' || tagOptions.value.some((o: any) => o.path === val))) {
-        const temp = {
+        const tempTagData:routeTag = {
           name: route.name,
           path: val
         };
-        tagOptions.value.unshift(temp);
+        tagOptions.value.unshift(tempTagData);
       }
 
       nextTick(() => {
