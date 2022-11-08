@@ -30,3 +30,33 @@ export const getEnums = async (classNames:Array<string>)=>{
         return undefined;
     }
 }
+
+/**
+ * 获取对应类型字典数据
+ * @param       className 全限定类名
+ * @return
+ * @author     :loulan
+ * */
+export const getDict = async (type:string)=>{
+    const res:ResponseResult = await getDictAndEnum(10, [type]);
+    if (res.status === ResponseStatusEnum.OK) {
+        return res.data[type];
+    } else {
+        return undefined;
+    }
+}
+
+/**
+ * 获取对应类型的字典数据
+ * @param       className 全限定类名数组
+ * @return
+ * @author     :loulan
+ * */
+export const getDicts = async (type:Array<string>)=>{
+    const res:ResponseResult = await getDictAndEnum(10, type);
+    if (res.status === ResponseStatusEnum.OK) {
+        return res.data;
+    } else {
+        return undefined;
+    }
+}

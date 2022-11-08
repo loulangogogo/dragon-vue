@@ -3,16 +3,14 @@
     <a-input v-model="queryParam.userName" style="width: 200px" placeholder="请输入用户名" allow-clear/>
     <a-input v-model="queryParam.clientCode" style="width: 200px;margin-left: 20px" placeholder="请输入客户端" allow-clear/>
     <a-select v-model="queryParam.optType" style="width: 200px;margin-left: 20px" placeholder="请输入操作类型" allow-clear>
-      <a-option :value="1">登录成功</a-option>
-      <a-option :value="2">登录失败</a-option>
-      <a-option :value="3">退出成功</a-option>
-      <a-option :value="4">退出失败</a-option>
+      <a-option :value="10">添加</a-option>
+      <a-option :value="11">编辑</a-option>
+      <a-option :value="12">删除</a-option>
     </a-select>
     <a-button type="primary" style="margin-left: 20px" @click="search">查询</a-button>
   </div>
   <div class="bodyDiv">
     <a-table :columns="columns"
-             size="large"
              :data="tableData"
              :stripe="true"
              page-position="bottom"
@@ -33,6 +31,14 @@
              :loading="loading"
              @page-size-change="pageSizeChange"
              @page-change="pageChange">
+      <template #content="{record}">
+        <a-popover position="left" trigger="click">
+          <a-button  type="outline">详细内容</a-button>
+          <template #content>
+            <p style="width: 450px;min-height:100px;overflow: auto" :style="{maxHeight:contentHeight-100+'px'}">{{record.content}}</p>
+          </template>
+        </a-popover>
+      </template>
     </a-table>
   </div>
 </template>
@@ -84,6 +90,12 @@ const columns:Array<TableColumnData> = [
     title: "登录时间",
     dataIndex: "crtTime",
     width: 200,
+  },
+  {
+    title: "内容",
+    dataIndex: "content",
+    width: 120,
+    slotName: "content"
   }
 ];
 // 查询参数
@@ -93,7 +105,7 @@ const queryParam = reactive({
   clientCode: undefined,
   userId: undefined,
   ClientId: undefined,
-  type: 10,
+  type: 30,
   pageCurrent: 1,
   pageSize: 10,
   pageTotal: 0

@@ -12,7 +12,6 @@
   </div>
   <div class="bodyDiv">
     <a-table :columns="columns"
-             size="large"
              :data="tableData"
              :stripe="true"
              page-position="bottom"
@@ -33,6 +32,14 @@
              :loading="loading"
              @page-size-change="pageSizeChange"
              @page-change="pageChange">
+      <template #content="{record}">
+        <a-popover position="left" trigger="click">
+          <a-button  type="outline">详细内容</a-button>
+          <template #content>
+            <p style="width: 450px;min-height:100px;overflow: auto" :style="{maxHeight:contentHeight-100+'px'}">{{record.content}}</p>
+          </template>
+        </a-popover>
+      </template>
     </a-table>
   </div>
 </template>
@@ -84,6 +91,12 @@ const columns:Array<TableColumnData> = [
     title: "登录时间",
     dataIndex: "crtTime",
     width: 200,
+  },
+  {
+    title: "内容",
+    dataIndex: "content",
+    width: 120,
+    slotName: "content"
   }
 ];
 // 查询参数
@@ -93,7 +106,7 @@ const queryParam = reactive({
   clientCode: undefined,
   userId: undefined,
   ClientId: undefined,
-  type: 10,
+  type: 20,
   pageCurrent: 1,
   pageSize: 10,
   pageTotal: 0
