@@ -8,7 +8,7 @@
              :bordered="true"
              @click="clickTag('/')">
         <template #icon>
-          <icon-home/>
+          <span class="iconfont icon-home" style="font-size: 15px"></span>
         </template>
         首页
       </a-tag>
@@ -19,6 +19,17 @@
                style="margin-left: 10px"
                :bordered="true"
                @click="clickTag(tag.path)">
+<!--          <template #icon>
+            <template v-if="tag.iconType===MenuIconTypeEnum.ICON">
+              <component :is="tag.icon" size="10"></component>
+            </template>
+            <template v-else-if="tag.iconType===MenuIconTypeEnum.ALI">
+              <span class="iconfont" :class="tag.icon" style="font-size: 15px"></span>
+            </template>
+            <template v-else-if="tag.iconType===MenuIconTypeEnum.IMG">
+              <a-image width="15" :preview="false" :src="tag.icon" style="filter: invert(100)"/>
+            </template>
+          </template>-->
           {{ tag.name }}
           <icon-close class="tagCloseIcon" @click.stop="closeTag(index)"/>
         </a-tag>
@@ -31,10 +42,13 @@
 import {nextTick, onMounted, onUnmounted, ref, watch} from "vue";
 import * as $L from 'owner-tool-js';
 import {useRoute, useRouter} from "vue-router";
+import {MenuIconTypeEnum} from "../../../common/domain/enums";
 
 interface routeTag {
   name: any,
-  path: any
+  path: any,
+  iconType?: any,
+  icon?: any
 }
 
 const outerDivRef = ref();
@@ -52,7 +66,6 @@ let outerDivMouseDownMousePositionX: number = 0;
 
 // 鼠标移动监听事件
 let watcher: $L.Watcher;
-
 /**
  * outerDiv被鼠标点下去的事件
  * @param
@@ -111,7 +124,9 @@ watch(() => route.path,
         // 如果路由在标签选项中不存在那么就从数组头写入
         const tempTagData: routeTag = {
           name: route.name,
-          path: val
+          path: val,
+          iconType: route.meta?.iconType,
+          icon: route.meta?.icon
         };
         tagOptions.value.unshift(tempTagData);
       } else {

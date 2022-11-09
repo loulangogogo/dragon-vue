@@ -7,8 +7,8 @@ import {ResponseResult, ResponseStatusEnum} from "../domain/response";
  * @return
  * @author     :loulan
  * */
-export const getEnum = async (className:string)=>{
-    const res:ResponseResult = await getDictAndEnum(20, [className]);
+export const getEnum = async (className: string): Promise<any> => {
+    const res: ResponseResult = await getDictAndEnum(20, [className]);
     if (res.status === ResponseStatusEnum.OK) {
         return res.data[className];
     } else {
@@ -22,8 +22,8 @@ export const getEnum = async (className:string)=>{
  * @return
  * @author     :loulan
  * */
-export const getEnums = async (classNames:Array<string>)=>{
-    const res:ResponseResult = await getDictAndEnum(20, classNames);
+export const getEnums = async (classNames: Array<string>): Promise<any> => {
+    const res: ResponseResult = await getDictAndEnum(20, classNames);
     if (res.status === ResponseStatusEnum.OK) {
         return res.data;
     } else {
@@ -37,8 +37,8 @@ export const getEnums = async (classNames:Array<string>)=>{
  * @return
  * @author     :loulan
  * */
-export const getDict = async (type:string)=>{
-    const res:ResponseResult = await getDictAndEnum(10, [type]);
+export const getDict = async (type: string): Promise<any> => {
+    const res: ResponseResult = await getDictAndEnum(10, [type]);
     if (res.status === ResponseStatusEnum.OK) {
         return res.data[type];
     } else {
@@ -52,8 +52,8 @@ export const getDict = async (type:string)=>{
  * @return
  * @author     :loulan
  * */
-export const getDicts = async (type:Array<string>)=>{
-    const res:ResponseResult = await getDictAndEnum(10, type);
+export const getDicts = async (type: Array<string>): Promise<any> => {
+    const res: ResponseResult = await getDictAndEnum(10, type);
     if (res.status === ResponseStatusEnum.OK) {
         return res.data;
     } else {

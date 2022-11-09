@@ -17,7 +17,8 @@
             :data="treeData"
             :field-names="{
               key: 'id',
-              title: 'name'
+              title: 'name',
+              icon: 'existIcon'
             }"
             :checkable="isRolePermission"
             :check-strictly="true"
@@ -26,6 +27,17 @@
       <template #switcher-icon="{ isLeaf }">
         <icon-caret-right class="treeSwitcherIcon" v-if="isLeaf"/>
         <icon-caret-down class="treeSwitcherIcon" v-if="!isLeaf" />
+      </template>
+      <template #icon="{node}">
+        <template v-if="node.iconType===MenuIconTypeEnum.ICON">
+          <component :is="node.icon" size="10"></component>
+        </template>
+        <template v-else-if="node.iconType===MenuIconTypeEnum.ALI">
+          <span class="iconfont" :class="node.icon" style="font-size: 15px"></span>
+        </template>
+        <template v-else-if="node.iconType===MenuIconTypeEnum.IMG">
+          <a-image  width="15" :preview="false" :src="node.icon" style="filter: invert(100)"/>
+        </template>
       </template>
       <template #title="nodeData">
         <template v-if="!searchKey">{{ nodeData?.name }}</template>
@@ -51,12 +63,12 @@
 </template>
 <script lang="ts" setup>
 import * as $L from 'owner-tool-js';
-import {ref, computed, onMounted, nextTick} from 'vue';
+import {ref, computed, onMounted, nextTick,watch} from 'vue';
 import {getAllMenu, menuDel} from "../../../../common/api/system/menu";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import Info from './info.vue';
 import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
-import {watch} from "_vue@3.2.39@vue";
+import {MenuIconTypeEnum} from "../../../../common/domain/enums";
 
 const emit = defineEmits(["selectMenu",'update:selectedKeys']);
 
@@ -78,6 +90,12 @@ const props = defineProps({
   }
 });
 
+/**
+ * 监听所选菜单是否发生变化
+ * @param
+ * @return
+ * @author     :loulan
+ * */
 watch(() => props.selectedKeys,
     (val: any) => {
       emit("update:selectedKeys", val);

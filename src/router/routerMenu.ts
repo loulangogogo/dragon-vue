@@ -42,7 +42,9 @@ const createrMenuRouter = (menus:Array<Menu>):RouteRecordRaw => {
                 // component: () => import('../' + menu.path),  // 在vite中打包无法使用
                 component: viteComponents['../'+(menu.path?.replace(/^\//g, ''))], // 如果变量开头是‘/’那么就去掉（替换为空）
                 meta:{
-                    keepAlive: menu.keepAlive
+                    keepAlive: menu.keepAlive,
+                    iconType: menu.iconType,
+                    icon: menu.icon
                 }
             };
             // 将这个路由对象添加到动态路由中

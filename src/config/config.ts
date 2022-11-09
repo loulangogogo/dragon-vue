@@ -13,6 +13,9 @@ import ArcoVue from '@arco-design/web-vue';
 import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 import '@arco-themes/vue-owner/css/arco.css';
 
+// 阿里图标
+import '../common/icon/ali/iconfont.css';
+
 
 app.use(router)
     .use(store)
