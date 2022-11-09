@@ -98,23 +98,51 @@ const closeTag = (index: number) => {
   tagOptions.value.splice(index, 1);
 }
 
+/**
+ * 监听路由的变化然后改变标签显示
+ * @param
+ * @return
+ * @author     :loulan
+ * */
 watch(() => route.path,
     (val: any) => {
       // 先判断当前的路由是否已经在标签表中存在，如果存在就不需要再进行添加了（首页是肯定存在的，所以如果路由的首页是不需要添加标签的）
       if (!(val == '/' || tagOptions.value.some((o: any) => o.path === val))) {
-        const tempTagData:routeTag = {
+        // 如果路由在标签选项中不存在那么就从数组头写入
+        const tempTagData: routeTag = {
           name: route.name,
           path: val
         };
         tagOptions.value.unshift(tempTagData);
+      } else {
+        // 如果路由数据已经在标签中存在了，那么不做任何操作执行下一步
       }
 
+      // 如果路由发生变化，移动当前标签到可视区域范围内
       nextTick(() => {
-        // 这里是通过租价id获取组件的位置然后操作滚动条进行显示的，所以必须要渲染完毕之后才能进行执行
-        // fixme 如果可以的话调整为只要在窗口内不进行滚动条的操作，后面来的到最后面，前面来的到最前面。
-        const dom: any = document.getElementById(val);
-        $L.windowsTool.setScrollPosition(dom.offsetLeft, 0, outerDivRef.value)
-      })
+        /*
+        * 当标签页面渲染完毕之后，才能根据id获取组件dom
+        * 获取标签组件的开始和结束的位置 与 滚动条可视区域开始和结束位置对比
+        * 如果标签组件被没有完全在可视区域那么就移动到可视区域，否则不做移动
+        * */
+        const tagDom: any = document.getElementById(val);
+        const tagDomStartPosition: number = tagDom.offsetLeft; // 标签开始位置
+        const tagDomEndPosittion: number = tagDomStartPosition + tagDom.offsetWidth; // 标签结束位置
+        const {x, y} = $L.windowsTool.getScrollPosition(outerDivRef.value);
+        const outerDivWidth: number = outerDivRef.value.offsetWidth;
+        const viewStartPosition: number = <number>x;  // 可视区域开始位置
+        const viewEndPostition: any = viewStartPosition + outerDivWidth; // 可视区域结束位置
+
+        if (tagDomStartPosition < viewStartPosition) {
+          // 如果标签的开始位置小于可视区域的开始位置，那么将标签开始位置移动到可视区域开始位置
+          $L.windowsTool.setScrollPosition(tagDomStartPosition, 0, outerDivRef.value)
+        } else if (tagDomEndPosittion > viewEndPostition) {
+          // 如果标签结束位置大于可视区域的结束位置，那么将标签的结束位置移动到可视区域结束位置
+          $L.windowsTool.setScrollPosition(tagDomEndPosittion - outerDivWidth, <number>y, outerDivRef.value);
+        } else {
+          // 其他情况不移动滚动条的位置
+        }
+      });
     },
     {
       deep: true,
