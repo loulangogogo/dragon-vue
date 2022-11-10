@@ -3,7 +3,7 @@
     <router-link v-if="menu.type===10" :to="'/'+menu.code+'-'+menu.id">
       <a-menu-item :key="menu.id+''">
         <template v-if="menu.iconType===MenuIconTypeEnum.ICON">
-          <component :is="menu.icon" size="18"></component>
+          <component :is="menu.icon" size="22" style="margin: 0px"></component>
         </template>
         <template v-else-if="menu.iconType===MenuIconTypeEnum.ALI">
           <span class="iconfont" :class="menu.icon" style="font-size: 18px"></span>
@@ -17,7 +17,7 @@
     <a-sub-menu v-else-if="menu.type === 20" :key="menu.id+''">
       <template #title>
         <template v-if="menu.iconType===MenuIconTypeEnum.ICON">
-          <component :is="menu.icon" size="18"></component>
+          <component :is="menu.icon" size="20" style="margin: 0px"></component>
         </template>
         <template v-else-if="menu.iconType===MenuIconTypeEnum.ALI">
           <span class="iconfont" :class="menu.icon" style="font-size: 18px"></span>

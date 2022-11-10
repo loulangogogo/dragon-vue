@@ -30,7 +30,7 @@
       </template>
       <template #icon="{node}">
         <template v-if="node.iconType===MenuIconTypeEnum.ICON">
-          <component :is="node.icon" size="10"></component>
+          <component :is="node.icon" size="18" style="margin: 0px"></component>
         </template>
         <template v-else-if="node.iconType===MenuIconTypeEnum.ALI">
           <span class="iconfont" :class="node.icon" style="font-size: 15px"></span>

@@ -67,7 +67,7 @@
             <a-select v-model="formData.icon" placeholder="请选择图标">
               <a-option v-for="(dict,index) in iconOptions" :value="dict.code">
                 <template v-if="formData.iconType===MenuIconTypeEnum.ICON">
-                  <component :is="dict.code" size="10"></component>
+                  <component :is="dict.code" size="15"></component>
                 </template>
                 <template v-else-if="formData.iconType===MenuIconTypeEnum.ALI">
                   <span class="iconfont" :class="dict.code" style="font-size: 15px"></span>

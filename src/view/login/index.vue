@@ -1,31 +1,33 @@
 <template>
-  <div id="loginFrameDiv">
-    <a-tabs :default-active-key="LoginModeEnum.account" size="large" :animation="true" @change="loginChange">
-      <a-tab-pane :key="LoginModeEnum.account">
-        <template #title>
-          <span class="spanTitle">账号登录</span>
-        </template>
-        <div class="contentDiv">
-          <login-account @loginSubmit="login" :loginButtonLoading="loginButtonLoading"></login-account>
-        </div>
-      </a-tab-pane>
-      <a-tab-pane :key="LoginModeEnum.phone">
-        <template #title>
-          <span class="spanTitle">手机登录</span>
-        </template>
-        <div class="contentDiv">
-          <login-phone></login-phone>
-        </div>
-      </a-tab-pane>
-      <a-tab-pane :key="LoginModeEnum.email">
-        <template #title>
-          <span class="spanTitle">邮箱登录</span>
-        </template>
-        <div class="contentDiv">
-          <login-email></login-email>
-        </div>
-      </a-tab-pane>
-    </a-tabs>
+  <div id="loginBackDiv">
+    <div id="loginFrameDiv">
+      <a-tabs :default-active-key="LoginModeEnum.account" size="large" :animation="true" @change="loginChange">
+        <a-tab-pane :key="LoginModeEnum.account">
+          <template #title>
+            <span class="spanTitle">账号登录</span>
+          </template>
+          <div class="contentDiv">
+            <login-account @loginSubmit="login" :loginButtonLoading="loginButtonLoading"></login-account>
+          </div>
+        </a-tab-pane>
+        <a-tab-pane :key="LoginModeEnum.phone">
+          <template #title>
+            <span class="spanTitle">手机登录</span>
+          </template>
+          <div class="contentDiv">
+            <login-phone></login-phone>
+          </div>
+        </a-tab-pane>
+        <a-tab-pane :key="LoginModeEnum.email">
+          <template #title>
+            <span class="spanTitle">邮箱登录</span>
+          </template>
+          <div class="contentDiv">
+            <login-email></login-email>
+          </div>
+        </a-tab-pane>
+      </a-tabs>
+    </div>
   </div>
 </template>
 
@@ -53,7 +55,7 @@ let router = useRouter();
  * @return
  * @author     :loulan
  * */
-const loginChange = (key: string|number) => {
+const loginChange = (key: string | number) => {
   console.error(key);
 }
 
@@ -63,13 +65,13 @@ const loginChange = (key: string|number) => {
  * @return
  * @author     :loulan
  * */
-const login = (loginData:LoginData) => {
+const login = (loginData: LoginData) => {
   loginButtonLoading.value = true;
   getToken(loginData).then((res: ResponseResult) => {
     if (res.status == ResponseStatusEnum.OK) {
       $L.windowsTool.localStorageTool.set(LocalStorageEnum.token, res.data.tokenType + " " + res.data.accessToken);
       // 将token保存完成之后进行跳转
-      router.push({path:"/", replace: true});
+      router.push({path: "/", replace: true});
       // loginButtonLoading.value = false;
     } else {
       loginButtonLoading.value = false;
@@ -79,10 +81,17 @@ const login = (loginData:LoginData) => {
 </script>
 
 <style scoped lang="scss">
+#loginBackDiv {
+  background: url('/static/img/loginBK.jpg') no-repeat;
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+}
+
 #loginFrameDiv {
   width: 400px;
   height: 400px;
-  background-color: rgba(44, 239, 14, 0.2);
+  background-color: rgba(44, 239, 14, 0.3);
   border-radius: 10px;
   padding: 10px;
   position: absolute;
