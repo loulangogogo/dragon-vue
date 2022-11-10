@@ -1,6 +1,6 @@
 <template>
   <template v-for="(menu,index) in menus" :key="menu.id">
-    <router-link v-if="menu.type===10" :to="'/'+menu.code+'-'+menu.id">
+    <router-link v-if="menu.type===MenuTypeEnum.MENU" :to="'/'+menu.code+'-'+menu.id">
       <a-menu-item :key="menu.id+''">
         <template v-if="menu.iconType===MenuIconTypeEnum.ICON">
           <component :is="menu.icon" size="22" style="margin: 0px"></component>
@@ -14,7 +14,7 @@
         <span style="margin-left: 7px">{{ menu.name }}</span>
       </a-menu-item>
     </router-link>
-    <a-sub-menu v-else-if="menu.type === 20" :key="menu.id+''">
+    <a-sub-menu v-else-if="menu.type === MenuTypeEnum.DIR" :key="menu.id+''">
       <template #title>
         <template v-if="menu.iconType===MenuIconTypeEnum.ICON">
           <component :is="menu.icon" size="20" style="margin: 0px"></component>
@@ -35,7 +35,7 @@
 <script lang="ts" setup>
 import * as $L from 'owner-tool-js';
 import {Menu} from "../../../common/domain/common";
-import {MenuIconTypeEnum} from "../../../common/domain/enums";
+import {MenuIconTypeEnum, MenuTypeEnum} from "../../../common/domain/enums";
 
 /**
  * 判断数据或者字符串是否为空

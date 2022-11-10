@@ -10,7 +10,12 @@
         <a-input v-model="formData.name" placeholder="请输入名称"/>
       </a-form-item>
       <a-form-item field="nt" label="备注">
-        <a-input v-model="formData.nt" placeholder="请输入备注"/>
+        <a-textarea v-model="formData.nt"
+                    :auto-size="{
+                      minRows:5,
+                      maxRows:10
+                    }"
+                    placeholder="请输入备注"/>
       </a-form-item>
     </a-form>
     <template #footer>
@@ -54,7 +59,7 @@ const formRules = {
     required: true,
     message: "名称不能为空"
   },
-  nt:{
+  nt: {
     nt: true,
     message: "备注不能为空"
   }
@@ -67,11 +72,11 @@ const formRules = {
  * @author     :loulan
  * */
 const submit = () => {
-  formRef.value.validate(async (errors:any)=>{
+  formRef.value.validate(async (errors: any) => {
     // 如果没有错误进行提交
     if (coreTool.isUndefined(errors)) {
       formData.value.typeId = props.roleTypeId;
-      const res:ResponseResult = (isAddEdit.value==AddEditEnum.ADD? await roleSave(formData.value):await roleUpdate(formData.value));
+      const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await roleSave(formData.value) : await roleUpdate(formData.value));
       if (res.status === ResponseStatusEnum.OK) {
         DragonNotice.success("操作成功");
         emits("queryRole");

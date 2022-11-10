@@ -13,6 +13,7 @@
         <a-radio-group v-model="formData.type">
           <a-radio :value="MenuTypeEnum.MENU">菜单</a-radio>
           <a-radio :value="MenuTypeEnum.DIR">菜单组</a-radio>
+          <a-radio :value="MenuTypeEnum.NO">不显示</a-radio>
         </a-radio-group>
       </a-form-item>
       <a-form-item v-if="formData.type===MenuTypeEnum.MENU" field="code" label="编码路径"
@@ -31,10 +32,12 @@
         <a-tree-select v-model="formData.pid"
                        :field-names="{
                           key: 'id',
-                          title: 'name'
+                          title: 'name',
+                          icon: 'existIcon'
                         }"
                        :data="treeData"
-                       placeholder="请选择父级菜单"/>
+                       placeholder="请选择父级菜单">
+        </a-tree-select>
       </a-form-item>
       <a-form-item v-if="formData.type===MenuTypeEnum.MENU" field="keepAlive" label="是否缓冲"
                    extra="该参数用于确定是否在浏览器缓冲页面">
@@ -43,7 +46,8 @@
           <template #unchecked>否</template>
         </a-switch>
       </a-form-item>
-      <a-form-item v-if="isAddEdit===AddEditEnum.EDIT" field="type" label="是否启用">
+      <a-form-item v-if="isAddEdit===AddEditEnum.EDIT && formData.type!=MenuTypeEnum.NO" field="type" label="是否启用">
+        <!--当菜单为不显示时不需要配置状态因为不显示的菜单状态默认是否-->
         <a-radio-group v-model="formData.status">
           <a-radio :value="StatusEnum.ON">是</a-radio>
           <a-radio :value="StatusEnum.OFF">否</a-radio>
@@ -115,7 +119,7 @@ const isAddEdit = ref(AddEditEnum.ADD);
 // 父级菜单的树数据（只需要展示菜单组文件夹的菜单）
 const treeData = computed(() => {
   if (coreTool.isNotEmpty(props.menuData)) {
-    const menuDirData: Array<any> = props.menuData?.filter((o: any) => o.type === MenuTypeEnum.DIR);
+    const menuDirData: Array<any> = props.menuData?.filter((o: any) => o.type === MenuTypeEnum.DIR || o.type === MenuTypeEnum.NO);
     menuDirData.push({
       id: -1,
       name: "顶级",

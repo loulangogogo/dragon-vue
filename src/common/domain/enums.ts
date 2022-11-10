@@ -50,6 +50,7 @@ export enum PermissionTypeEnum {
 export enum MenuTypeEnum {
     MENU = 10,
     DIR = 20,
+    NO = 30,
 }
 
 /*********************************************************
