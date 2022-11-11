@@ -38,14 +38,13 @@
 
 <script lang="ts" setup>
 import Info from './info.vue';
-import {computed, reactive, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
-import {StatusEnum,PermissionTypeEnum} from "../../../../common/domain/enums";
+import {PermissionTypeEnum, StatusEnum} from "../../../../common/domain/enums";
 import {TableColumnData} from "@arco-design/web-vue";
 import {getPermissionByMenuId, permissionDel, permissionUpdate} from "../../../../common/api/system/menu";
 import * as $L from "owner-tool-js";
 import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
-import {watch} from "_vue@3.2.39@vue";
 
 const emits = defineEmits(['update:selectedKeys']);
 

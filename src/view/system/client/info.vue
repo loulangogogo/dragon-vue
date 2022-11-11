@@ -69,12 +69,11 @@
 <script lang="ts" setup>
 
 import {core as coreTool, functionTool} from 'owner-tool-js';
-import {reactive, ref} from "vue";
+import {reactive, ref,onMounted} from "vue";
 import {AddEditEnum, GrantTypeEnum, StatusEnum} from "../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {DragonNotice} from "../../../common/domain/component";
 import {clientSave, clientUpdate} from "../../../common/api/system/client";
-import {onMounted} from "_vue@3.2.39@vue";
 import {getRoleList, getRoleType} from "../../../common/api/system/role";
 
 const emits = defineEmits(["query"]);

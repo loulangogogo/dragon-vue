@@ -82,7 +82,7 @@ const initFormData = {
   email: undefined,
   sex: undefined,
   birthday: undefined,
-  status: StatusEnum.ON,
+  status: UserStatusEnum.NORMAL,
   roleIds: undefined
 };
 const formData = ref({...initFormData});

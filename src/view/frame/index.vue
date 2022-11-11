@@ -25,7 +25,7 @@ import FrameSider from './sider.vue';
 import FrameContent from './content.vue';
 import FrameFooter from './footer.vue';
 import {useStore} from 'vuex';
-import {ref} from "_vue@3.2.39@vue";
+import {ref} from "vue";
 
 // 是否折叠
 const collapsed = ref(false);

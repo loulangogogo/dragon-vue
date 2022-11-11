@@ -9,7 +9,7 @@
     "preview": "vue-tsc --noEmit && vite build --mode dev && vite preview --port 8080"
   },
   "dependencies": {
-    "@arco-design/web-vue": "^2.36.1",
+    "@arco-design/web-vue": "^2.37.4",
     "@arco-themes/vue-owner": "^0.0.2",
     "axios": "^0.27.2",
     "owner-tool-js": "^2.0.5",
