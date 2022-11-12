@@ -54,12 +54,11 @@ const formRules: Record<string, FieldRule | FieldRule[]> = {
     required: true,
     message: "密码不能为空"
   },
-  // fixme 2022/9/16(待修改)   开发期间暂时不添加验证码的校验
-/*  captchaCode: {
+  captchaCode: {
     type: "string",
     required: true,
     message: "验证码不能为空"
-  }*/
+  }
 }
 
 /**
@@ -112,6 +111,18 @@ defineProps({
     type: Boolean,
     required: false,
     default: false
+  }
+})
+
+defineExpose({
+  /**
+   * 登录错误要执行的操作
+   * @param
+   * @return
+   * @author     :loulan
+   * */
+  loginError: (res:ResponseResult)=>{
+    getCaptcha();
   }
 })
 </script>

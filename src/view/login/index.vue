@@ -7,7 +7,7 @@
             <span class="spanTitle">账号登录</span>
           </template>
           <div class="contentDiv">
-            <login-account @loginSubmit="login" :loginButtonLoading="loginButtonLoading"></login-account>
+            <login-account ref="loginAccountRef" @loginSubmit="login" :loginButtonLoading="loginButtonLoading"></login-account>
           </div>
         </a-tab-pane>
         <a-tab-pane :key="LoginModeEnum.phone">
@@ -15,7 +15,7 @@
             <span class="spanTitle">手机登录</span>
           </template>
           <div class="contentDiv">
-            <login-phone></login-phone>
+            <login-phone ref="loginPhoneRef"></login-phone>
           </div>
         </a-tab-pane>
         <a-tab-pane :key="LoginModeEnum.email">
@@ -23,7 +23,7 @@
             <span class="spanTitle">邮箱登录</span>
           </template>
           <div class="contentDiv">
-            <login-email></login-email>
+            <login-email ref="loginEmailRef"></login-email>
           </div>
         </a-tab-pane>
       </a-tabs>
@@ -43,6 +43,9 @@ import {useRouter} from "vue-router";
 import {LocalStorageEnum} from "../../common/domain/storage";
 import {ref} from "vue";
 
+const loginAccountRef = ref();
+const loginPhoneRef = ref();
+const loginEmailRef = ref();
 
 // 登录按钮的加载状态
 const loginButtonLoading = ref(false);
@@ -65,18 +68,20 @@ const loginChange = (key: string | number) => {
  * @return
  * @author     :loulan
  * */
-const login = (loginData: LoginData) => {
+const login = async (loginData: LoginData) => {
   loginButtonLoading.value = true;
-  getToken(loginData).then((res: ResponseResult) => {
-    if (res.status == ResponseStatusEnum.OK) {
-      $L.windowsTool.localStorageTool.set(LocalStorageEnum.token, res.data.tokenType + " " + res.data.accessToken);
-      // 将token保存完成之后进行跳转
-      router.push({path: "/", replace: true});
-      // loginButtonLoading.value = false;
-    } else {
-      loginButtonLoading.value = false;
+  const res: ResponseResult = await getToken(loginData);
+  if (res.status == ResponseStatusEnum.OK) {
+    $L.windowsTool.localStorageTool.set(LocalStorageEnum.token, res.data.tokenType + " " + res.data.accessToken);
+    // 将token保存完成之后进行跳转
+    router.push({path: "/", replace: true});
+    // loginButtonLoading.value = false;
+  } else {
+    loginButtonLoading.value = false;
+    if (LoginModeEnum.account === loginData.mode) {
+      loginAccountRef.value.loginError(res);
     }
-  })
+  }
 }
 </script>
 
