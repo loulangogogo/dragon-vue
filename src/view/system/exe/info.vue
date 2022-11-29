@@ -1,49 +1,83 @@
 <template>
   <a-modal v-model:visible="modalVisible"
-           :title="isAddEdit===AddEditEnum.ADD?'可执行语句添加':'可执行语句编辑'"
+           :title="(isAddEdit===AddEditEnum.ADD?'可执行语句添加':'可执行语句编辑')+'【/commonExe/execute/{code}】'"
            title-align="start"
-           width="650px"
+           width="950px"
            :mask-closable="false"
            layout="horizontal"
            :auto-label-width="true"
            @close="close">
-    <a-form ref="formRef" :model="formData" :rules="formRules">
-      <a-form-item field="code" label="编码">
-        <a-input v-model="formData.code" placeholder="请输入编码" :disabled="isAddEdit===AddEditEnum.EDIT"/>
-      </a-form-item>
-      <a-form-item field="name" label="名称">
-        <a-input v-model="formData.name" placeholder="请输入名称"/>
-      </a-form-item>
-      <a-form-item field="content" label="内容">
-        <a-textarea v-model="formData.content"
-                    :auto-size="{
-                      minRows:7,
-                      maxRows:10
-                    }"
-                    placeholder="请输入内容"/>
-      </a-form-item>
-      <a-form-item field="type" label="类型">
-        <a-select v-model="formData.type" placeholder="请选择类型">
-          <a-option v-for="(typeOption,index) in typeOptions" :value="typeOption.code">{{ typeOption.name }}</a-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item field="resultCamel" label="是否驼峰">
-        <a-switch v-model="formData.resultCamel"/>
-      </a-form-item>
-      <a-form-item v-if="isAddEdit===AddEditEnum.EDIT" field="status" label="是否启用">
-        <a-radio-group v-model="formData.status">
-          <a-radio :value="StatusEnum.ON">启用</a-radio>
-          <a-radio :value="StatusEnum.OFF">禁止</a-radio>
-        </a-radio-group>
-      </a-form-item>
-      <a-form-item field="nt" label="备注">
-        <a-textarea v-model="formData.nt"
-                    :auto-size="{
+    <a-form ref="formRef" :model="formData" :rules="formRules" layout="vertical">
+      <a-split v-model:size="splitValue" style="width: 100%;height: 550px">
+        <template #first>
+          <div style="padding-right: 5px">
+            <a-form-item field="content">
+              <a-textarea v-model="formData.content"
+                          :auto-size="{
+                            minRows:22,
+                            maxRows:22
+                          }"
+                          placeholder="请输入内容"/>
+              <template #label>
+                <span>执行内容</span>
+                &nbsp;
+                <a-tooltip>
+                  <icon-question-circle size="16"/>
+                  <template #content>
+                    <div>默认变量：</div>
+                    <div>CURRENT_CLIENT_ID (当前客户端ID)</div>
+                    <div>CURRENT_CLIENT_CODE (当前客户端code)</div>
+                    <div>CURRENT_USER_ID (当前用户ID)</div>
+                    <div>CURRENT_USER_USERNAME (当前用户用户名)</div>
+                  </template>
+                </a-tooltip>
+              </template>
+            </a-form-item>
+          </div>
+        </template>
+        <template #second>
+          <div style="padding-left: 5px">
+            <a-form-item field="code" label="编码">
+              <a-input v-model="formData.code" placeholder="请输入编码" :disabled="isAddEdit===AddEditEnum.EDIT"/>
+              <template #extra>
+                <div>只能是英文字母，数字和下划线。</div>
+              </template>
+            </a-form-item>
+            <a-form-item field="name" label="名称">
+              <a-input v-model="formData.name" placeholder="请输入名称"/>
+            </a-form-item>
+            <a-form-item field="type" label="类型">
+              <a-select v-model="formData.type" placeholder="请选择类型">
+                <a-option v-for="(typeOption,index) in typeOptions" :value="typeOption.code">{{
+                    typeOption.name
+                  }}
+                </a-option>
+              </a-select>
+              <template #extra>
+                <div>请与执行内容语句匹配。</div>
+                <div v-if="formData.type===5">可以不写 LIMIT 语句。只需要添加参数pageCurrent和pageSize即可</div>
+              </template>
+            </a-form-item>
+            <a-form-item field="resultCamel" label="是否驼峰">
+              <a-switch v-model="formData.resultCamel" style="width: 50px"/>
+            </a-form-item>
+            <a-form-item v-if="isAddEdit===AddEditEnum.EDIT" field="status" label="是否启用">
+              <a-radio-group v-model="formData.status">
+                <a-radio :value="StatusEnum.ON">启用</a-radio>
+                <a-radio :value="StatusEnum.OFF">禁止</a-radio>
+              </a-radio-group>
+            </a-form-item>
+            <a-form-item field="nt" label="备注">
+              <a-textarea v-model="formData.nt"
+                          :auto-size="{
                       minRows:3,
                       maxRows:5
                     }"
-                    placeholder="请输入备注"/>
-      </a-form-item>
+                          placeholder="请输入备注"/>
+            </a-form-item>
+          </div>
+        </template>
+      </a-split>
     </a-form>
     <template #footer>
       <a-button type="outline" @click="modalVisible=false">取消</a-button>
@@ -72,6 +106,8 @@ const props = defineProps({
   }
 });
 
+const splitValue = 0.5;
+
 // 确定提交按钮的加载状态
 const submitLoading = ref(false);
 
@@ -95,10 +131,10 @@ const initFormData = {
 const formData = ref({...initFormData})
 
 const formRules = {
-  code: {
-    required: true,
-    message: "编码不能为空"
-  },
+  code: [
+    {required: true, message: "编码不能为空"},
+    {match: /^\w*$/, message: "只能是英文字母，数字和下划线"}
+  ],
   name: {
     required: true,
     message: "名称不能为空"
