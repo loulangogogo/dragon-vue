@@ -21,7 +21,7 @@
     </a-form>
     <template #footer>
       <a-button type="outline" @click="modalVisible=false">取消</a-button>
-      <a-button type="primary" @click="submit">确定</a-button>
+      <a-button type="primary" @click="submit" :loading="submitLoading">确定</a-button>
     </template>
   </a-modal>
 </template>
@@ -41,6 +41,8 @@ const props = defineProps<{
   menuId: any
 }>();
 
+// 确定提交按钮的加载状态
+const submitLoading = ref(false);
 
 // 当前是添加还是编辑，默认添加
 const isAddEdit = ref(AddEditEnum.ADD);
@@ -98,6 +100,7 @@ const formRules = {
  * @author     :loulan
  * */
 const submit = () => {
+  submitLoading.value = true;
   formRef.value.validate(async (errors:any)=>{
     // 如果没有错误进行提交
     if (coreTool.isUndefined(errors)) {
@@ -110,6 +113,8 @@ const submit = () => {
         modalVisible.value = false;
       }
     }
+
+    submitLoading.value = false;
   })
 }
 
@@ -127,6 +132,7 @@ const close = () => {
   formData.value = {...initFormData};
   // 回复默认
   isAddEdit.value = AddEditEnum.ADD;
+  submitLoading.value = false;
 }
 
 defineExpose({
