@@ -1,6 +1,6 @@
 <template>
   <a-modal v-model:visible="modalVisible"
-           :title="isAddEdit===AddEditEnum.ADD?'客户端添加':'客户端编辑'"
+           :title="isAddEdit===AddEditEnum.ADD?'可执行语句添加':'可执行语句编辑'"
            title-align="start"
            width="650px"
            :mask-closable="false"
@@ -24,13 +24,10 @@
       </a-form-item>
       <a-form-item field="type" label="类型">
         <a-select v-model="formData.type" placeholder="请选择类型">
-          <a-option :value="ExeTypeEnum.SELECT">SELECT</a-option>
-          <a-option :value="ExeTypeEnum.INSERT">INSERT</a-option>
-          <a-option :value="ExeTypeEnum.UPDATE">UPDATE</a-option>
-          <a-option :value="ExeTypeEnum.DELETE">DELETE</a-option>
+          <a-option v-for="(typeOption,index) in typeOptions" :value="typeOption.code">{{ typeOption.name }}</a-option>
         </a-select>
       </a-form-item>
-      <a-form-item  field="resultCamel" label="是否驼峰">
+      <a-form-item field="resultCamel" label="是否驼峰">
         <a-switch v-model="formData.resultCamel"/>
       </a-form-item>
       <a-form-item v-if="isAddEdit===AddEditEnum.EDIT" field="status" label="是否启用">
@@ -50,7 +47,7 @@
     </a-form>
     <template #footer>
       <a-button type="outline" @click="modalVisible=false">取消</a-button>
-      <a-button type="primary" @click="submit">确定</a-button>
+      <a-button type="primary" @click="submit" :loading="submitLoading">确定</a-button>
     </template>
   </a-modal>
 </template>
@@ -58,16 +55,25 @@
 <script lang="ts" setup>
 
 import {core as coreTool, functionTool} from 'owner-tool-js';
-import {reactive, ref,onMounted} from "vue";
-import {AddEditEnum, ExeTypeEnum, GrantTypeEnum, StatusEnum} from "../../../common/domain/enums";
+import {onMounted, reactive, ref} from "vue";
+import {AddEditEnum, StatusEnum} from "../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {DragonNotice} from "../../../common/domain/component";
-import {clientSave, clientUpdate} from "../../../common/api/system/client";
 import {getRoleList, getRoleType} from "../../../common/api/system/role";
 import {exeSave, exeUpdate} from "../../../common/api/system/exe";
 
 const emits = defineEmits(["query"]);
 
+const props = defineProps({
+  typeOptions: {
+    type: Array,
+    required: true,
+    default: []
+  }
+});
+
+// 确定提交按钮的加载状态
+const submitLoading = ref(false);
 
 // 当前是添加还是编辑，默认添加
 const isAddEdit = ref(AddEditEnum.ADD);
@@ -82,7 +88,7 @@ const initFormData = {
   name: undefined,
   content: undefined,
   resultCamel: false,
-  type: ExeTypeEnum.SELECT,
+  type: 10,
   status: StatusEnum.ON
 };
 // 表单数据
@@ -128,6 +134,7 @@ const roleSelectData = reactive({
  * @author     :loulan
  * */
 const submit = () => {
+  submitLoading.value = true;
   formRef.value.validate(async (errors: any) => {
     // 如果没有错误进行提交
     if (coreTool.isUndefined(errors)) {
@@ -138,6 +145,7 @@ const submit = () => {
         modalVisible.value = false;
       }
     }
+    submitLoading.value = false;
   })
 }
 
@@ -154,9 +162,10 @@ const close = () => {
   formData.value = {...initFormData};
   // 回复默认
   isAddEdit.value = AddEditEnum.ADD;
+  submitLoading.value = false;
 }
 
-onMounted(async ()=>{
+onMounted(async () => {
   if (coreTool.isEmpty(<any>roleSelectData.roleTypeOptions)) {
     const res: ResponseResult = await getRoleType();
     roleSelectData.roleTypeOptions = res.data;

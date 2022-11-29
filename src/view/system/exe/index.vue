@@ -1,10 +1,13 @@
 <template>
   <div class="headerDiv">
     <a-input v-model="queryParam.code" style="width: 200px" placeholder="请输入用编码" allow-clear/>
-    <a-input v-model="queryParam.name" style="width: 200px" placeholder="请输入名称" allow-clear/>
+    <a-input v-model="queryParam.name" style="width: 200px;margin-left: 20px" placeholder="请输入名称" allow-clear/>
     <a-select v-model="queryParam.status" style="width: 200px;margin-left: 20px" placeholder="请选择状态" allow-clear>
       <a-option :value="StatusEnum.ON">启用</a-option>
       <a-option :value="StatusEnum.OFF">禁用</a-option>
+    </a-select>
+    <a-select v-model="queryParam.type" style="width: 200px;margin-left: 20px" placeholder="请选择类型" allow-clear>
+      <a-option v-for="(typeOption,index) in typeOptions" :value="typeOption.code">{{typeOption.name}}</a-option>
     </a-select>
     <a-button type="primary" style="margin-left: 20px" @click="search">查询</a-button>
     <a-button type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
@@ -31,6 +34,14 @@
              :loading="loading"
              @page-size-change="pageSizeChange"
              @page-change="pageChange">
+      <template #contentSlot="{record}">
+        <a-popover position="left" trigger="click">
+          <a-button  type="text">点击查看</a-button>
+          <template #content>
+            <p style="width: 450px;min-height:100px;overflow: auto" :style="{maxHeight:contentHeight-100+'px'}">{{record.content}}</p>
+          </template>
+        </a-popover>
+      </template>
       <template #operate="{record}">
         <a-button type="primary" size="mini" @click="edit(record)">编辑</a-button>
         <a-button type="primary" status="danger" size="mini" style="margin-left: 10px" @click="del(record)">删除</a-button>
@@ -38,7 +49,7 @@
     </a-table>
   </div>
   <div v-show="false">
-    <info ref="infoRef" @query="search"></info>
+    <info ref="infoRef" @query="search" :type-options="typeOptions"></info>
   </div>
 </template>
 
@@ -47,11 +58,11 @@
 import Info from './info.vue';
 import {onMounted, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
-import {GrantTypeEnum,StatusEnum} from "../../../common/domain/enums";
+import {StatusEnum} from "../../../common/domain/enums";
 import {TableColumnData} from "@arco-design/web-vue";
 import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
-import {clientDel, pageClientList} from "../../../common/api/system/client";
 import {exeDel, pageExeList} from "../../../common/api/system/exe";
+import {getEnum} from "../../../common/tool/dragonTool";
 
 const props = defineProps({
   contentHeight: {
@@ -61,8 +72,10 @@ const props = defineProps({
   }
 });
 
+// 添加编辑组件的Ref
 const infoRef = ref();
 
+const typeOptions = ref();
 // 表格数据
 const tableData = ref();
 // 表格列配置
@@ -81,6 +94,12 @@ const columns:Array<TableColumnData> = [
     title: "类型",
     dataIndex: "typeName",
     width: 200,
+  },
+  {
+    title: "执行内容",
+    dataIndex: "content",
+    width: 120,
+    slotName: "contentSlot"
   },
   {
     title: "状态",
@@ -110,6 +129,7 @@ const queryParam = reactive({
   pageTotal: 0
 })
 
+// 查询加载状态
 const loading = ref(true);
 
 /**
@@ -129,6 +149,17 @@ const pageList =async () => {
   }
   // 查询无论成功与否退出加载状态
   loading.value = false;
+}
+
+/**
+ * 获取需要的枚举数据
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+const selectEnum = async ()=>{
+  let data = await getEnum("org.loulan.application.dragon.common.core.enums.DgExeTypeEnum");
+  typeOptions.value = data;
 }
 
 /**
@@ -205,6 +236,7 @@ const del = (data:any) => {
 
 
 onMounted(() => {
+  selectEnum();
   pageList();
 })
 </script>

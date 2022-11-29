@@ -122,18 +122,3 @@ export enum GrantTypeEnum {
     CLIENT_CREDENTIALS="client_credentials"
 }
 
-/*********************************************************
- ** 可执行类型枚举
- ** <br><br>
- ** Date: Created in 2022/11/27 13:06
- ** @author loulan
- ** @version 0.0.0
- *********************************************************/
-export enum ExeTypeEnum {
-    SELECT = 10,
-    INSERT = 20,
-    UPDATE = 30,
-    DELETE = 40,
-}
-
-
