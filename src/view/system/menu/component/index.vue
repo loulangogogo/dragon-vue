@@ -13,6 +13,7 @@
              :scroll="{
                 y:'100%'
               }"
+             :scrollbar="false"
              column-resizable
              row-key="id"
              :row-selection="isRolePermission?{

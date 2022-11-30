@@ -12,6 +12,7 @@
              :scroll="{
                 y:'100%'
               }"
+             :scrollbar="false"
              column-resizable
              :bordered="{cell:true}"
              :loading="loading">

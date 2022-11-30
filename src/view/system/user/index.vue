@@ -2,7 +2,8 @@
   <div class="headerDiv">
     <a-input v-model="queryParam.username" style="width: 200px" placeholder="请输入用户名" allow-clear/>
     <a-input v-model="queryParam.name" style="width: 200px;margin-left: 20px" placeholder="请输入姓名" allow-clear/>
-    <a-input v-model="queryParam.phone" style="width: 200px;margin-left: 20px" placeholder="请输入手机号码" allow-clear/>
+    <a-input v-model="queryParam.phone" style="width: 200px;margin-left: 20px" placeholder="请输入手机号码"
+             allow-clear/>
     <a-button type="primary" style="margin-left: 20px" @click="search">查询</a-button>
     <a-button type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
   </div>
@@ -21,8 +22,9 @@
                 pageSize: queryParam.pageSize,
               }"
              :scroll="{
-                y:'100%'
+                y: '100%'
               }"
+             :scrollbar="false"
              column-resizable
              :bordered="{cell:true}"
              :loading="loading"
@@ -30,7 +32,8 @@
              @page-change="pageChange">
       <template #operate="{record}">
         <a-button type="primary" size="mini" @click="edit(record)">编辑</a-button>
-        <a-button type="primary" status="danger" size="mini" style="margin-left: 10px" @click="del(record)">删除</a-button>
+        <a-button type="primary" status="danger" size="mini" style="margin-left: 10px" @click="del(record)">删除
+        </a-button>
       </template>
     </a-table>
   </div>
@@ -61,7 +64,7 @@ const infoRef = ref();
 // 表格数据
 const tableData = ref();
 // 表格列配置
-const columns:Array<TableColumnData> = [
+const columns: Array<TableColumnData> = [
   {
     title: "姓名",
     dataIndex: "name",
@@ -128,10 +131,10 @@ const loading = ref(true);
  * @return
  * @author     :loulan
  * */
-const pageList =async () => {
+const pageList = async () => {
   // 查询之前进入加载状态
   loading.value = true;
-  const res:ResponseResult = await pageUserList(queryParam);
+  const res: ResponseResult = await pageUserList(queryParam);
   if (res.status === ResponseStatusEnum.OK) {
     const data = res.data;
     tableData.value = data.records;
@@ -147,7 +150,7 @@ const pageList =async () => {
  * @return
  * @author     :loulan
  * */
-const search = ()=>{
+const search = () => {
   queryParam.pageCurrent = 1;
   pageList();
 }
@@ -180,7 +183,7 @@ const pageSizeChange = (pageSize: number) => {
  * @return
  * @author     :loulan
  * */
-const add = ()=>{
+const add = () => {
   infoRef.value.init();
 }
 
@@ -190,16 +193,16 @@ const add = ()=>{
  * @return
  * @author     :loulan
  * */
-const edit = (data:any) => {
+const edit = (data: any) => {
   infoRef.value.init(data);
 }
 
-const del = (data:any) => {
+const del = (data: any) => {
   dragonConfirm({
     title: '确认提示',
     content: '您确认删除这条数据吗？'
-  }).then(async ()=>{
-    const res:ResponseResult = await userDel(data.id);
+  }).then(async () => {
+    const res: ResponseResult = await userDel(data.id);
     if (res.status === ResponseStatusEnum.OK) {
       search();
       DragonNotice.success("删除成功");
