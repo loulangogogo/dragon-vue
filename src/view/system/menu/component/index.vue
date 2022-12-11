@@ -112,7 +112,7 @@ const columns: Array<TableColumnData> = props.isRolePermission?[
   },
   {
     title: "操作",
-    width: 100,
+    width: 120,
     fixed: "right",
     slotName: "operate"
   },
