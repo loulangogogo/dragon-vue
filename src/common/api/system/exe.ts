@@ -40,3 +40,15 @@ export const exeUpdate = (data:any) => {
 export const exeDel = (id:number) => {
     return ask.delete(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/exe/delete/${id}`);
 }
+
+/**
+ * 测试方法
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const test = (data:any) => {
+    return ask.post(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/commonExe/execute/TEST`,data);
+}
+
+

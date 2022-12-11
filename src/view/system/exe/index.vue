@@ -11,6 +11,7 @@
     </a-select>
     <a-button type="primary" style="margin-left: 20px" @click="search">查询</a-button>
     <a-button type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
+    <a-button type="primary" status="warning" style="margin-left: 20px" @click="testFunction">测试</a-button>
   </div>
   <div class="bodyDiv">
     <a-table :columns="columns"
@@ -62,7 +63,7 @@ import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/respons
 import {StatusEnum} from "../../../common/domain/enums";
 import {TableColumnData} from "@arco-design/web-vue";
 import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
-import {exeDel, pageExeList} from "../../../common/api/system/exe";
+import {exeDel, pageExeList, test} from "../../../common/api/system/exe";
 import {getEnum} from "../../../common/tool/dragonTool";
 
 const props = defineProps({
@@ -194,6 +195,24 @@ const pageChange = (pageCurrent: number) => {
 const pageSizeChange = (pageSize: number) => {
   queryParam.pageSize = pageSize;
   pageList();
+}
+
+/**
+ * 点击测试按钮
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+const testFunction = ()=>{
+  dragonConfirm({
+    title: '确认提示',
+    content: '您当前正在执行测试代码，code="TEST"？'
+  }).then(async ()=>{
+    const res:ResponseResult = await test({});
+    if (res.status === ResponseStatusEnum.OK) {
+      alert(JSON.stringify(res.data,null,4));
+    }
+  })
 }
 
 /**
