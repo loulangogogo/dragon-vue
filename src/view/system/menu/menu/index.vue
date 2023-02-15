@@ -102,7 +102,7 @@ watch(() => props.selectedKeys,
     },
     {
       deep: true,
-      immediate: true
+      immediate: false
     }
 );
 
