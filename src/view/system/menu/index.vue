@@ -69,7 +69,7 @@ watch(() => props.tableCheckSelectedKeys,
     },
     {
       deep: true,
-      immediate: true
+      immediate: false
     }
 );
 watch(() => props.menuCheckSelectedKeys,
@@ -78,7 +78,7 @@ watch(() => props.menuCheckSelectedKeys,
     },
     {
       deep: true,
-      immediate: true
+      immediate: false
     }
 );
 
