@@ -37,7 +37,7 @@ const frameSiderMaxWidth = storeGetters.frameSiderMaxWidth;
 
 
 // 分割组件的变量（初始值是左边最大）
-const splitValue = ref(frameSiderMaxWidth);
+let splitValue = ref(frameSiderMaxWidth);
 let beforeCollapsedSplitValue:number|string = splitValue.value;
 const collapsedWidth: number = 48; // 菜单部分的折叠宽度
 

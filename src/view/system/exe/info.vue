@@ -106,7 +106,7 @@ const props = defineProps({
   }
 });
 
-const splitValue = 0.5;
+let splitValue = 0.5;
 
 // 确定提交按钮的加载状态
 const submitLoading = ref(false);
