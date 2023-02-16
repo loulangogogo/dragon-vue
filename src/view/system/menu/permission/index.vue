@@ -74,7 +74,7 @@ watch(() => props.selectedKeys,
     },
     {
       deep: true,
-      immediate: false
+      immediate: true
     }
 );
 

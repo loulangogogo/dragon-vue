@@ -5,7 +5,7 @@
         <div style="padding: 5px">
           <dragon-menu ref="menuRef" :height="contentHeight-5"
                        :is-role-permission="isRolePermission"
-                       v-model:selectedKeys="menuCheckSelectedKeys"
+                       v-model:selected-keys="menuCheckSelectedKeys"
                        @select-menu="selectMenu"></dragon-menu>
         </div>
       </template>
@@ -15,12 +15,12 @@
             <template #first>
               <dragon-permission :height="contentHeight*menuSplitSizeV-3" ref="permissionRef"
                                  :is-role-permission="isRolePermission"
-                                 v-model:selectedKeys="tableCheckSelectedKeys"></dragon-permission>
+                                 v-model:selected-keys="tableCheckSelectedKeys"></dragon-permission>
             </template>
             <template #second>
               <dragon-component :height="contentHeight*(1-menuSplitSizeV)-3" ref="componentRef"
                                 :is-role-permission="isRolePermission"
-                                v-model:selectedKeys="tableCheckSelectedKeys"></dragon-component>
+                                v-model:selected-keys="tableCheckSelectedKeys"></dragon-component>
             </template>
           </a-split>
         </div>
@@ -69,7 +69,7 @@ watch(() => props.tableCheckSelectedKeys,
     },
     {
       deep: true,
-      immediate: false
+      immediate: true
     }
 );
 watch(() => props.menuCheckSelectedKeys,
@@ -78,7 +78,7 @@ watch(() => props.menuCheckSelectedKeys,
     },
     {
       deep: true,
-      immediate: false
+      immediate: true
     }
 );
 
