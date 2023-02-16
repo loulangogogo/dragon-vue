@@ -23,7 +23,7 @@
 
 <script lang="ts" setup>
 
-import {computed, ref} from "vue";
+import {computed, nextTick, ref} from "vue";
 import {useStore} from "vuex";
 import MenuPermission from '../../menu/index.vue';
 import {getPermissionMenuByRoleId, permissionMenuSaveAndUpdate} from "../../../../common/api/system/role";
@@ -85,8 +85,8 @@ defineExpose({
     const res:ResponseResult = await getPermissionMenuByRoleId(roleId);
     if (res.status === ResponseStatusEnum.OK) {
       const datas = res.data;
-      let tempMenuKeys = [];
-      let tempTableKeys = [];
+      let tempMenuKeys:Array<any> = [];
+      let tempTableKeys:Array<any> = [];
       for (const data of datas) {
         if (data.resourcesType == RoleResourcesTypeEnum.MENU) {
           tempMenuKeys.push(data.resourcesId);
@@ -94,6 +94,7 @@ defineExpose({
           tempTableKeys.push(data.resourcesId)
         }
       }
+
       menuCheckSelectedKeys.value = tempMenuKeys;
       tableCheckSelectedKeys.value = tempTableKeys;
       currentRoleId.value = roleId;

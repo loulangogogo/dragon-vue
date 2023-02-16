@@ -21,7 +21,7 @@
                fixed: true,
                width: 50
              }:undefined"
-             v-model:selectedKeys="selectedKeys"
+             v-model:selected-keys="selectedKeys"
              :bordered="{cell:true}">
       <template #fieldStatus="{record}">
         <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF" @change="(val:any)=>statusChange(val,record)"/>
