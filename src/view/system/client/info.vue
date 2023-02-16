@@ -124,9 +124,19 @@ const formRules = {
 };
 
 // 角色下拉框的数据
-const roleSelectData = reactive({
-  roleTypeOptions: undefined,
-  roleOptions: undefined
+const roleSelectData:{
+  roleTypeOptions:Array<{
+    name:string,
+    id:number
+  }>,
+  roleOptions:Array<{
+    name:string,
+    id:number,
+    typeId: number
+  }>,
+} = reactive({
+  roleTypeOptions: [],
+  roleOptions: []
 })
 
 /**

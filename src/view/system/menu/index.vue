@@ -52,12 +52,12 @@ const props = defineProps({
   },
   // 表格多选情况
   tableCheckSelectedKeys:{
-    type: Array,
+    type: [Array<string|number>],
     required: false,
     default: []
   },
   menuCheckSelectedKeys:{
-    type: Array,
+    type: [Array<string|number>],
     required: false,
     default: []
   }

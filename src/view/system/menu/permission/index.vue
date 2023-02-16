@@ -62,7 +62,7 @@ const props = defineProps({
     default: false
   },
   selectedKeys:{
-    type: Array,
+    type: [Array<string|number>],
     required: false,
     default: []
   }

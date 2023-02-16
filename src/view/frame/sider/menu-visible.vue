@@ -46,7 +46,7 @@ import {MenuIconTypeEnum, MenuTypeEnum} from "../../../common/domain/enums";
 const isEmpty = (data: any): boolean => $L.core.isEmpty(data);
 
 const {menus} = defineProps<{
-  menus:Array<Menu>
+  menus:Array<Menu> | undefined
 }>();
 </script>
 

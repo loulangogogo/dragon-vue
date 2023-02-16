@@ -59,7 +59,16 @@ const isEdit = ref(false);
 
 const formRef = ref();
 const store = useStore();
-const formData = ref({});
+const formData = ref({
+  username: undefined,
+  name: undefined,
+  sex: undefined,
+  sexName: undefined,
+  phone: undefined,
+  email: undefined,
+  birthday: undefined,
+  idCard: undefined
+});
 const formRules = {
   name: {
     required: true,
@@ -118,7 +127,7 @@ const submit = ()=>{
 watch(
     () => store.getters.userInfo,
     (val: any) => {
-      formData.value = functionTool.combineObj({},val);
+       functionTool.combineObj(formData.value,val);
     },
     {
       deep: true,

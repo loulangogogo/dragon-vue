@@ -84,7 +84,7 @@ const props = defineProps({
     default: false
   },
   selectedKeys:{
-    type: Array,
+    type: [Array<string|number>],
     required: false,
     default: []
   }
@@ -111,8 +111,8 @@ const infoRef = ref();
 // 菜单树的ref
 const menuTreeRef = ref();
 // 原始树数据
-const originTreeData = ref([]);
-const originListData = ref([]);
+const originTreeData = ref(new Array<any>());
+const originListData= ref([]);
 // 搜索值
 const searchKey = ref();
 // 树数据
@@ -141,7 +141,7 @@ const getMenus = ()=>{
   getAllMenu().then((res:ResponseResult) => {
     if (res.status === ResponseStatusEnum.OK && res.data) {
       originListData.value = res.data;
-      originTreeData.value = $L.arrayTool.arrayToTree(res.data, "id", "pid", -1);
+      originTreeData.value = $L.arrayTool.arrayToTree(originListData.value, "id", "pid", -1);
     }
   })
 }

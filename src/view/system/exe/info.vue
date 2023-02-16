@@ -100,7 +100,10 @@ const emits = defineEmits(["query"]);
 
 const props = defineProps({
   typeOptions: {
-    type: Array,
+    type: Array<{
+      code: string,
+      name: string
+    }>,
     required: true,
     default: []
   }
@@ -125,7 +128,8 @@ const initFormData = {
   content: undefined,
   resultCamel: false,
   type: 10,
-  status: StatusEnum.ON
+  status: StatusEnum.ON,
+  nt:undefined
 };
 // 表单数据
 const formData = ref({...initFormData})
