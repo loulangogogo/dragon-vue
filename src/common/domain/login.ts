@@ -1,3 +1,5 @@
+import {GrantTypeEnum} from "./enums";
+
 /*********************************************************
  ** 登录需要的信息
  ** <br><br>
@@ -7,11 +9,13 @@
  *********************************************************/
 export interface LoginData {
     // 必填项，可以是账号，手机好，邮箱
-    account: string | number;
+    account?: string | number;
     // 必填，可以是密码，手机验证码，邮箱验证码
-    password: string;
+    password?: string;
+    // 微信扫码登陆需要这个参数
+    ticket?: string;
     // 登录方式
-    mode: LoginModeEnum;
+    grant_type: GrantTypeEnum;
     captchaUuid?: string;
     captchaCode?: string;
 }
@@ -26,5 +30,6 @@ export interface LoginData {
 export enum LoginModeEnum{
     account = 1,
     phone = 2,
-    email = 3
+    email = 3,
+    wechat = 4
 }

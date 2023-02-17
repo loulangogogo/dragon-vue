@@ -21,6 +21,7 @@ import {reactive, ref} from "vue";
 import {FieldRule, ValidatedError,Message} from "@arco-design/web-vue";
 import * as $L from 'owner-tool-js';
 import {LoginModeEnum} from "../../common/domain/login";
+import {GrantTypeEnum} from "../../common/domain/enums";
 
 const accountFormRef:any = ref(null);
 
@@ -28,7 +29,7 @@ const accountFormRef:any = ref(null);
 const loginData = reactive({
   account: "",
   password: "",
-  mode: LoginModeEnum.email,
+  grant_type: GrantTypeEnum.PASSWORD,
 });
 
 // 表单校验规则

@@ -24,6 +24,7 @@ import * as $L from 'owner-tool-js';
 import {LoginModeEnum} from "../../common/domain/login";
 import {generatePicCaptcha} from "../../common/api/common";
 import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
+import {GrantTypeEnum} from "../../common/domain/enums";
 
 
 // 事件对象
@@ -36,7 +37,7 @@ const accountFormRef: any = ref(null);
 const loginData = reactive({
   account: "",
   password: "",
-  mode: LoginModeEnum.account,
+  grant_type: GrantTypeEnum.PASSWORD,
   captchaUuid: "",
   captchaCode: "",
   captchaUrl: ""

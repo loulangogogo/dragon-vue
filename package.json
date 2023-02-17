@@ -10,9 +10,10 @@
   },
   "dependencies": {
     "@arco-design/web-vue": "2.38.3",
-    "@arco-themes/vue-owner": "^0.0.2",
+    "@arco-themes/vue-owner": "0.0.2",
     "axios": "^0.27.2",
     "owner-tool-js": "^2.0.7",
+    "qrcode.vue": "^3.2.2",
     "vue": "3.2.44",
     "vue-router": "^4.1.6",
     "vuex": "^4.0.2"

@@ -115,10 +115,12 @@ export enum SexEnum {
  ** @version 0.0.0
  *********************************************************/
 export enum GrantTypeEnum {
-    AUTHORIZATION_CODE="authorization_code",
-    IMPLICIT="implicit",
-    PASSWORD="password",
-    REFRESH_TOKEN="refresh_token",
-    CLIENT_CREDENTIALS="client_credentials"
+    AUTHORIZATION_CODE = "authorization_code",
+    IMPLICIT = "implicit",
+    PASSWORD = "password",
+    WECHAT_MINI_PROGRAM = "wechat_mini_program",
+    WECHAT_SCAN = "wechat_scan",
+    REFRESH_TOKEN = "refresh_token",
+    CLIENT_CREDENTIALS = "client_credentials",
 }
 

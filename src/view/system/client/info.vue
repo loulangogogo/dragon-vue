@@ -17,6 +17,8 @@
           <a-option :value="GrantTypeEnum.CLIENT_CREDENTIALS">客户端模式</a-option>
           <a-option :value="GrantTypeEnum.IMPLICIT">简单模式</a-option>
           <a-option :value="GrantTypeEnum.PASSWORD">密码模式</a-option>
+          <a-option :value="GrantTypeEnum.WECHAT_MINI_PROGRAM">微信小程序</a-option>
+          <a-option :value="GrantTypeEnum.WECHAT_SCAN">微信扫码</a-option>
           <a-option :value="GrantTypeEnum.REFRESH_TOKEN">REFRESH_TOKEN</a-option>
         </a-select>
       </a-form-item>

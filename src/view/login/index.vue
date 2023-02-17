@@ -1,13 +1,23 @@
 <template>
   <div id="loginBackDiv">
     <div id="loginFrameDiv">
-      <a-tabs :default-active-key="LoginModeEnum.account" size="large" :animation="true" @change="loginChange">
+      <a-tabs :default-active-key="currentTabPane" size="large" :animation="true" @change="(val)=>currentTabPane=val">
         <a-tab-pane :key="LoginModeEnum.account">
           <template #title>
             <span class="spanTitle">账号登录</span>
           </template>
           <div class="contentDiv">
-            <login-account ref="loginAccountRef" @loginSubmit="login" :loginButtonLoading="loginButtonLoading"></login-account>
+            <login-account ref="loginAccountRef" v-if="currentTabPane === LoginModeEnum.account"
+                           @loginSubmit="login" :loginButtonLoading="loginButtonLoading"></login-account>
+          </div>
+        </a-tab-pane>
+        <a-tab-pane :key="LoginModeEnum.wechat">
+          <template #title>
+            <span class="spanTitle">微信扫码</span>
+          </template>
+          <div class="contentDiv">
+            <login-wechat ref="loginWechatRef" v-if="currentTabPane === LoginModeEnum.wechat"
+                          @loginSubmit="login" ></login-wechat>
           </div>
         </a-tab-pane>
         <a-tab-pane :key="LoginModeEnum.phone">
@@ -15,7 +25,7 @@
             <span class="spanTitle">手机登录</span>
           </template>
           <div class="contentDiv">
-            <login-phone ref="loginPhoneRef"></login-phone>
+            <login-phone ref="loginPhoneRef" v-if="currentTabPane === LoginModeEnum.phone"></login-phone>
           </div>
         </a-tab-pane>
         <a-tab-pane :key="LoginModeEnum.email">
@@ -23,7 +33,7 @@
             <span class="spanTitle">邮箱登录</span>
           </template>
           <div class="contentDiv">
-            <login-email ref="loginEmailRef"></login-email>
+            <login-email ref="loginEmailRef" v-if="currentTabPane === LoginModeEnum.email"></login-email>
           </div>
         </a-tab-pane>
       </a-tabs>
@@ -35,17 +45,25 @@
 import LoginAccount from './account.vue';
 import LoginPhone from './phone.vue';
 import LoginEmail from './email.vue';
+import LoginWechat from './wechat.vue';
 import * as $L from "owner-tool-js";
 import {LoginData, LoginModeEnum} from "../../common/domain/login";
 import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
 import {getToken} from "../../common/api/login";
 import {useRouter} from "vue-router";
 import {LocalStorageEnum} from "../../common/domain/storage";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import {GrantTypeEnum} from "../../common/domain/enums";
 
 const loginAccountRef = ref();
 const loginPhoneRef = ref();
 const loginEmailRef = ref();
+
+const currentTabPane = ref();
+onMounted(()=>{
+  // 指定刚进入的pane
+  currentTabPane.value = LoginModeEnum.account;
+})
 
 // 登录按钮的加载状态
 const loginButtonLoading = ref(false);
@@ -78,7 +96,7 @@ const login = async (loginData: LoginData) => {
     // loginButtonLoading.value = false;
   } else {
     loginButtonLoading.value = false;
-    if (LoginModeEnum.account === loginData.mode) {
+    if (GrantTypeEnum.PASSWORD === loginData.grant_type) {
       loginAccountRef.value.loginError(res);
     }
   }
