@@ -22,7 +22,8 @@
             }"
             :checkable="isRolePermission"
             :check-strictly="true"
-            v-model:checked-keys="selectedKeys"
+            :checked-keys="selectedKeys"
+            @update:checked-keys="(val:Array<string|number>) => $emit('update:selectedKeys', val)"
             @select="treeSelect">
       <template #switcher-icon="{ isLeaf }">
         <icon-caret-right class="treeSwitcherIcon" v-if="isLeaf"/>
@@ -70,7 +71,7 @@ import Info from './info.vue';
 import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
 import {MenuIconTypeEnum} from "../../../../common/domain/enums";
 
-const emit = defineEmits(["selectMenu",'update:selectedKeys']);
+const emit = defineEmits(["selectMenu"]);
 
 const props = defineProps({
   height: {
@@ -89,22 +90,6 @@ const props = defineProps({
     default: []
   }
 });
-
-/**
- * 监听所选菜单是否发生变化
- * @param
- * @return
- * @author     :loulan
- * */
-watch(() => props.selectedKeys,
-    (val: any) => {
-      emit("update:selectedKeys", val);
-    },
-    {
-      deep: true,
-      immediate: true
-    }
-);
 
 // 添加编辑组件的ref
 const infoRef = ref();
