@@ -22,7 +22,8 @@
                fixed: true,
                width: 50
              }:undefined"
-             v-model:selectedKeys="selectedKeys"
+             :selected-keys="selectedKeys"
+             @update:selected-keys="(val:Array<string|number>) => $emit('update:selectedKeys', val)"
              :bordered="{cell:true}">
       <template #fieldStatus="{record}">
         <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF" @change="(val:any)=>statusChange(val,record)"/>
@@ -48,8 +49,6 @@ import {getPermissionByMenuId, permissionDel,permissionUpdate} from "../../../..
 import * as $L from "owner-tool-js";
 import {dragonConfirm, DragonMessage, DragonNotice} from "../../../../common/domain/component";
 
-const emits = defineEmits(['update:selectedKeys']);
-
 const props = defineProps({
   height: {
     type: Number,
@@ -67,16 +66,6 @@ const props = defineProps({
     default: []
   }
 });
-
-watch(() => props.selectedKeys,
-    (val: any) => {
-      emits("update:selectedKeys", val);
-    },
-    {
-      deep: true,
-      immediate: true
-    }
-);
 
 const infoRef = ref();
 

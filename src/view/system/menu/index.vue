@@ -5,7 +5,8 @@
         <div style="padding: 5px">
           <dragon-menu ref="menuRef" :height="contentHeight-5"
                        :is-role-permission="isRolePermission"
-                       v-model:selected-keys="menuCheckSelectedKeys"
+                       :selected-keys="menuCheckSelectedKeys"
+                       @update:selected-keys = "(val:Array<string|number>)=>$emit('update:menuCheckSelectedKeys', val)"
                        @select-menu="selectMenu"></dragon-menu>
         </div>
       </template>
@@ -15,12 +16,16 @@
             <template #first>
               <dragon-permission :height="contentHeight*menuSplitSizeV-3" ref="permissionRef"
                                  :is-role-permission="isRolePermission"
-                                 v-model:selected-keys="tableCheckSelectedKeys"></dragon-permission>
+                                 :selected-keys="tableCheckSelectedKeys"
+                                 @update:selected-keys="(val:Array<string|number>)=>$emit('update:tableCheckSelectedKeys', val)"
+              ></dragon-permission>
             </template>
             <template #second>
               <dragon-component :height="contentHeight*(1-menuSplitSizeV)-3" ref="componentRef"
                                 :is-role-permission="isRolePermission"
-                                v-model:selected-keys="tableCheckSelectedKeys"></dragon-component>
+                                :selected-keys="tableCheckSelectedKeys"
+                                @update:selected-keys="(val:Array<string|number>)=>$emit('update:tableCheckSelectedKeys', val)"
+              ></dragon-component>
             </template>
           </a-split>
         </div>
@@ -35,8 +40,6 @@ import DragonPermission from './permission/index.vue';
 import DragonComponent from './component/index.vue';
 import {ref} from "vue";
 import {watch} from "vue";
-
-const emits = defineEmits(['update:tableCheckSelectedKeys','update:menuCheckSelectedKeys']);
 
 const props = defineProps({
   contentHeight: {
@@ -62,25 +65,6 @@ const props = defineProps({
     default: []
   }
 });
-
-watch(() => props.tableCheckSelectedKeys,
-    (val: any) => {
-      emits("update:tableCheckSelectedKeys", val);
-    },
-    {
-      deep: true,
-      immediate: true
-    }
-);
-watch(() => props.menuCheckSelectedKeys,
-    (val: any) => {
-      emits("update:menuCheckSelectedKeys", val);
-    },
-    {
-      deep: true,
-      immediate: true
-    }
-);
 
 const menuRef = ref();
 
