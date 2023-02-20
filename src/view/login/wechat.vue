@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, onUnmounted, reactive, ref} from "vue";
 //https://gitcode.net/mirrors/scopewu/qrcode.vue?utm_source=csdn_github_accelerator
 import QrcodeVue from 'qrcode.vue';
 import {getWechatQrcode} from "../../common/api/login";
@@ -55,6 +55,7 @@ const getQrcode = async ()=>{
     loginData.ticket = <string>qrcode.ticket;
     // 成功请求到数据之后，进入定时器进行定时token的请求
     setIntervalObj = setInterval(() => {
+      // 如果对象对象请求成功就会跳转无须专门关闭定时器
       emit("loginSubmit", loginData);
     }, 2500);
   }
@@ -62,7 +63,11 @@ const getQrcode = async ()=>{
 
 onMounted(()=>{
   getQrcode();
+})
 
+onUnmounted(()=>{
+  // 如果定时器存在就先关闭定时器
+  if (coreTool.isExist(setIntervalObj)) clearInterval(setIntervalObj);
 })
 </script>
 

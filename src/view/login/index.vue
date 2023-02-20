@@ -105,7 +105,7 @@ const login = async (loginData: LoginData) => {
 
 <style scoped lang="scss">
 #loginBackDiv {
-  background: #e1e2e7; // url('/static/img/loginBK.jpg') no-repeat;
+  background: url('/static/img/loginBK.jpg') no-repeat;
   background-size: cover;
   width: 100%;
   height: 100%;
@@ -114,7 +114,7 @@ const login = async (loginData: LoginData) => {
 #loginFrameDiv {
   width: 400px;
   height: 400px;
-  background-color: rgba(44, 239, 14, 0.3);
+  background-color: rgb(255, 255, 255, 0.5);
   border-radius: 10px;
   padding: 10px;
   position: absolute;
