@@ -18,9 +18,9 @@ const routes: Array<RouteRecordRaw> = [
                 name: "首页",
                 component: () => import("../view/home/index.vue")
             },{
-                path: "/personal",
-                name: "个人信息",
-                component: () => import("../view/frame/header/user-components/personal.vue")
+                path: "/user-center",
+                name: "个人中心",
+                component: () => import("../view/frame/header/user-center.vue")
             },
         ]
     }

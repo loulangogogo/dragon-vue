@@ -56,7 +56,7 @@ const dropdownStatus = ref();
 const selectOption = (value: any,ev: Event) => {
   if (value == 1) {
     // 个人信息
-    router.push("/personal")
+    router.push("/user-center")
   }else if (value == 2) {
     // 测试
   }else if (value == 3) {
