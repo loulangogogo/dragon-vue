@@ -16,6 +16,7 @@ import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
 import {functionTool,core as coreTool} from "owner-tool-js";
 import {LoginModeEnum} from "../../common/domain/login";
 import {GrantTypeEnum} from "../../common/domain/enums";
+import {Qrcode} from "../../common/domain/interfaces";
 
 // 事件对象
 const emit = defineEmits(['loginSubmit']);
@@ -25,12 +26,6 @@ const loginData = reactive({
   ticket: "",
   grant_type: GrantTypeEnum.WECHAT_SCAN
 });
-
-interface Qrcode{
-  ticket?: string,
-  url?: string,
-  expire_seconds?: number
-}
 
 // 微信二维码对象数据
 let qrcode = reactive<Qrcode>({});

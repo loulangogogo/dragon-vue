@@ -1,31 +1,21 @@
 <template>
   <a-row style="height: 50%">
     <a-col :span="12" class="card_col">
-      <a-card hoverable class="card">
-        <user-info></user-info>
-      </a-card>
+      <user-info></user-info>
     </a-col>
     <a-col :span="12" class="card_col">
-      <a-card hoverable class="card">
-        <Password></Password>
-      </a-card>
+      <Password></Password>
     </a-col>
   </a-row>
   <a-row style="height: 50%">
     <a-col :span="8" class="card_col">
-      <a-card hoverable class="card">
-        <phone></phone>
-      </a-card>
+      <phone></phone>
     </a-col>
     <a-col :span="8" class="card_col">
-      <a-card hoverable class="card">
-        <email></email>
-      </a-card>
+      <email></email>
     </a-col>
     <a-col :span="8" class="card_col">
-      <a-card hoverable class="card">
-        <wechat></wechat>
-      </a-card>
+      <wechat></wechat>
     </a-col>
   </a-row>
 </template>
@@ -43,11 +33,5 @@ import UserInfo from "./user-center/user-info.vue";
 .card_col {
   padding: 10px;
   height: 100%;
-}
-
-/*卡片样式*/
-.card {
-  height: 100%;
-  overflow: hidden;
 }
 </style>

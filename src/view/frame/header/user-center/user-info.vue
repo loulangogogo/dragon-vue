@@ -1,45 +1,50 @@
 <template>
-  <div style="width: 50%;margin: auto;padding: 5px">
-    <div align="right">
-      <div v-if="isEdit">
-        <a-button type="outline" @click="isEdit=false">取消</a-button>
-        <a-button type="primary" style="margin-left: 10px" @click="submit">确定</a-button>
+  <a-card hoverable class="card">
+    <template #extra>
+      <a-button type="outline">编辑</a-button>
+    </template>
+    <div style="width: 50%;margin: auto;padding: 5px">
+      <div align="right">
+        <div v-if="isEdit">
+          <a-button type="outline" @click="isEdit=false">取消</a-button>
+          <a-button type="primary" style="margin-left: 10px" @click="submit">确定</a-button>
+        </div>
+        <a-button v-else type="outline" @click="isEdit=true">编辑</a-button>
       </div>
-      <a-button v-else type="outline" @click="isEdit=true">编辑</a-button>
+      <a-form ref="formRef" :model="formData" :rules="formRules" style="margin-top: 70px">
+        <a-form-item field="username" label="用户名" show-colon>
+          <span class="spanContent">{{coreTool.isEmpty(formData.username)?"无":formData.username}}</span>
+        </a-form-item>
+        <a-form-item field="name" label="姓名" show-colon>
+          <a-input v-if="isEdit" v-model="formData.name" placeholder="请输入姓名"/>
+          <span v-else class="spanContent">{{coreTool.isEmpty(formData.name)?"无":formData.name}}</span>
+        </a-form-item>
+        <a-form-item field="sex" label="性别" show-colon>
+          <a-radio-group v-if="isEdit" v-model="formData.sex">
+            <a-radio :value="SexEnum.MAN">男</a-radio>
+            <a-radio :value="SexEnum.MEN">女</a-radio>
+          </a-radio-group>
+          <span v-else class="spanContent">{{coreTool.isEmpty(formData.sexName)?"无":formData.sexName}}</span>
+        </a-form-item>
+        <a-form-item field="phone" label="手机号码" show-colon>
+          <a-input v-if="isEdit" v-model="formData.phone" placeholder="请输入手机号码"/>
+          <span v-else class="spanContent">{{coreTool.isEmpty(formData.phone)?"无":formData.phone}}</span>
+        </a-form-item>
+        <a-form-item field="email" label="邮箱" show-colon>
+          <a-input v-if="isEdit" v-model="formData.email" placeholder="请输入邮箱"/>
+          <span v-else class="spanContent">{{coreTool.isEmpty(formData.email)?"无":formData.email}}</span>
+        </a-form-item>
+        <a-form-item field="birthday" label="出生日期" show-colon>
+          <a-date-picker v-if="isEdit" v-model="formData.birthday" placeholder="请输入出生日期" style="width: 100%"/>
+          <span v-else class="spanContent">{{coreTool.isEmpty(formData.birthday)?"无":formData.birthday}}</span>
+        </a-form-item>
+        <a-form-item field="idCard" label="身份证号码" show-colon>
+          <a-input v-if="isEdit" v-model="formData.idCard" placeholder="请输入身份证号码"/>
+          <span v-else class="spanContent">{{coreTool.isEmpty(formData.idCard)?"无":formData.idCard}}</span>
+        </a-form-item>
+      </a-form>
     </div>
-    <a-form ref="formRef" :model="formData" :rules="formRules" style="margin-top: 70px">
-      <a-form-item field="username" label="用户名" show-colon>
-        <span class="spanContent">{{coreTool.isEmpty(formData.username)?"无":formData.username}}</span>
-      </a-form-item>
-      <a-form-item field="name" label="姓名" show-colon>
-        <a-input v-if="isEdit" v-model="formData.name" placeholder="请输入姓名"/>
-        <span v-else class="spanContent">{{coreTool.isEmpty(formData.name)?"无":formData.name}}</span>
-      </a-form-item>
-      <a-form-item field="sex" label="性别" show-colon>
-        <a-radio-group v-if="isEdit" v-model="formData.sex">
-          <a-radio :value="SexEnum.MAN">男</a-radio>
-          <a-radio :value="SexEnum.MEN">女</a-radio>
-        </a-radio-group>
-        <span v-else class="spanContent">{{coreTool.isEmpty(formData.sexName)?"无":formData.sexName}}</span>
-      </a-form-item>
-      <a-form-item field="phone" label="手机号码" show-colon>
-        <a-input v-if="isEdit" v-model="formData.phone" placeholder="请输入手机号码"/>
-        <span v-else class="spanContent">{{coreTool.isEmpty(formData.phone)?"无":formData.phone}}</span>
-      </a-form-item>
-      <a-form-item field="email" label="邮箱" show-colon>
-        <a-input v-if="isEdit" v-model="formData.email" placeholder="请输入邮箱"/>
-        <span v-else class="spanContent">{{coreTool.isEmpty(formData.email)?"无":formData.email}}</span>
-      </a-form-item>
-      <a-form-item field="birthday" label="出生日期" show-colon>
-        <a-date-picker v-if="isEdit" v-model="formData.birthday" placeholder="请输入出生日期" style="width: 100%"/>
-        <span v-else class="spanContent">{{coreTool.isEmpty(formData.birthday)?"无":formData.birthday}}</span>
-      </a-form-item>
-      <a-form-item field="idCard" label="身份证号码" show-colon>
-        <a-input v-if="isEdit" v-model="formData.idCard" placeholder="请输入身份证号码"/>
-        <span v-else class="spanContent">{{coreTool.isEmpty(formData.idCard)?"无":formData.idCard}}</span>
-      </a-form-item>
-    </a-form>
-  </div>
+  </a-card>
 </template>
 
 <script setup lang="ts">
@@ -139,5 +144,12 @@ watch(
 <style scoped>
 .spanContent{
   font-weight: bolder;
+}
+
+/*卡片样式*/
+.card {
+  height: 100%;
+  overflow: hidden;
+  text-align: center;
 }
 </style>

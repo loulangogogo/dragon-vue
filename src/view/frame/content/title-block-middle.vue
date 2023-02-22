@@ -19,17 +19,6 @@
                style="margin-left: 10px"
                :bordered="true"
                @click="clickTag(tag.path)">
-<!--          <template #icon>
-            <template v-if="tag.iconType===MenuIconTypeEnum.ICON">
-              <component :is="tag.icon" size="10"></component>
-            </template>
-            <template v-else-if="tag.iconType===MenuIconTypeEnum.ALI">
-              <span class="iconfont" :class="tag.icon" style="font-size: 15px"></span>
-            </template>
-            <template v-else-if="tag.iconType===MenuIconTypeEnum.IMG">
-              <a-image width="15" :preview="false" :src="tag.icon" style="filter: invert(100)"/>
-            </template>
-          </template>-->
           {{ tag.name }}
           <icon-close class="tagCloseIcon" @click.stop="closeTag(index)"/>
         </a-tag>

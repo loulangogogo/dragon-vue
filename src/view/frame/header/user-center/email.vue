@@ -1,24 +1,20 @@
 <template>
-  <div align="center" style="height: 100%">
-    <icon-email style="width: 50%;height: 50%"/>
-    <span class="spanfont">解绑邮箱</span>
-  </div>
+  <a-card hoverable class="card">
+    <template #extra>
+      <a-button type="outline">解绑邮箱</a-button>
+    </template>
+    <icon-email style="width: 50%;height: 50%;max-width: 150px;min-width: 50px;position: relative;top: 30px"/>
+  </a-card>
 </template>
 
 <script setup lang="ts">
 </script>
 
 <style scoped>
-.spanfont {
-  display: block;
-  font-size: 16px;
-  font-weight: bolder;
-  color: blue;
-  margin-top: 30px;
-  cursor: pointer;
-}
-
-.spanfont:hover {
-  font-size: 18px;
+/*卡片样式*/
+.card {
+  height: 100%;
+  overflow: hidden;
+  text-align: center;
 }
 </style>
