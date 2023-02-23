@@ -17,6 +17,7 @@ export default defineConfig({
     proxy: {
       '/dragon': {
         target: 'http://82.157.156.45:80/', // 实际请求地址
+        // target: 'http://127.0.0.1:8899/', // 实际请求地址
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/dragon/, "/dragon"),
       },
