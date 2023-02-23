@@ -124,3 +124,19 @@ export enum GrantTypeEnum {
     CLIENT_CREDENTIALS = "client_credentials",
 }
 
+/*********************************************************
+ ** 微信二维码类型
+ ** <br><br>
+ ** Date: Created in 2023/2/23 10:29
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export enum WechatQrcodeTypeEnum{
+    // 登陆
+    LOGIN = 10,
+    // 注册
+    REGISTER = 20,
+    // 用户绑定和解绑
+    BINDING_USER = 30,
+}
+

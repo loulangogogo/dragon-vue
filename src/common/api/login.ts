@@ -19,6 +19,6 @@ export const getToken = (loginData: LoginData) => {
  * @return
  * @author     :loulan
  * */
-export const getWechatQrcode = ()=>{
-    return ask.get("http://82.157.156.45:80/dragon/wechat/getQrcode")
+export const getWechatQrcode = (type:number)=>{
+    return ask.get(`http://82.157.156.45:80/dragon/wechat/getQrcode/${type}`)
 }

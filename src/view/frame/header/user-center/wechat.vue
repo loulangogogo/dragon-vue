@@ -30,13 +30,13 @@
 
 <script setup lang="ts">
 
-import {ref} from "vue";
+import {ref,reactive} from "vue";
 import QrcodeVue from 'qrcode.vue';
 import {getWechatQrcode} from "../../../../common/api/login";
-import {reactive} from "_vue@3.2.44@vue";
 import {Qrcode} from "../../../../common/domain/interfaces";
-import {core as coreTool, functionTool} from "_owner-tool-js@2.0.6@owner-tool-js";
+import {core as coreTool, functionTool} from "owner-tool-js";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
+import {WechatQrcodeTypeEnum} from "../../../../common/domain/enums";
 
 // 弹框显示
 const modalVisible = ref(false);
@@ -77,14 +77,14 @@ const getQrcode = async () => {
   // 如果定时器存在就先关闭定时器
   if (coreTool.isExist(setIntervalObj)) clearInterval(setIntervalObj);
   // 请求微信二维码
-  const res: ResponseResult = await getWechatQrcode();
+  const res: ResponseResult = await getWechatQrcode(WechatQrcodeTypeEnum.BINDING_USER);
   if (res.status === ResponseStatusEnum.OK) {
     functionTool.combineObj(qrcode, res.data);
     loading.value = false;
     bingdingWechatData.ticket = <string>qrcode.ticket;
     // 成功请求到数据之后，进入定时器进行定时token的请求
     setIntervalObj = setInterval(() => {
-      // fixme 2023/2/22(待修改) 不停的发送请求，看看用户是否已经扫码进行了绑定
+      console.info("等待扫码");
     }, 2500);
   } else {
     qrcode.url = "当前二维码错误，请重新操作。";

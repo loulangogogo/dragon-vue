@@ -15,7 +15,7 @@ import {getWechatQrcode} from "../../common/api/login";
 import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
 import {functionTool,core as coreTool} from "owner-tool-js";
 import {LoginModeEnum} from "../../common/domain/login";
-import {GrantTypeEnum} from "../../common/domain/enums";
+import {GrantTypeEnum, WechatQrcodeTypeEnum} from "../../common/domain/enums";
 import {Qrcode} from "../../common/domain/interfaces";
 
 // 事件对象
@@ -43,7 +43,7 @@ const getQrcode = async ()=>{
   // 如果定时器存在就先关闭定时器
   if (coreTool.isExist(setIntervalObj)) clearInterval(setIntervalObj);
   // 请求微信二维码
-  const res:ResponseResult = await getWechatQrcode();
+  const res:ResponseResult = await getWechatQrcode(WechatQrcodeTypeEnum.LOGIN);
   if (res.status === ResponseStatusEnum.OK) {
     functionTool.combineObj(qrcode,res.data)
 
