@@ -118,6 +118,8 @@ export enum GrantTypeEnum {
     AUTHORIZATION_CODE = "authorization_code",
     IMPLICIT = "implicit",
     PASSWORD = "password",
+    PHONE = "phone",
+    EMAIL = "email",
     WECHAT_MINI_PROGRAM = "wechat_mini_program",
     WECHAT_SCAN = "wechat_scan",
     REFRESH_TOKEN = "refresh_token",

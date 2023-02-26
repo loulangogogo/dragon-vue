@@ -4,10 +4,16 @@
       <a-input v-model="loginData.account" placeholder="请输入你的邮箱……"  allow-clear/>
     </a-form-item>
     <a-form-item field="password" label="验证码">
-      <a-input v-model="loginData.password" placeholder="请输入你的验证码……"  allow-clear/>
-      <a-button type="primary" status="success" @click="sendMessageCaptcha">
-        邮箱验证码
-      </a-button>
+      <a-input v-model="loginData.password" placeholder="请输入你的验证码……"  allow-clear>
+        <template #suffix>
+          <a-countdown v-if="isStartCountdown"
+                       :value="Date.now() + 90*1000"
+                       :now="Date.now()" format="ss"
+                       @finish="()=>isStartCountdown=false"
+                       :value-style="{fontSize: '14px'}"/>
+          <span v-else class="verifyCodeStyle" @click="sendMessageCaptcha">获取验证码</span>
+        </template>
+      </a-input>
     </a-form-item>
   </a-form>
   <div align="center" style="margin-top: 35px">
@@ -18,18 +24,26 @@
 <script lang="ts" setup>
 
 import {reactive, ref} from "vue";
-import {FieldRule, ValidatedError,Message} from "@arco-design/web-vue";
+import {FieldRule, Message, ValidatedError} from "@arco-design/web-vue";
 import * as $L from 'owner-tool-js';
-import {LoginModeEnum} from "../../common/domain/login";
 import {GrantTypeEnum} from "../../common/domain/enums";
+import {sendEmailLoginVerifyCode} from "../../common/api/login";
+import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
 
+// 事件对象
+const emits = defineEmits(['loginSubmit']);
+
+// 表单的ref
 const accountFormRef:any = ref(null);
+
+// 获取验证码的时候需要进行倒计时，这个是倒计时的开关
+const isStartCountdown = ref(false);
 
 // 登录需要的信息
 const loginData = reactive({
   account: "",
   password: "",
-  grant_type: GrantTypeEnum.PASSWORD,
+  grant_type: GrantTypeEnum.EMAIL,
 });
 
 // 表单校验规则
@@ -53,10 +67,16 @@ const formRules:Record<string, FieldRule | FieldRule[]> = {
  * @author     :loulan
  * */
 const sendMessageCaptcha = ()=> {
-  accountFormRef.value.validateField("account",(errors: undefined | Record<string, ValidatedError>) => {
+  accountFormRef.value.validateField("account", async (errors: undefined | Record<string, ValidatedError>) => {
     // 当errors为undefined的时候表示校验成功没有错误
     if ($L.core.isUndefined(errors)) {
-      Message.error("当前功能正在开发中。");
+      isStartCountdown.value = true;
+      const res:ResponseResult = await sendEmailLoginVerifyCode(loginData.account);
+      if (res.status === ResponseStatusEnum.OK) {
+        // 暂时不进行任何操作
+      } else {
+        isStartCountdown.value = false;
+      }
     }
   });
 }
@@ -71,12 +91,17 @@ const submit = () => {
   accountFormRef.value.validate((errors: undefined | Record<string, ValidatedError>) => {
     // 当errors为undefined的时候表示校验成功没有错误
     if ($L.core.isUndefined(errors)) {
-      Message.error("当前功能正在开发中。");
+      emits('loginSubmit', loginData);
     }
   });
 }
 </script>
 
 <style scoped>
-
+.verifyCodeStyle{
+  cursor: pointer;
+}
+.verifyCodeStyle:hover {
+  color: blue;
+}
 </style>
