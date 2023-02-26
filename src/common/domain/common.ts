@@ -37,7 +37,7 @@ export interface UserInfo{
     sex?: number;
     birthday?: string;
     idCard?: string;
-    openId?: string;
+    openid?: string;
 }
 
 /*********************************************************

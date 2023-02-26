@@ -142,3 +142,31 @@ export enum WechatQrcodeTypeEnum{
     BINDING_USER = 30,
 }
 
+/*********************************************************
+ ** 邮件消息类型
+ ** <br><br>
+ ** Date: Created in 2023/2/26 21:38
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export enum EmailMessageTypeEnum{
+    VALIFY_CODE = 10,
+    REGISTER = 20,
+    LOGIN = 30,
+    BINGDING_USER = 40,
+}
+
+/*********************************************************
+ ** 手机短信消息类型
+ ** <br><br>
+ ** Date: Created in 2023/2/26 21:38
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export enum PhoneMessageTypeEnum{
+    VALIFY_CODE = 10,
+    REGISTER = 20,
+    LOGIN = 30,
+    BINGDING_USER = 40,
+}
+

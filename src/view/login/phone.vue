@@ -32,7 +32,7 @@ import {FieldRule, Message, ValidatedError} from "@arco-design/web-vue";
 import * as $L from 'owner-tool-js';
 import {GrantTypeEnum} from "../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
-import {sendPhoneLoginVerifyCode} from "../../common/api/login";
+import {sendPhoneLoginVerifyCode} from "../../common/api/phone";
 
 defineProps({
   // 登录按钮的加载状态

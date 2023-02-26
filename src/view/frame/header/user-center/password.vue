@@ -9,6 +9,15 @@
 
 <script setup lang="ts">
 
+import {UserInfo} from "../../../../common/domain/common";
+
+// 绑定修改数据之后需要重新获取当前用户信息，修改存在store中的当前用户信息
+const emits = defineEmits(["reset-user-info"]);
+// 用户信息
+const {userInfo} = defineProps<{
+  userInfo: UserInfo
+}>();
+
 </script>
 
 <style scoped>

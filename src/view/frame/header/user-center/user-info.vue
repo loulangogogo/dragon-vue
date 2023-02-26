@@ -51,13 +51,20 @@
 
 // 表单的ref
 import {SexEnum} from "../../../../common/domain/enums";
-import {computed, onMounted, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import {useStore} from "vuex";
-import {core as coreTool,functionTool} from 'owner-tool-js';
+import {core as coreTool, functionTool} from 'owner-tool-js';
 import {currentUserInfo, currentUserInfoUpdate} from "../../../../common/api/frame";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {UserInfo} from "../../../../common/domain/common";
 import {DragonNotice} from "../../../../common/domain/component";
+
+// 绑定修改数据之后需要重新获取当前用户信息，修改存在store中的当前用户信息
+const emits = defineEmits(["reset-user-info"]);
+// 用户信息
+const {userInfo} = defineProps<{
+  userInfo: UserInfo
+}>();
 
 // 用来判断是否处于编辑的状态
 const isEdit = ref(false);

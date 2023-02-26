@@ -27,7 +27,7 @@ import {reactive, ref} from "vue";
 import {FieldRule, Message, ValidatedError} from "@arco-design/web-vue";
 import * as $L from 'owner-tool-js';
 import {GrantTypeEnum} from "../../common/domain/enums";
-import {sendEmailLoginVerifyCode} from "../../common/api/login";
+import {sendEmailLoginVerifyCode} from "../../common/api/email";
 import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
 
 defineProps({

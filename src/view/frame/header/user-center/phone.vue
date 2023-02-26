@@ -1,14 +1,15 @@
 <template>
   <a-card hoverable class="card">
     <template #extra>
-      <a-button type="outline" @click="dealPhone">解绑手机</a-button>
+      <a-button type="outline" @click="dealPhone">{{isBinding?'解绑':'绑定'}}手机</a-button>
     </template>
-    <icon-phone style="width: 50%;height: 50%;max-width: 150px;min-width: 50px;position: relative;top: 30px"/>
+    <icon-phone :style="{color: isBinding?'blue':''}"
+                style="width: 50%;height: 50%;max-width: 150px;min-width: 50px;position: relative;top: 30px"/>
   </a-card>
 
   <!--绑定和解绑手机-->
   <a-modal v-model:visible="modalVisible"
-           title="绑定手机"
+           :title="'扫码绑'+(isBinding?'解绑':'绑定')+'手机'"
            title-align="start"
            width="550px"
            :mask-closable="false"
@@ -39,6 +40,19 @@
 import {reactive, ref} from "vue";
 import {FieldRule, Message, ValidatedError} from "@arco-design/web-vue";
 import * as $L from "owner-tool-js";
+import {UserInfo} from "../../../../common/domain/common";
+import {computed} from "_vue@3.2.44@vue";
+import {core as coreTool} from "_owner-tool-js@2.0.6@owner-tool-js";
+
+// 绑定修改数据之后需要重新获取当前用户信息，修改存在store中的当前用户信息
+const emits = defineEmits(["reset-user-info"]);
+// 用户信息
+const {userInfo} = defineProps<{
+  userInfo: UserInfo
+}>();
+
+// 是否已经绑定
+const isBinding = computed(() => coreTool.isNotEmpty(userInfo.openid));
 
 // 弹框显示
 const modalVisible = ref(false);

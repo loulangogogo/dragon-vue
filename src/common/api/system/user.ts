@@ -62,3 +62,47 @@ export const currentUserBindingWechat = (ticket:string)=>{
 export const currentUserUnbindingWechat = (ticket:string)=>{
     return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserUnbindingWechat?ticket=${ticket}`);
 }
+
+/*********************************************************
+ ** 当前用户绑定邮箱
+ ** <br><br>
+ ** Date: Created in 2023/2/26 15:25
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export const currentUserBindingEmail = (data:any)=>{
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserBindingEmail`,data);
+}
+
+/*********************************************************
+ ** 当前用户解除绑定邮箱
+ ** <br><br>
+ ** Date: Created in 2023/2/26 15:26
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export const currentUserUnbindingEmail = (data:any)=>{
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserUnbindingEmail`,data);
+}
+
+/*********************************************************
+ ** 当前用户绑定手机
+ ** <br><br>
+ ** Date: Created in 2023/2/26 15:25
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export const currentUserBindingPhone = (data:any)=>{
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserBindingPhone`,data);
+}
+
+/*********************************************************
+ ** 当前用户解除绑定手机
+ ** <br><br>
+ ** Date: Created in 2023/2/26 15:26
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export const currentUserUnbindingPhone = (data:any)=>{
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserUnbindingPhone`,data);
+}
