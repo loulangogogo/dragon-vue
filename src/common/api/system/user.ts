@@ -40,3 +40,25 @@ export const userUpdate = (data:any) => {
 export const userDel = (id:number) => {
     return ask.delete(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/delete/${id}`);
 }
+
+/*********************************************************
+ ** 当前用户绑定微信
+ ** <br><br>
+ ** Date: Created in 2023/2/26 15:25
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export const currentUserBindingWechat = (ticket:string)=>{
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserBindingWechat?ticket=${ticket}`);
+}
+
+/*********************************************************
+ ** 当前用户解除绑定微信
+ ** <br><br>
+ ** Date: Created in 2023/2/26 15:26
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export const currentUserUnbindingWechat = (ticket:string)=>{
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserUnbindingWechat?ticket=${ticket}`);
+}

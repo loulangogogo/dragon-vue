@@ -2,14 +2,15 @@
   <!--展示的卡片-->
   <a-card hoverable class="card">
     <template #extra>
-      <a-button type="outline" @click="dealWechat">绑定微信</a-button>
+      <a-button type="outline" @click="dealWechat">{{isBindingWechat?'解绑':'绑定'}}微信</a-button>
     </template>
-    <icon-wechat style="width: 50%;height: 50%;max-width: 150px;min-width: 50px;position: relative;top: 30px"/>
+    <icon-wechat :style="{color: isBindingWechat?'blue':''}"
+                 style="width: 50%;height: 50%;max-width: 150px;min-width: 50px;position: relative;top: 30px"/>
   </a-card>
 
   <!--绑定和解绑微信-->
   <a-modal v-model:visible="modalVisible"
-           title="扫码绑定微信"
+           :title="'扫码绑'+(isBindingWechat?'解绑':'绑定')+'微信'"
            title-align="start"
            width="350px"
            :mask-closable="false"
@@ -30,13 +31,28 @@
 
 <script setup lang="ts">
 
-import {ref,reactive} from "vue";
+import {ref, reactive, computed} from "vue";
 import QrcodeVue from 'qrcode.vue';
 import {getWechatQrcode} from "../../../../common/api/login";
 import {Qrcode} from "../../../../common/domain/interfaces";
 import {core as coreTool, functionTool} from "owner-tool-js";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {WechatQrcodeTypeEnum} from "../../../../common/domain/enums";
+import {UserInfo} from "../../../../common/domain/common";
+import {
+  currentUserBindingWechat,
+  currentUserUnbindingWechat
+} from "../../../../common/api/system/user";
+import {DragonNotice} from "../../../../common/domain/component";
+
+const emits = defineEmits(["reset-user-info"]);
+
+const {userInfo} = defineProps<{
+  userInfo: UserInfo
+}>();
+
+// 是否已经绑定微信
+const isBindingWechat = computed(() => coreTool.isNotEmpty(userInfo.openId));
 
 // 弹框显示
 const modalVisible = ref(false);
@@ -84,7 +100,27 @@ const getQrcode = async () => {
     bingdingWechatData.ticket = <string>qrcode.ticket;
     // 成功请求到数据之后，进入定时器进行定时token的请求
     setIntervalObj = setInterval(() => {
-      console.info("等待扫码");
+      if (isBindingWechat) {
+        // 如果已经绑定微信，那么这里就是解除绑定
+        currentUserUnbindingWechat(bingdingWechatData.ticket).then((res:ResponseResult) => {
+          if (res.status === ResponseStatusEnum.OK) {
+            if (coreTool.isExist(setIntervalObj)) clearInterval(setIntervalObj);
+            modalVisible.value = false;
+            emits("reset-user-info");
+            DragonNotice.success("微信解绑成功");
+          }
+        })
+      } else {
+        // 如果没有绑定卫星，那么这里就是绑定微信
+        currentUserBindingWechat(bingdingWechatData.ticket).then((res:ResponseResult) => {
+          if (res.status === ResponseStatusEnum.OK) {
+            if (coreTool.isExist(setIntervalObj)) clearInterval(setIntervalObj);
+            modalVisible.value = false;
+            emits("reset-user-info");
+            DragonNotice.success("微信绑定成功");
+          }
+        })
+      }
     }, 2500);
   } else {
     qrcode.url = "当前二维码错误，请重新操作。";

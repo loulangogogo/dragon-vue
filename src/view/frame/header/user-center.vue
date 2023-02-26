@@ -1,7 +1,7 @@
 <template>
   <a-row style="height: 50%">
     <a-col :span="12" class="card_col">
-      <user-info></user-info>
+      <user-data></user-data>
     </a-col>
     <a-col :span="12" class="card_col">
       <Password></Password>
@@ -15,7 +15,7 @@
       <email></email>
     </a-col>
     <a-col :span="8" class="card_col">
-      <wechat></wechat>
+      <wechat :user-info="userInfo" @reset-user-info="resetUserInfo"></wechat>
     </a-col>
   </a-row>
 </template>
@@ -25,7 +25,43 @@ import Phone from './user-center/phone.vue';
 import Email from './user-center/email.vue';
 import Wechat from './user-center/wechat.vue';
 import Password from "./user-center/password.vue";
-import UserInfo from "./user-center/user-info.vue";
+import UserData from './user-center/user-info.vue';
+import {computed} from "vue";
+import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
+import {currentUserInfo} from "../../../common/api/frame";
+import {dragonConfirm} from "../../../common/domain/component";
+import {useStore} from "vuex";
+
+const props = defineProps({
+  contentHeight: {
+    type: Number,
+    required: true,
+    default: 0
+  }
+});
+
+const store = useStore();
+// 同步获取用户信息
+const userInfo = computed(() => store.getters.userInfo);
+
+/**
+ * 重新设置获取用户信息
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+const resetUserInfo = async ()=>{
+  // 登录之后获取当前用户个人信息
+  const res:ResponseResult = await currentUserInfo();
+  if (res.status == ResponseStatusEnum.OK && res.data) {
+    store.commit("setUserInfo", res.data);
+  } else {
+    dragonConfirm({
+      content:"更新用户信息失败，请刷新当前页面。"
+    });
+  }
+}
+
 </script>
 
 <style scoped>

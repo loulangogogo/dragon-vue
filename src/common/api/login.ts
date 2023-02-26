@@ -1,6 +1,5 @@
 import ask from "../ask";
 import {LoginData} from "../domain/login";
-import {GrantTypeEnum} from "../domain/enums";
 
 /**
  * 登录
@@ -23,24 +22,24 @@ export const getWechatQrcode = (type:number)=>{
     return ask.get(`${import.meta.env.VITE_REQUEST_AUTH_PRE}/wechat/getQrcode/${type}`)
 }
 
-/*********************************************************
- ** 发送手机登陆验证码
- ** <br><br>
- ** Date: Created in 2023/2/26 10:21
- ** @author loulan
- ** @version 0.0.0
- *********************************************************/
+/**
+ * 发送手机登陆验证码
+ * @param
+ * @return
+ * @author     :loulan
+ * */
 export const sendPhoneLoginVerifyCode = (phone:number|undefined) => {
     return ask.put(`${import.meta.env.VITE_REQUEST_HANDLER_PRE}/phone/sendLoginVerifyCode?phone=${phone}`)
 }
 
-/*********************************************************
- ** 发送邮箱登陆验证码
- ** <br><br>
- ** Date: Created in 2023/2/26 10:21
- ** @author loulan
- ** @version 0.0.0
- *********************************************************/
+/**
+ * 发送邮件登陆验证码
+ * @param
+ * @return
+ * @author     :loulan
+ * */
 export const sendEmailLoginVerifyCode = (email:string|undefined) => {
     return ask.put(`${import.meta.env.VITE_REQUEST_HANDLER_PRE}/email/sendLoginVerifyCode?email=${email}`)
 }
+
+
