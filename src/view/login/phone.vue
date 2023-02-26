@@ -21,7 +21,7 @@
     </a-form-item>
   </a-form>
   <div align="center" style="margin-top: 35px">
-    <a-button type="primary" @click="submit" size="large" style="width: 150px">登录</a-button>
+    <a-button type="primary" @click="submit" size="large" style="width: 150px" :loading="loginButtonLoading">登录</a-button>
   </div>
 </template>
 
@@ -33,6 +33,15 @@ import * as $L from 'owner-tool-js';
 import {GrantTypeEnum} from "../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
 import {sendPhoneLoginVerifyCode} from "../../common/api/login";
+
+defineProps({
+  // 登录按钮的加载状态
+  loginButtonLoading:{
+    type: Boolean,
+    required: false,
+    default: false
+  }
+})
 
 // 事件对象
 const emits = defineEmits(['loginSubmit']);

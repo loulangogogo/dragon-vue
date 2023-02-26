@@ -1,9 +1,10 @@
 <template>
   <div align="center" style="position: static">
-    <qrcode-vue :value="qrcode.url"
-                :size="200"
-                background="rgba(0,0,0,0)"
-    ></qrcode-vue>
+    <a-spin :loading="loading" tip="加载中……">
+      <qrcode-vue :value="qrcode.url"
+                  :size="200"
+                  background="rgba(0,0,0,0)"/>
+    </a-spin>
   </div>
 </template>
 
@@ -13,7 +14,7 @@ import {onMounted, onUnmounted, reactive, ref} from "vue";
 import QrcodeVue from 'qrcode.vue';
 import {getWechatQrcode} from "../../common/api/login";
 import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
-import {functionTool,core as coreTool} from "owner-tool-js";
+import {functionTool, core as coreTool} from "owner-tool-js";
 import {LoginModeEnum} from "../../common/domain/login";
 import {GrantTypeEnum, WechatQrcodeTypeEnum} from "../../common/domain/enums";
 import {Qrcode} from "../../common/domain/interfaces";
@@ -30,8 +31,11 @@ const loginData = reactive({
 // 微信二维码对象数据
 let qrcode = reactive<Qrcode>({});
 
+// 二维码的加载状态
+const loading = ref(false);
+
 // 定时请求token的对象
-let setIntervalObj:number;
+let setIntervalObj: number;
 
 /**
  * 获取微信登陆二维码
@@ -39,15 +43,17 @@ let setIntervalObj:number;
  * @return
  * @author     :loulan
  * */
-const getQrcode = async ()=>{
+const getQrcode = async () => {
+  loading.value = true;
   // 如果定时器存在就先关闭定时器
   if (coreTool.isExist(setIntervalObj)) clearInterval(setIntervalObj);
   // 请求微信二维码
-  const res:ResponseResult = await getWechatQrcode(WechatQrcodeTypeEnum.LOGIN);
+  const res: ResponseResult = await getWechatQrcode(WechatQrcodeTypeEnum.LOGIN);
   if (res.status === ResponseStatusEnum.OK) {
-    functionTool.combineObj(qrcode,res.data)
+    functionTool.combineObj(qrcode, res.data)
 
     loginData.ticket = <string>qrcode.ticket;
+    loading.value = false;
     // 成功请求到数据之后，进入定时器进行定时token的请求
     setIntervalObj = setInterval(() => {
       // 如果对象对象请求成功就会跳转无须专门关闭定时器
@@ -56,11 +62,11 @@ const getQrcode = async ()=>{
   }
 }
 
-onMounted(()=>{
+onMounted(() => {
   getQrcode();
 })
 
-onUnmounted(()=>{
+onUnmounted(() => {
   // 如果定时器存在就先关闭定时器
   if (coreTool.isExist(setIntervalObj)) clearInterval(setIntervalObj);
 })

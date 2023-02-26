@@ -1,7 +1,7 @@
 <template>
   <div id="loginBackDiv">
     <div id="loginFrameDiv">
-      <a-tabs :default-active-key="currentTabPane" size="large" :animation="true" @change="(val)=>currentTabPane=val">
+      <a-tabs :default-active-key="currentTabPane" size="large"  @change="(val)=>currentTabPane=val">
         <a-tab-pane :key="LoginModeEnum.account">
           <template #title>
             <span class="spanTitle">账号登录</span>
@@ -25,7 +25,8 @@
             <span class="spanTitle">手机登录</span>
           </template>
           <div class="contentDiv">
-            <login-phone ref="loginPhoneRef" v-if="currentTabPane === LoginModeEnum.phone"></login-phone>
+            <login-phone ref="loginPhoneRef" v-if="currentTabPane === LoginModeEnum.phone"
+                         @loginSubmit="login" :loginButtonLoading="loginButtonLoading"></login-phone>
           </div>
         </a-tab-pane>
         <a-tab-pane :key="LoginModeEnum.email">
@@ -33,7 +34,8 @@
             <span class="spanTitle">邮箱登录</span>
           </template>
           <div class="contentDiv">
-            <login-email ref="loginEmailRef" v-if="currentTabPane === LoginModeEnum.email"></login-email>
+            <login-email ref="loginEmailRef" v-if="currentTabPane === LoginModeEnum.email"
+                         @loginSubmit="login" :loginButtonLoading="loginButtonLoading"></login-email>
           </div>
         </a-tab-pane>
       </a-tabs>
