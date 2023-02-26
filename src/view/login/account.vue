@@ -1,7 +1,7 @@
 <template>
   <a-form :model="loginData" :rules="formRules" ref="accountFormRef" size="large">
     <a-form-item field="account" label="用户名">
-      <a-input v-model="loginData.account" placeholder="请输入你的用户名……" allow-clear/>
+      <a-input v-model="loginData.account" placeholder="用户名/手机/邮箱" allow-clear/>
     </a-form-item>
     <a-form-item field="password" label="密码">
       <a-input-password v-model="loginData.password" placeholder="请输入密码……" allow-clear autocomplete/>
