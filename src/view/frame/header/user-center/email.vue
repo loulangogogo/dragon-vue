@@ -9,7 +9,7 @@
 
   <!--绑定和解绑手机-->
   <a-modal v-model:visible="modalVisible"
-           :title="'扫码绑'+(isBinding?'解绑':'绑定')+'邮箱'"
+           :title="(isBinding?'解绑':'绑定')+'邮箱'"
            title-align="start"
            width="550px"
            :mask-closable="false"
@@ -25,7 +25,8 @@
           <template #suffix>
             <a-countdown v-if="isStartCountdown"
                          :value="Date.now() + 90*1000"
-                         :now="Date.now()" format="ss"
+                         :now="Date.now()"
+                         format="ss"
                          @finish="()=>isStartCountdown=false"
                          :value-style="{fontSize: '14px'}"/>
             <span v-else class="verifyCodeStyle" @click="sendMessageCaptcha">获取验证码</span>
@@ -42,12 +43,11 @@
 
 <script setup lang="ts">
 
-import {reactive, ref} from "vue";
+import {reactive, ref,computed} from "vue";
 import {FieldRule, Message, ValidatedError} from "@arco-design/web-vue";
 import * as $L from "owner-tool-js";
 import {UserInfo} from "../../../../common/domain/common";
-import {computed} from "_vue@3.2.44@vue";
-import {core as coreTool} from "_owner-tool-js@2.0.6@owner-tool-js";
+import {core as coreTool} from "owner-tool-js";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {sendEmailCurrentUserUnbindingVerifyCode,sendEmailVerifyCode} from "../../../../common/api/email";
 import {EmailMessageTypeEnum} from "../../../../common/domain/enums";
