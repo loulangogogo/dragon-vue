@@ -11,6 +11,16 @@ export const sendEmailCurrentUserUnbindingVerifyCode = () => {
 }
 
 /**
+ * 发送当前用户邮件的验证码
+ * @param   type 消息类型
+ * @return
+ * @author     :loulan
+ * */
+export const sendEmailCurrentUserVerifyCode = (type:number) => {
+    return ask.put(`${import.meta.env.VITE_REQUEST_HANDLER_PRE}/email/sendCurrentUserVerifyCode?type=${type}`)
+}
+
+/**
  * 发送邮件的验证码
  * @param
  * @return

@@ -1,13 +1,13 @@
 <template>
   <a-form :model="loginData" :rules="formRules" ref="accountFormRef" size="large">
     <a-form-item field="account" label="用户名">
-      <a-input v-model="loginData.account" placeholder="用户名/手机/邮箱" allow-clear/>
+      <a-input v-model="loginData.account" @keyup.enter="submit" placeholder="用户名/手机/邮箱" allow-clear/>
     </a-form-item>
     <a-form-item field="password" label="密码">
-      <a-input-password v-model="loginData.password" placeholder="请输入密码……" allow-clear autocomplete/>
+      <a-input-password v-model="loginData.password" @keyup.enter="submit" placeholder="请输入密码……" allow-clear autocomplete/>
     </a-form-item>
     <a-form-item field="captchaCode" label="验证码">
-      <a-input v-model="loginData.captchaCode" placeholder="验证码……" allow-clear/>
+      <a-input v-model="loginData.captchaCode" @keyup.enter="submit" placeholder="验证码……" allow-clear/>
       <a-image :src="loginData.captchaUrl" height="34" width="100px" :preview="false" @click="getCaptcha"></a-image>
     </a-form-item>
   </a-form>

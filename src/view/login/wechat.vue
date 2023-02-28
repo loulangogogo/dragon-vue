@@ -29,7 +29,9 @@ const loginData = reactive({
 });
 
 // 微信二维码对象数据
-let qrcode = reactive<Qrcode>({});
+let qrcode = reactive<Qrcode>({
+  url:"二维码正在生成……"
+});
 
 // 二维码的加载状态
 const loading = ref(false);

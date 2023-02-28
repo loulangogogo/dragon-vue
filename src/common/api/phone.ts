@@ -2,7 +2,7 @@ import ask from "../ask";
 
 /**
  * 发送当前用户解绑手机的验证码
- * @param
+ * @param type 消息类型
  * @return
  * @author     :loulan
  * */
@@ -11,12 +11,22 @@ export const sendPhoneCurrentUserUnbindingVerifyCode = () => {
 }
 
 /**
+ * 发送当前用户手机的验证码
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const sendPhoneCurrentUserVerifyCode = (type: number) => {
+    return ask.put(`${import.meta.env.VITE_REQUEST_HANDLER_PRE}/phone/sendCurrentUserVerifyCode?type=${type}`)
+}
+
+/**
  * 发送手机的验证码
  * @param
  * @return
  * @author     :loulan
  * */
-export const sendPhoneVerifyCode = (phone:string|undefined,type:number) => {
+export const sendPhoneVerifyCode = (phone: string | undefined, type: number) => {
     return ask.put(`${import.meta.env.VITE_REQUEST_HANDLER_PRE}/phone/sendVerifyCode?phone=${phone}&type=${type}`)
 }
 
@@ -26,6 +36,6 @@ export const sendPhoneVerifyCode = (phone:string|undefined,type:number) => {
  * @return
  * @author     :loulan
  * */
-export const sendPhoneLoginVerifyCode = (phone:number|undefined) => {
+export const sendPhoneLoginVerifyCode = (phone: number | undefined) => {
     return ask.put(`${import.meta.env.VITE_REQUEST_HANDLER_PRE}/phone/sendLoginVerifyCode?phone=${phone}`)
 }
