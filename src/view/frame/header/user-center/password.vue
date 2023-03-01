@@ -17,10 +17,10 @@
            :auto-label-width="true"
            @close="close">
     <div>
-      <phone-verify v-if="FixPasswordType.PHONE===formData.type" :is-visible-account="false" v-model:verify-code="formData.verifyCode" :type="PhoneMessageTypeEnum.FIX_PASSWORD"></phone-verify>
-      <email-verify v-if="FixPasswordType.EMAIL===formData.type" :is-visible-account="false" v-model:verify-code="formData.verifyCode" :type="EmailMessageTypeEnum.FIX_PASSWORD"></email-verify>
+      <phone-verify v-if="FixPasswordType.PHONE===formData.type" ref="phoneVerifyRef" :is-visible-account="false" v-model:verify-code="formData.verifyCode" :type="PhoneMessageTypeEnum.FIX_PASSWORD"></phone-verify>
+      <email-verify v-if="FixPasswordType.EMAIL===formData.type" ref="emailVerifyRef" :is-visible-account="false" v-model:verify-code="formData.verifyCode" :type="EmailMessageTypeEnum.FIX_PASSWORD"></email-verify>
 
-      <a-form :model="formData" :rules="formRules" ref="formRef" size="large">
+      <a-form :model="formData" :rules="formRules" ref="passwordFormRef" size="large">
         <a-form-item v-if="FixPasswordType.PASSWORD===formData.type" field="oldPassword" label="旧密码">
           <a-input v-model="formData.oldPassword" placeholder="请输入旧密码……" allow-clear/>
         </a-form-item>
@@ -67,10 +67,14 @@
 
 import {UserInfo} from "../../../../common/domain/common";
 import {reactive, ref} from "vue";
-import {FieldRule} from "@arco-design/web-vue";
+import {FieldRule,ValidatedError} from "@arco-design/web-vue";
 import EmailVerify from "../../../../common/components/email-verify.vue";
 import PhoneVerify from "../../../../common/components/phone-verify.vue";
 import {EmailMessageTypeEnum, PhoneMessageTypeEnum} from "../../../../common/domain/enums";
+import {core as coreTool} from "owner-tool-js";
+import {DragonNotice} from "../../../../common/domain/component";
+import {fixCurrentuserPassword} from "../../../../common/api/system/user";
+import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 
 // 绑定修改数据之后需要重新获取当前用户信息，修改存在store中的当前用户信息
 const emits = defineEmits(["reset-user-info"]);
@@ -81,6 +85,10 @@ const {userInfo} = defineProps<{
 
 // 弹框显示变量
 const modalVisible = ref(false);
+
+const phoneVerifyRef = ref();
+const emailVerifyRef = ref();
+const passwordFormRef = ref();
 
 // 确定提交按钮的加载状态
 const submitLoading = ref(false);
@@ -114,17 +122,12 @@ const formRules: Record<string, FieldRule | FieldRule[]> = {
   oldPassword: {
     type: "string",
     required: true,
-    message: "验证码不能为空"
+    message: "旧密码不能为空"
   },
   newPassword: {
     type: "string",
     required: true,
-    message: "验证码不能为空"
-  },
-  verifyCode: {
-    type: "string",
-    required: true,
-    message: "验证码不能为空"
+    message: "新密码不能为空"
   }
 }
 
@@ -139,13 +142,64 @@ const dealPassword = ()=>{
 }
 
 /**
+ * 修改密码
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+const submitFixPassword = async ()=>{
+  submitLoading.value = true;
+  const res: ResponseResult = await fixCurrentuserPassword(formData);
+  if (res.status === ResponseStatusEnum.OK) {
+    modalVisible.value = false;
+    submitLoading.value = false;
+    DragonNotice.success("密码修改成功");
+  } else {
+    submitLoading.value = false;
+  }
+}
+
+/**
  * 点击确定提交按钮
  * @param
  * @return
  * @author     :loulan
  * */
 const submit = ()=>{
-
+  if (FixPasswordType.PASSWORD === formData.type) {
+    passwordFormRef.value.validate((errors: undefined | Record<string, ValidatedError>) => {
+      // 当errors为undefined的时候表示校验成功没有错误
+      if (coreTool.isUndefined(errors)) {
+        submitFixPassword();
+      }
+    });
+  }else if (FixPasswordType.EMAIL === formData.type) {
+    emailVerifyRef.value.validate((verify:boolean)=>{
+      if (verify) {
+        passwordFormRef.value.validate((errors: undefined | Record<string, ValidatedError>) => {
+          // 当errors为undefined的时候表示校验成功没有错误
+          if (coreTool.isUndefined(errors)) {
+            submitFixPassword();
+            emailVerifyRef.value.clearCountDown();
+          }
+        });
+      }
+    })
+  }else if (FixPasswordType.PHONE === formData.type) {
+    phoneVerifyRef.value.validate((verify: boolean) => {
+      if (verify) {
+        passwordFormRef.value.validate((errors: undefined | Record<string, ValidatedError>) => {
+          // 当errors为undefined的时候表示校验成功没有错误
+          if (coreTool.isUndefined(errors)) {
+            submitFixPassword();
+            phoneVerifyRef.value.clearCountDown();
+          }
+        });
+      }
+    });
+  } else {
+    DragonNotice.error("修改密码类型错误。");
+  }
 }
 
 /**

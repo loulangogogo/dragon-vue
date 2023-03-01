@@ -41,68 +41,72 @@ export const userDel = (id:number) => {
     return ask.delete(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/delete/${id}`);
 }
 
-/*********************************************************
- ** 当前用户绑定微信
- ** <br><br>
- ** Date: Created in 2023/2/26 15:25
- ** @author loulan
- ** @version 0.0.0
- *********************************************************/
+/**
+ * 当前用户绑定微信
+ * @param
+ * @return
+ * @author     :loulan
+ * */
 export const currentUserBindingWechat = (ticket:string)=>{
     return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserBindingWechat?ticket=${ticket}`);
 }
 
-/*********************************************************
- ** 当前用户解除绑定微信
- ** <br><br>
- ** Date: Created in 2023/2/26 15:26
- ** @author loulan
- ** @version 0.0.0
- *********************************************************/
+/**
+ * 当前用户解除绑定微信
+ * @param
+ * @return
+ * @author     :loulan
+ * */
 export const currentUserUnbindingWechat = (ticket:string)=>{
     return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserUnbindingWechat?ticket=${ticket}`);
 }
 
-/*********************************************************
- ** 当前用户绑定邮箱
- ** <br><br>
- ** Date: Created in 2023/2/26 15:25
- ** @author loulan
- ** @version 0.0.0
- *********************************************************/
+/**
+ * 当前用户绑定邮箱
+ * @param
+ * @return
+ * @author     :loulan
+ * */
 export const currentUserBindingEmail = (data:any)=>{
     return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserBindingEmail`,data);
 }
 
-/*********************************************************
- ** 当前用户解除绑定邮箱
- ** <br><br>
- ** Date: Created in 2023/2/26 15:26
- ** @author loulan
- ** @version 0.0.0
- *********************************************************/
+/**
+ * 当前用户解除绑定邮箱
+ * @param
+ * @return
+ * @author     :loulan
+ * */
 export const currentUserUnbindingEmail = (data:any)=>{
     return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserUnbindingEmail`,data);
 }
 
-/*********************************************************
- ** 当前用户绑定手机
- ** <br><br>
- ** Date: Created in 2023/2/26 15:25
- ** @author loulan
- ** @version 0.0.0
- *********************************************************/
+/**
+ * 当前用户绑定手机
+ * @param
+ * @return
+ * @author     :loulan
+ * */
 export const currentUserBindingPhone = (data:any)=>{
     return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserBindingPhone`,data);
 }
 
-/*********************************************************
- ** 当前用户解除绑定手机
- ** <br><br>
- ** Date: Created in 2023/2/26 15:26
- ** @author loulan
- ** @version 0.0.0
- *********************************************************/
+/**
+ * 当前用户解除绑定手机
+ * @param
+ * @return
+ * @author     :loulan
+ * */
 export const currentUserUnbindingPhone = (data:any)=>{
     return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserUnbindingPhone`,data);
+}
+
+/**
+ * 修改当前用户密码
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const fixCurrentuserPassword = (data:any) => {
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/fixCurrentuserPassword`,data);
 }
