@@ -26,7 +26,7 @@ export const sendPhoneCurrentUserVerifyCode = (type: number) => {
  * @return
  * @author     :loulan
  * */
-export const sendPhoneVerifyCode = (phone: string | undefined, type: number) => {
+export const sendPhoneVerifyCode = (phone: number | undefined, type: number) => {
     return ask.put(`${import.meta.env.VITE_REQUEST_HANDLER_PRE}/phone/sendVerifyCode?phone=${phone}&type=${type}`)
 }
 

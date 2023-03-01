@@ -16,31 +16,11 @@
            layout="horizontal"
            :auto-label-width="true"
            @close="close">
-    <div align="center" style="position: static">
-      <a-form :model="formData" :rules="formRules" ref="accountFormRef" size="large">
-        <a-form-item v-if="!isBinding" field="phone" label="手机号">
-          <a-input-number v-model="formData.phone" placeholder="请输入你的手机号……" class="phoneInputNumber">
-            <template #prepend>
-              +86
-            </template>
-          </a-input-number>
-        </a-form-item>
-        <a-form-item field="verifyCode" label="验证码">
-          <a-input v-model="formData.verifyCode" placeholder="请输入你的验证码……"  allow-clear>
-            <template #suffix>
-              <a-countdown v-if="isStartCountdown"
-                  :value="Date.now() + 10 * 1000"
-                  :now="Date.now()"
-                  format="ss"
-                  @finish="()=>isStartCountdown=false"
-                  :value-style="{fontSize: '14px'}"/>
-              <span v-else class="verifyCodeStyle" @click="sendMessageCaptcha">获取验证码</span>
-            </template>
-          </a-input>
-        </a-form-item>
-      </a-form>
-    </div>
-
+    <phone-verify v-model:account="formData.phone"
+                  v-model:verify-code="formData.verifyCode"
+                  :is-visible-account="!isBinding"
+                  ref="phoneVerifyRef"
+                  :type="PhoneMessageTypeEnum.BINGDING_USER"/>
     <template #footer>
       <a-button type="outline" @click="modalVisible=false">取消</a-button>
       <a-button type="primary" @click="submit" :loading="submitLoading">确定</a-button>
@@ -50,15 +30,13 @@
 
 <script setup lang="ts">
 import {computed, reactive, ref} from "vue";
-import {FieldRule, ValidatedError} from "@arco-design/web-vue";
-import * as $L from "owner-tool-js";
 import {core as coreTool} from "owner-tool-js";
 import {UserInfo} from "../../../../common/domain/common";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {PhoneMessageTypeEnum} from "../../../../common/domain/enums";
-import {sendPhoneCurrentUserUnbindingVerifyCode, sendPhoneVerifyCode} from "../../../../common/api/phone";
 import {currentUserBindingPhone, currentUserUnbindingPhone} from "../../../../common/api/system/user";
 import {DragonNotice} from "../../../../common/domain/component";
+import PhoneVerify from "../../../../common/components/phone-verify.vue";
 
 // 绑定修改数据之后需要重新获取当前用户信息，修改存在store中的当前用户信息
 const emits = defineEmits(["reset-user-info"]);
@@ -70,37 +48,18 @@ const {userInfo} = defineProps<{
 // 是否已经绑定
 const isBinding = computed(() => coreTool.isNotEmpty(userInfo.phone));
 
-// 获取验证码的时候需要进行倒计时，这个是倒计时的开关
-const isStartCountdown = ref(false);
-
 // 弹框确定按钮
 const submitLoading = ref(false);
 
 // 弹框显示
 const modalVisible = ref(false);
-const accountFormRef:any = ref(null);
+const phoneVerifyRef:any = ref(null);
 
 // 绑定需要的数据
 const formData = reactive({
   phone: undefined,
   verifyCode: undefined,
 });
-
-// 表单校验规则
-const formRules:Record<string, FieldRule | FieldRule[]> = {
-  phone:{
-    type: "number",
-    minLength: 11,
-    maxLength: 11,
-    required: true,
-    message: "手机号码不正确"
-  },
-  verifyCode:{
-    type: "string",
-    required: true,
-    message:"验证码不能为空"
-  }
-}
 
 /**
  * 点击绑定和解绑手机按钮
@@ -113,42 +72,20 @@ const dealPhone = ()=>{
 }
 
 /**
- * 发送短信验证码
- * @param
- * @return
- * @author     :loulan
- * */
-const sendMessageCaptcha = ()=> {
-  accountFormRef.value.validateField("phone",async (errors: undefined | Record<string, ValidatedError>) => {
-    // 当errors为undefined的时候表示校验成功没有错误
-    if ($L.core.isUndefined(errors)) {
-      isStartCountdown.value = true;
-      const res:ResponseResult = await (isBinding.value?sendPhoneCurrentUserUnbindingVerifyCode():sendPhoneVerifyCode(formData.phone,PhoneMessageTypeEnum.BINGDING_USER));
-      if (res.status === ResponseStatusEnum.OK) {
-        // 暂时不进行任何操作
-      } else {
-        isStartCountdown.value = false;
-      }
-    }
-  });
-}
-
-/**
  * 点击提交按钮
  * @param
  * @return
  * @author     :loulan
  * */
 const submit = ()=>{
-  accountFormRef.value.validate((errors: undefined | Record<string, ValidatedError>) => {
-    // 当errors为undefined的时候表示校验成功没有错误
-    if ($L.core.isUndefined(errors)) {
+  phoneVerifyRef.value.validate((verify:boolean) => {
+    if (verify) {
       submitLoading.value = true;
       if (isBinding.value) {
         currentUserUnbindingPhone(formData).then((res:ResponseResult)=>{
           if (res.status === ResponseStatusEnum.OK) {
             modalVisible.value = false;
-            isStartCountdown.value = false;
+            phoneVerifyRef.value.clearCountDown();
             emits("reset-user-info");
             DragonNotice.success("手机解绑成功");
           }
@@ -158,7 +95,7 @@ const submit = ()=>{
         currentUserBindingPhone(formData).then((res:ResponseResult)=>{
           if (res.status === ResponseStatusEnum.OK) {
             modalVisible.value = false;
-            isStartCountdown.value = false;
+            phoneVerifyRef.value.clearCountDown();
             emits("reset-user-info");
             DragonNotice.success("手机绑定成功");
           }
