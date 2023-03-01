@@ -16,7 +16,7 @@
       <a-input :model-value="props.verifyCode"
                @clear="()=>$emit('update:verifyCode',undefined)"
                @input="(val)=>$emit('update:verifyCode',val)"
-               placeholder="请输入你的验证码……" allow-clear>
+               placeholder="请输入你的短信验证码……" allow-clear>
         <template #suffix>
           <a-countdown v-if="isStartCountdown"
                        :value="Date.now() + 90*1000"
@@ -92,11 +92,17 @@ const sendVerifyCode = () => {
       let res: ResponseResult = {};
       // 根据不同类型，进行验证码的发送
       if (PhoneMessageTypeEnum.LOGIN === props.type) {
+        // 发送登陆验证码
         res = await sendPhoneLoginVerifyCode(props.account);
       } else if (PhoneMessageTypeEnum.BINGDING_USER === props.type) {
+        // 发送绑定和解绑验证码
         res = props.isVisibleAccount?await sendPhoneVerifyCode(props.account, props.type):await sendPhoneCurrentUserVerifyCode(props.type);
       } else if (PhoneMessageTypeEnum.VALIFY_CODE === props.type) {
+        // 单纯发送验证码
         res = await sendPhoneVerifyCode(props.account, props.type);
+      }  else if (PhoneMessageTypeEnum.FIX_PASSWORD === props.type) {
+        // 发送修改短信验证码
+        res = await sendPhoneCurrentUserVerifyCode(props.type);
       } else {
         DragonNotice.error("当前操作错误。");
         return;

@@ -10,7 +10,7 @@
       <a-input :model-value="props.verifyCode"
                @clear="()=>$emit('update:verifyCode',undefined)"
                @input="(val)=>$emit('update:verifyCode',val)"
-               placeholder="请输入你的验证码……" allow-clear>
+               placeholder="请输入你的邮箱验证码……" allow-clear>
         <template #suffix>
           <a-countdown v-if="isStartCountdown"
                        :value="Date.now() + 90*1000"
@@ -84,11 +84,17 @@ const sendVerifyCode = () => {
       let res: ResponseResult = {};
       // 根据不同类型，进行验证码的发送
       if (EmailMessageTypeEnum.LOGIN === props.type) {
+        // 发送登陆验证码
         res = await sendEmailLoginVerifyCode(props.account);
       } else if (EmailMessageTypeEnum.BINGDING_USER === props.type) {
+        // 发送用户绑定和解绑验证码
         res = props.isVisibleAccount?await sendEmailVerifyCode(props.account, props.type):await sendEmailCurrentUserVerifyCode(props.type);
       } else if (EmailMessageTypeEnum.VALIFY_CODE === props.type) {
+        // 单纯的发送验证码
         res = await sendEmailVerifyCode(props.account, props.type);
+      } else if (EmailMessageTypeEnum.FIX_PASSWORD === props.type) {
+        // 单纯的发送验证码
+        res = await sendEmailCurrentUserVerifyCode(props.type);
       } else {
         DragonNotice.error("当前操作错误。");
         return;

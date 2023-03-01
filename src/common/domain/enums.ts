@@ -154,6 +154,7 @@ export enum EmailMessageTypeEnum{
     REGISTER = 20,
     LOGIN = 30,
     BINGDING_USER = 40,
+    FIX_PASSWORD = 50,
 }
 
 /*********************************************************
@@ -168,5 +169,6 @@ export enum PhoneMessageTypeEnum{
     REGISTER = 20,
     LOGIN = 30,
     BINGDING_USER = 40,
+    FIX_PASSWORD = 50,
 }
 
