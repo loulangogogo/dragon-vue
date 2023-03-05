@@ -31,16 +31,6 @@
              :loading="loading"
              @page-size-change="pageSizeChange"
              @page-change="pageChange">
-      <template #authorizedGrantTypes="{record}">
-        <template v-for="(type,index) in record.authorizedGrantTypes">
-          &emsp;
-          <span v-if="type==GrantTypeEnum.PASSWORD">密码模式</span>
-          <span v-if="type==GrantTypeEnum.REFRESH_TOKEN">REFRESH_TOKEN</span>
-          <span v-if="type==GrantTypeEnum.IMPLICIT">简单模式</span>
-          <span v-if="type==GrantTypeEnum.CLIENT_CREDENTIALS">客户端模式</span>
-          <span v-if="type==GrantTypeEnum.AUTHORIZATION_CODE">授权码模式</span>
-        </template>
-      </template>
       <template #operate="{record}">
         <a-button type="primary" size="mini" @click="edit(record)">编辑</a-button>
         <a-button type="primary" status="danger" size="mini" style="margin-left: 10px" @click="del(record)">删除</a-button>
@@ -84,14 +74,17 @@ const columns:Array<TableColumnData> = [
   },
   {
     title: "授权类型",
-    dataIndex: "authorizedGrantTypes",
+    dataIndex: "authorizedGrantTypesName",
     width: 150,
-    slotName: 'authorizedGrantTypes'
+    ellipsis: true,
+    tooltip: true
   },
   {
     title: "重定向URI",
     dataIndex: "redirectUri",
     width: 300,
+    ellipsis: true,
+    tooltip: true
   },
   {
     title: "token有效时间",

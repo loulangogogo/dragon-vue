@@ -4,7 +4,7 @@
       <a-button type="outline" @click="dealUserinfo">编辑</a-button>
     </template>
     <div align="center" style="padding: 20px">
-      <a-form>
+      <a-form :model="{}">
         <a-form-item>
           <template #label><span class="spanContentTitle">用户名：</span></template>
           <span class="spanContent">{{coreTool.isEmpty(userInfo.username)?"无":userInfo.username}}</span>
