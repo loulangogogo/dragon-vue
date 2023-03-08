@@ -35,6 +35,7 @@ export interface UserInfo{
     email?: string;
     status?: number;
     sex?: number;
+	sexName?: string;
     birthday?: string;
     idCard?: string;
     openid?: string;
