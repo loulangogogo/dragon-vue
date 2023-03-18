@@ -12,11 +12,7 @@
                @input="(val)=>$emit('update:verifyCode',val)"
                placeholder="请输入你的邮箱验证码……" allow-clear>
         <template #suffix>
-          <a-countdown v-if="isStartCountdown"
-                       :value="Date.now() + 90*1000"
-                       :now="Date.now()" format="ss"
-                       @finish="()=>isStartCountdown=false"
-                       :value-style="{fontSize: '14px'}"/>
+          <countdown-seconds v-if="isStartCountdown" :seconds="90" :start="isStartCountdown" @finish="()=>isStartCountdown=false"></countdown-seconds>
           <span v-else class="verifyCodeStyle" @click="sendVerifyCode">获取验证码</span>
         </template>
       </a-input>
@@ -32,6 +28,7 @@ import {core as coreTool} from "owner-tool-js";
 import {ResponseResult, ResponseStatusEnum} from "../domain/response";
 import {sendEmailCurrentUserVerifyCode, sendEmailLoginVerifyCode, sendEmailVerifyCode} from "../api/email";
 import {DragonNotice} from "../domain/component";
+import CountdownSeconds from "./countdown-seconds.vue";
 
 const props = withDefaults(defineProps<{
   // 账号
