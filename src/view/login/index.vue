@@ -107,7 +107,7 @@ const login = async (loginData: LoginData) => {
 
 <style scoped lang="scss">
 #loginBackDiv {
-  //background: url('/static/img/loginBK.jpg') no-repeat;
+  background: url('/static/img/loginBK.jpg') no-repeat;
   background-color: #5f5f60;
   background-size: cover;
   position: relative;
