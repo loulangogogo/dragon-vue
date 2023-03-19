@@ -1,5 +1,6 @@
 <template>
-  <div align="center" style="position: static">
+  <div class="wechatQrcodeDiv">
+    <span v-if="currentEnvVal() == EnvEnum.DEV" style="color: red;">当前为开发环境，扫码无法登录</span>
     <a-spin :loading="loading" tip="加载中……">
       <qrcode-vue :value="qrcode.url"
                   :size="200"
@@ -15,9 +16,9 @@ import QrcodeVue from 'qrcode.vue';
 import {getWechatQrcode} from "../../common/api/login";
 import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
 import {functionTool, core as coreTool} from "owner-tool-js";
-import {LoginModeEnum} from "../../common/domain/login";
-import {GrantTypeEnum, WechatQrcodeTypeEnum} from "../../common/domain/enums";
+import {GrantTypeEnum, WechatQrcodeTypeEnum,EnvEnum} from "../../common/domain/enums";
 import {Qrcode} from "../../common/domain/interfaces";
+import {currentEnvVal} from '../../common/tool/tool';
 
 // 事件对象
 const emit = defineEmits(['loginSubmit']);
@@ -74,6 +75,10 @@ onUnmounted(() => {
 })
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.wechatQrcodeDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 </style>
