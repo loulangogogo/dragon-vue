@@ -1,15 +1,15 @@
 <template>
   <a-dropdown trigger="click" position="br" @select="selectOption" style="min-width: 150px" @popup-visible-change="(visible) => dropdownStatus=visible">
-<!--    <a-image src="https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/a8c8cdb109cb051163646151a4a5083b.png~tplv-uwbnlip3yd-webp.webp"
-             :height="frameHeaderHeight/2"
-             :width="frameHeaderHeight/2"
-             class="userImg"
-             :preview="false" />-->
-    <span class="userTitleSpan">
-      {{userInfo.name}}
-      <icon-caret-left v-if="!dropdownStatus"/>
-      <icon-caret-down v-else/>
-    </span>
+    <div class="userImg">
+      <span style="color: white;font-weight: bolder;margin-right: 5px;">
+        {{userInfo.name}}
+      </span>
+      <a-avatar  style="background-color: rgba(0, 0, 0, 0);"  shape="circle"
+     :size="frameHeaderHeight*2/3">
+      <img v-if="userInfo?.headerImageFileInfo?.url" :src="userInfo?.headerImageFileInfo?.url" :style="{width:frameHeaderHeight*2/3+'px',height: frameHeaderHeight*2/3+'px',borderRadius:frameHeaderHeight*2/3+'px'}"/>
+      <IconUser v-else  :size="frameHeaderHeight/2" color="white"/>
+    </a-avatar>
+    </div>
     <template #content>
       <a-doption :value="1">
         <template #icon><icon-user/></template>
@@ -82,21 +82,9 @@ onMounted(async ()=>{
 
 <style scoped>
 .userImg {
-  border-radius: v-bind(frameHeaderHeight/2+'px');
   position: absolute;
   right: 20px;
-  top:v-bind(frameHeaderHeight/4+'px');
+  top:v-bind(frameHeaderHeight/5+'px');
   cursor: pointer;
-}
-
-.userTitleSpan{
-  position: absolute;
-  right: 20px;
-  cursor: pointer;
-  font-size: v-bind(frameHeaderHeight/4+'px');
-  top:v-bind(frameHeaderHeight/2-frameHeaderHeight/8+'px');
-  font-weight: bolder;
-  color: white;
-  user-select: none;
 }
 </style>
