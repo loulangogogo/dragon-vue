@@ -7,8 +7,8 @@
       <a-row style="width:100%;">
         <a-col :span="5">
           <a-avatar shape="circle" @click="dealHeaderImageClick" :size="120">
-            <img alt="avatar" style="width: 120px;height: 120px;"
-              src="https://dragon-loulan.oss-cn-beijing.aliyuncs.com/public/20230325/6d153bd121ea45beb1a27d7af151bedd.jpg" />
+            <img alt="无" style="width: 120px;height: 120px;"
+              :src="userInfo.headerImageFileInfo?.url+'/'+userInfo.headerImageFileInfo?.path" />
           </a-avatar>
         </a-col>
         <a-col :span="19">
@@ -69,9 +69,9 @@
         :disabled="headerImageUploading" class="uploadHeaderImage">
         <template #upload-button>
           <div v-if="file && file.url" class="upload-image"
-            style="display: flex;justify-content: center;align-items: center;background-size: cover;position: relative;"
+            style="display: flex;justify-content: center;align-items: center;background-size:100% 100%;position: relative;"
             :style="{ backgroundImage: 'url(' + file.url + ')' }">
-            <a-progress v-if="headerImageUploading" :percent="file.percent" type="circle" size="medium" :animation="true"
+            <a-progress v-if="headerImageUploading" :percent="file.percent" type="circle" :status="imageIsUploadNormal?'success':'danger'" size="medium" :animation="true"
               :stroke-width="6" />
             <div v-else class="arco-upload-list-picture-mask"
               style="display: flex;justify-content: center;align-items: center;">
@@ -103,7 +103,7 @@ import { useStore } from "vuex";
 import { core as coreTool, functionTool, numberTool } from 'owner-tool-js';
 import { currentUserInfoUpdate } from "../../../../common/api/frame";
 import { ResponseResult, ResponseStatusEnum } from "../../../../common/domain/response";
-import { UserInfo } from "../../../../common/domain/common";
+import { FileInfo, UserInfo } from "../../../../common/domain/common";
 import { DragonMessage, DragonNotice } from "../../../../common/domain/component";
 import { FileItem, RequestOption, UploadRequest, ValidatedError, FileStatus } from "@arco-design/web-vue";
 import { uploadFile } from '../../../../common/api/file';
@@ -124,6 +124,17 @@ const modalVisible = ref(false);
 // 图片处理弹框显示变量
 const imageModalVisible = ref(false);
 
+// 图片上传是否正常，主要用在进度条的展示上
+const imageIsUploadNormal = ref(true);
+
+// 文件数据的初始化值
+const fileInitData = {
+  id: undefined,
+  url: "",
+  path: undefined,
+  name: undefined,
+  percent: 0
+}
 const file = ref();
 
 // 点击确定加载状态按钮
@@ -139,15 +150,18 @@ let headrImageUploadTimer: number | undefined = undefined
 
 const formRef = ref();
 
-// 用户的信息数据
-const formData = ref({
+// 表单要提交的数据对象初始化值
+const formInitData = {
   username: undefined,
   name: undefined,
   sex: undefined,
   sexName: undefined,
   birthday: undefined,
-  headerImageFileId: undefined,
-});
+  headerImageFileId: undefined
+}
+
+// 用户的信息数据
+const formData = ref<any>({});
 const formRules = {
   name: {
     required: true,
@@ -167,34 +181,51 @@ const uploadFileEvent = (option: RequestOption): UploadRequest => {
     // 如果有文件正在上传中，不能再继续上传
     DragonMessage.warning("当前有文件正在上传中……");
   }
+
+  // 上传的时候显示进度条正常
+  imageIsUploadNormal.value = true;
+
+  // 先生成要提交的文件对象
   const formData = new FormData();
   formData.append('file', <Blob>option.fileItem.file);
-  file.value = option.fileItem;
+
+  // 前端进行文件展示
+  let tempUrl = file.value.url;
+  functionTool.combineObj(file.value,option.fileItem);
+  file.value.url = tempUrl;
+  // 设置上传进度为0
   file.value.percent = 0;
-  console.error(file.value)
+
+  // 设置一个假的的上传进度条，超过0.95就只能等后端返回的数据了。
   headrImageUploadTimer = setInterval(() => {
     let temp: number = Number.parseFloat(file.value.percent) + 0.01;
 
-    if (temp > 1 && coreTool.isExist(headrImageUploadTimer)) {
+    // 当进度条超过0.95就停止定时器
+    if (temp > 0.95 && coreTool.isExist(headrImageUploadTimer)) {
       clearInterval(headrImageUploadTimer);
     }
 
     file.value.percent = numberTool.formatNumber(temp, 2);
   }, 100);
-  uploadFile(false, formData).then((res: ResponseResult) => {
+
+  // 后端上传数据
+  uploadFile(false, formData).then((res:ResponseResult)=>{
     if (res.status === ResponseStatusEnum.OK) {
       const resData: any = res.data;
-      console.warn(resData);
       file.value.url = resData.url + "/" + resData.path;
       file.value.id=resData.id;
       file.value.percent = 1;
-      if (coreTool.isExist(headrImageUploadTimer)) {
-        clearInterval(headrImageUploadTimer);
-      }
     } else {
+      // 这里将进度条变成红色
+      imageIsUploadNormal.value = false;
+    }
 
+    // 无论上传成功失败都要停止进度条定时器
+    if (coreTool.isExist(headrImageUploadTimer)) {
+        clearInterval(headrImageUploadTimer);
     }
   })
+  
 
   return {};
 }
@@ -249,7 +280,17 @@ const submit = () => {
  * @author     :loulan
  * */
 const dealUserinfo = () => {
-  functionTool.combineObj(formData.value, store.getters.userInfo);
+  // 先复制初始化的值
+  functionTool.combineObj(formData.value,formInitData);
+  // 然后数据对象进行赋值
+  const currentUserInfo:UserInfo = store.getters.userInfo;
+  formData.value.name=currentUserInfo.name;
+  formData.value.username = currentUserInfo.username;
+  formData.value.sex = currentUserInfo.sex;
+  formData.value.sexName = currentUserInfo.sexName;
+  formData.value.birthday = currentUserInfo.birthday;
+  formData.value.headerImageFileId  = undefined;
+
   modalVisible.value = true;
 }
 
@@ -260,6 +301,16 @@ const dealUserinfo = () => {
  * @author     :loulan
  * */
 const dealHeaderImageClick = () => {
+  // 先赋值初始化的值
+  functionTool.combineObj(formData.value,formInitData);
+
+  file.value = functionTool.combineObj({},fileInitData);
+  const headerImageFileInfo:FileInfo = store.getters.userInfo.headerImageFileInfo;
+  if (coreTool.isExist(headerImageFileInfo)){
+    file.value.url = file.value.url+"/"+file.value.path;
+  }
+
+  imageIsUploadNormal.value = true;
   imageModalVisible.value = true;
 }
 
@@ -270,7 +321,13 @@ const dealHeaderImageClick = () => {
  * @author     :loulan
  * */
 const imageModalClose = () => {
+  // 初始化清空
+  functionTool.combineObj(formData.value,formInitData);
 
+  //初始化清空
+  file.value = functionTool.combineObj({},fileInitData);
+
+  imageIsUploadNormal.value = true;
 }
 
 /**
@@ -280,7 +337,8 @@ const imageModalClose = () => {
  * @author     :loulan
  * */
 const close = () => {
-
+  // 初始化清空
+  functionTool.combineObj(formData.value,formInitData);
 }
 </script>
 

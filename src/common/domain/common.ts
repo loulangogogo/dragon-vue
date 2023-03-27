@@ -39,6 +39,22 @@ export interface UserInfo{
     birthday?: string;
     idCard?: string;
     openid?: string;
+    headerImageFileId: string;
+    headerImageFileInfo?: FileInfo;
+}
+
+/*********************************************************
+ ** 文件信息接口数据类
+ ** <br><br>
+ ** Date: Created in 2022/9/22 14:00
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export interface FileInfo{
+    id?: string;
+    url?: string;
+    path?:string;
+    name?:string;
 }
 
 /*********************************************************

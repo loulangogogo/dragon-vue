@@ -34,6 +34,7 @@ import {core as coreTool} from "owner-tool-js";
 import {ResponseResult, ResponseStatusEnum} from "../domain/response";
 import {DragonNotice} from "../domain/component";
 import {sendPhoneCurrentUserVerifyCode, sendPhoneLoginVerifyCode, sendPhoneVerifyCode} from "../api/phone";
+import CountdownSeconds from "./countdown-seconds.vue";
 
 const props = withDefaults(defineProps<{
   // 账号
