@@ -69,20 +69,15 @@ const columns:Array<TableColumnData> = [
   {
     title: "编码",
     dataIndex: "code",
-    width: 150,
+    width: 210,
     fixed: "left",
+    ellipsis: true,
+    tooltip: true
   },
   {
     title: "授权类型",
     dataIndex: "authorizedGrantTypesName",
     width: 150,
-    ellipsis: true,
-    tooltip: true
-  },
-  {
-    title: "重定向URI",
-    dataIndex: "redirectUri",
-    width: 300,
     ellipsis: true,
     tooltip: true
   },
@@ -97,14 +92,21 @@ const columns:Array<TableColumnData> = [
     width: 180,
   },
   {
+    title: "状态",
+    dataIndex: "statusName",
+    width: 80,
+  },
+  {
     title: "是否自动授权",
     dataIndex: "autoApprove",
     width: 130,
   },
   {
-    title: "状态",
-    dataIndex: "statusName",
-    width: 80,
+    title: "重定向URI",
+    dataIndex: "redirectUri",
+    width: 300,
+    ellipsis: true,
+    tooltip: true
   },
   {
     title: "创建时间",
