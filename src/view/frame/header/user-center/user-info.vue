@@ -8,7 +8,7 @@
         <a-col :span="5">
           <a-avatar shape="circle" @click="dealHeaderImageClick" :size="120">
             <img alt="无" style="width: 120px;height: 120px;"
-              :src="userInfo.headerImageFileInfo?.url+'/'+userInfo.headerImageFileInfo?.path" />
+              :src="userInfo.headerImageFileInfo?.url" />
           </a-avatar>
         </a-col>
         <a-col :span="19">
@@ -307,7 +307,7 @@ const dealHeaderImageClick = () => {
   file.value = functionTool.combineObj({},fileInitData);
   const headerImageFileInfo:FileInfo = store.getters.userInfo.headerImageFileInfo;
   if (coreTool.isExist(headerImageFileInfo)){
-    file.value.url = file.value.url+"/"+file.value.path;
+    file.value.url = file.value.url;
   }
 
   imageIsUploadNormal.value = true;
