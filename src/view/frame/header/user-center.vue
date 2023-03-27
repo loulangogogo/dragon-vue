@@ -43,7 +43,7 @@ const props = defineProps({
 
 const store = useStore();
 // 同步获取用户信息
-const userInfo = ref({});
+const userInfo = ref<any>({});
 watch(() => store.getters.userInfo,
     (val) => {
       functionTool.combineObj(userInfo.value, val);

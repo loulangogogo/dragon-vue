@@ -198,26 +198,28 @@ const uploadFileEvent = (option: RequestOption): UploadRequest => {
 
   // 设置一个假的的上传进度条，超过0.95就只能等后端返回的数据了。
   headrImageUploadTimer = setInterval(() => {
-    let temp: number = Number.parseFloat(file.value.percent) + 0.01;
+    let temp: number = file.value.percent + 0.01;
 
     // 当进度条超过0.95就停止定时器
     if (temp > 0.95 && coreTool.isExist(headrImageUploadTimer)) {
       clearInterval(headrImageUploadTimer);
     }
 
-    file.value.percent = numberTool.formatNumber(temp, 2);
+    file.value.percent = Number.parseFloat(numberTool.formatNumber(temp, 2));
   }, 100);
 
   // 后端上传数据
   uploadFile(false, formData).then((res:ResponseResult)=>{
     if (res.status === ResponseStatusEnum.OK) {
       const resData: any = res.data;
-      file.value.url = resData.url + "/" + resData.path;
+      file.value.url = resData.url;
       file.value.id=resData.id;
       file.value.percent = 1;
     } else {
       // 这里将进度条变成红色
       imageIsUploadNormal.value = false;
+      // 设置上传进度为0
+      file.value.percent = 0;
     }
 
     // 无论上传成功失败都要停止进度条定时器
@@ -307,8 +309,9 @@ const dealHeaderImageClick = () => {
   file.value = functionTool.combineObj({},fileInitData);
   const headerImageFileInfo:FileInfo = store.getters.userInfo.headerImageFileInfo;
   if (coreTool.isExist(headerImageFileInfo)){
-    file.value.url = file.value.url;
+    file.value.url = headerImageFileInfo.url;
   }
+  file.value.percent = 0;
 
   imageIsUploadNormal.value = true;
   imageModalVisible.value = true;
