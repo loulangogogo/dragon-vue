@@ -39,7 +39,7 @@ export interface UserInfo{
     birthday?: string;
     idCard?: string;
     openid?: string;
-    headerImageFileId: string;
+    headerImageFileId?: string;
     headerImageFileInfo?: FileInfo;
 }
 
