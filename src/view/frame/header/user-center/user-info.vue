@@ -180,7 +180,19 @@ const uploadFileEvent = (option: RequestOption): UploadRequest => {
   if (headerImageUploading.value) {
     // 如果有文件正在上传中，不能再继续上传
     DragonMessage.warning("当前有文件正在上传中……");
+    return {};
   }
+
+  let tempFile:File|undefined = option.fileItem.file;
+  if (!tempFile){
+    DragonMessage.warning("上传文件为空");
+    return {};
+  }
+  if (tempFile.size > 1000000){
+    DragonMessage.warning("上传图片不能超过1M");
+    return {};
+  }
+
 
   // 上传的时候显示进度条正常
   imageIsUploadNormal.value = true;
