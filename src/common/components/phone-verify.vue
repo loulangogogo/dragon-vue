@@ -100,7 +100,10 @@ const sendVerifyCode = () => {
       }  else if (PhoneMessageTypeEnum.FIX_PASSWORD === props.type) {
         // 发送修改短信验证码
         res = await sendPhoneCurrentUserVerifyCode(props.type);
-      } else {
+      } else if (PhoneMessageTypeEnum.UN_REGISTER === props.type) {
+				// 单纯的发送验证码
+				res = await sendPhoneCurrentUserVerifyCode(props.type);
+			} else {
         DragonNotice.error("当前操作错误。");
         return;
       }

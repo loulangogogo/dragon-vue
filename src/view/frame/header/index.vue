@@ -17,7 +17,11 @@
       </a-doption>
       <a-doption :value="2">
         <template #icon><icon-drag-arrow /></template>
-        <template #default>测试</template>
+        <template #default>反馈建议</template>
+      </a-doption>
+      <a-doption :value="4">
+        <template #icon><icon-stop /></template>
+        <template #default>注销账号</template>
       </a-doption>
       <a-doption :value="3">
         <template #icon><icon-reply /></template>
@@ -25,6 +29,11 @@
       </a-doption>
     </template>
   </a-dropdown>
+
+  <div v-show="false">
+    <idea-fun ref="ideaFunRef"></idea-fun>
+    <unregister-user ref="unregisterUserRef" @logout="logout"></unregister-user>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -36,6 +45,9 @@ import {computed, onMounted, ref} from "vue";
 import {currentUserInfo} from "../../../common/api/frame";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {UserInfo} from "../../../common/domain/common";
+import IdeaFun from './idea-fun.vue';
+import UnregisterUser from './unregister-user.vue';
+import { dragonConfirm } from '../../../common/domain/component';
 
 const router = useRouter();
 const store = useStore();
@@ -46,6 +58,8 @@ const userInfo = computed(() => store.getters.userInfo);
 
 // 下拉弹框的显示状态
 const dropdownStatus = ref();
+const ideaFunRef = ref();
+const unregisterUserRef = ref();
 
 /**
  * 点击选中某个选项
@@ -58,12 +72,30 @@ const selectOption = (value: any,ev: Event) => {
     // 个人信息
     router.push("/user-center")
   }else if (value == 2) {
-    // 测试
+    // 反馈建议
+    ideaFunRef.value.open();
   }else if (value == 3) {
     // 退出登录
+    logout();
+  }else if(value == 4){
+    dragonConfirm({
+      title: "提示",
+      content: "您确定要注销当前账号？",
+    }).then(() => {
+      unregisterUserRef.value.open();
+    })
+  }
+}
+
+/**
+ * 退出登陆
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+const logout = ()=>{
     $L.windowsTool.localStorageTool.del(LocalStorageEnum.token);
     router.push("/login");
-  }
 }
 
 

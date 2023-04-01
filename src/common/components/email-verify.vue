@@ -92,6 +92,9 @@ const sendVerifyCode = () => {
       } else if (EmailMessageTypeEnum.FIX_PASSWORD === props.type) {
         // 单纯的发送验证码
         res = await sendEmailCurrentUserVerifyCode(props.type);
+      } else if (EmailMessageTypeEnum.UN_REGISTER === props.type) {
+        // 单纯的发送验证码
+        res = await sendEmailCurrentUserVerifyCode(props.type);
       } else {
         DragonNotice.error("当前操作错误。");
         return;

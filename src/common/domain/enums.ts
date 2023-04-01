@@ -166,6 +166,7 @@ export enum WechatQrcodeTypeEnum{
 export enum EmailMessageTypeEnum{
     VALIFY_CODE = 10,
     REGISTER = 20,
+    UN_REGISTER = 21,
     LOGIN = 30,
     BINGDING_USER = 40,
     FIX_PASSWORD = 50,
@@ -181,6 +182,7 @@ export enum EmailMessageTypeEnum{
 export enum PhoneMessageTypeEnum{
     VALIFY_CODE = 10,
     REGISTER = 20,
+    UN_REGISTER = 21,
     LOGIN = 30,
     BINGDING_USER = 40,
     FIX_PASSWORD = 50,

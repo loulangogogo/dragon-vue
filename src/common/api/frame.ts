@@ -11,6 +11,16 @@ export const currentUserInfo = () => {
 }
 
 /**
+ * 注销当前用户
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const unregisterCurrentUser = (data:any) => {
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/unregister-user`,data);
+}
+
+/**
  * 修改当前用户信息
  * @param
  * @return
