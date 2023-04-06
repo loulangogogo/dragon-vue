@@ -53,7 +53,7 @@ const {userInfo} = defineProps<{
 }>();
 
 // 是否已经绑定微信
-const isBinding = computed(() => coreTool.isNotEmpty(userInfo.openid));
+const isBinding = computed(() => coreTool.isNotEmpty(userInfo.unionid));
 
 // 弹框显示
 const modalVisible = ref(false);
