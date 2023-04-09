@@ -66,7 +66,7 @@ const tableData = ref();
 // 表格列配置
 const columns: Array<TableColumnData> = [
   {
-    title: "姓名",
+    title: "姓名/昵称",
     dataIndex: "name",
     width: 150,
     fixed: "left",
@@ -74,37 +74,37 @@ const columns: Array<TableColumnData> = [
   {
     title: "用户名",
     dataIndex: "username",
-    width: 300,
+    width: 200,
   },
   {
     title: "手机号码",
     dataIndex: "phone",
-    width: 200,
+    width: 120,
   },
   {
     title: "邮箱",
     dataIndex: "email",
-    width: 300,
+    width: 200,
   },
   {
     title: "状态",
     dataIndex: "statusName",
-    width: 100,
+    width: 70,
   },
   {
     title: "性别",
     dataIndex: "sexName",
-    width: 100,
+    width: 70,
   },
   {
     title: "出生日期",
     dataIndex: "birthday",
-    width: 300,
+    width: 150,
   },
   {
     title: "身份证号码",
     dataIndex: "idCard",
-    width: 300,
+    width: 200,
   },
   {
     title: "操作",
