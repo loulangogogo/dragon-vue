@@ -27,12 +27,6 @@
           </a-optgroup>
         </a-select>
       </a-form-item>
-      <a-form-item field="phone" label="手机号码">
-        <a-input v-model="formData.phone" placeholder="请输入手机号码"/>
-      </a-form-item>
-      <a-form-item field="email" label="邮箱">
-        <a-input v-model="formData.email" placeholder="请输入邮箱"/>
-      </a-form-item>
       <a-form-item field="birthday" label="出生日期">
         <a-date-picker v-model="formData.birthday" placeholder="请输入出生日期" style="width: 100%"/>
       </a-form-item>
@@ -80,8 +74,6 @@ const modalVisible = ref(false);
 const initFormData = {
   username: undefined,
   name: undefined,
-  phone: undefined,
-  email: undefined,
   sex: undefined,
   birthday: undefined,
   idCard:undefined,
