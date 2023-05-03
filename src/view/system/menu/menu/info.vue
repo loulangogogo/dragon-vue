@@ -60,7 +60,7 @@
       <a-form-item field="iconType" label="图标">
         <a-row style="width: 100%">
           <a-col :span="10">
-            <a-select v-model="formData.iconType" placeholder="请选择图标类型" @change="()=>formData.icon=undefined">
+            <a-select v-model="formData.iconType" :scrollbar="false" placeholder="请选择图标类型" @change="()=>formData.icon=undefined">
               <a-option :value="MenuIconTypeEnum.ALI">阿里图标库</a-option>
               <a-option :value="MenuIconTypeEnum.IMG">图片图标</a-option>
               <a-option :value="MenuIconTypeEnum.ICON">UI库图标</a-option>
@@ -68,7 +68,7 @@
           </a-col>
           <a-col :span="1"></a-col>
           <a-col :span="13">
-            <a-select v-model="formData.icon" placeholder="请选择图标">
+            <a-select v-model="formData.icon" :scrollbar="false" placeholder="请选择图标">
               <a-option v-for="(dict,index) in iconOptions" :value="dict.code">
                 <template v-if="formData.iconType===MenuIconTypeEnum.ICON">
                   <component :is="dict.code" size="15"></component>

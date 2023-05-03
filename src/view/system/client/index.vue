@@ -1,7 +1,7 @@
 <template>
   <div class="headerDiv">
     <a-input v-model="queryParam.code" style="width: 200px" placeholder="请输入用编码" allow-clear/>
-    <a-select v-model="queryParam.status" style="width: 200px;margin-left: 20px" placeholder="请输入状态" allow-clear>
+    <a-select v-model="queryParam.status" :scrollbar="false" style="width: 200px;margin-left: 20px" placeholder="请输入状态" allow-clear>
       <a-option :value="StatusEnum.ON">启用</a-option>
       <a-option :value="StatusEnum.OFF">禁用</a-option>
     </a-select>

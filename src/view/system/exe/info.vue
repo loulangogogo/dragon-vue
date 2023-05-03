@@ -47,7 +47,7 @@
               <a-input v-model="formData.name" placeholder="请输入名称"/>
             </a-form-item>
             <a-form-item field="type" label="类型">
-              <a-select v-model="formData.type" placeholder="请选择类型">
+              <a-select v-model="formData.type" :scrollbar="false" placeholder="请选择类型">
                 <a-option v-for="(typeOption,index) in typeOptions" :value="typeOption.code">{{
                     typeOption.name
                   }}

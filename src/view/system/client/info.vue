@@ -12,7 +12,7 @@
         <a-input v-model="formData.code" placeholder="请输入客户端编码"/>
       </a-form-item>
       <a-form-item field="authorizedGrantTypes" label="授权类型">
-        <a-select v-model="formData.authorizedGrantTypes" placeholder="请选择授权类型" :multiple="true">
+        <a-select v-model="formData.authorizedGrantTypes" placeholder="请选择授权类型" :scrollbar="false" :multiple="true">
           <a-option :value="GrantTypeEnum.AUTHORIZATION_CODE">授权码模式</a-option>
           <a-option :value="GrantTypeEnum.CLIENT_CREDENTIALS">客户端模式</a-option>
           <a-option :value="GrantTypeEnum.IMPLICIT">简单模式</a-option>
@@ -28,7 +28,7 @@
         <a-input v-model="formData.redirectUri" placeholder="请输入重定向地址"/>
       </a-form-item>
       <a-form-item field="roleIds" label="角色">
-        <a-select v-model="formData.roleIds" placeholder="请选择角色数据" multiple>
+        <a-select v-model="formData.roleIds" :scrollbar="false" placeholder="请选择角色数据" multiple>
           <a-optgroup v-for="(roleType,index) in roleSelectData.roleTypeOptions" :label="roleType.name" :key="index">
             <template v-for="(role,index) in roleSelectData.roleOptions" :key="index">
               <a-option v-if="role.typeId==roleType.id" :value="role.id">{{ role.name }}</a-option>

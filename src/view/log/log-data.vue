@@ -2,7 +2,7 @@
   <div class="headerDiv">
     <a-input v-model="queryParam.userName" style="width: 200px" placeholder="请输入用户名" allow-clear/>
     <a-input v-model="queryParam.clientCode" style="width: 200px;margin-left: 20px" placeholder="请输入客户端" allow-clear/>
-    <a-select v-model="queryParam.optType" style="width: 200px;margin-left: 20px" placeholder="请输入操作类型" allow-clear>
+    <a-select v-model="queryParam.optType" :scrollbar="false" style="width: 200px;margin-left: 20px" placeholder="请输入操作类型" allow-clear>
       <a-option :value="10">添加</a-option>
       <a-option :value="11">编辑</a-option>
       <a-option :value="12">删除</a-option>
