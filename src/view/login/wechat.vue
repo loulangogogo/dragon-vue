@@ -61,7 +61,7 @@ const getQrcode = async () => {
     setIntervalObj = setInterval(() => {
       // 如果对象对象请求成功就会跳转无须专门关闭定时器
       emit("loginSubmit", loginData);
-    }, 2500);
+    }, 2000);
   }
 }
 
