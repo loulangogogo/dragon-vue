@@ -19,7 +19,7 @@ export const getToken = (loginData: LoginData) => {
  * @author     :loulan
  * */
 export const getWechatQrcode = (type:number)=>{
-    return ask.get(`${import.meta.env.VITE_REQUEST_AUTH_PRE}/wechat/getQrcode/${type}`)
+    return ask.get(`${import.meta.env.VITE_REQUEST_HANDLER_PRE}/wechat/getQrcode/${type}`)
 }
 
 
