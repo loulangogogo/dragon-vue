@@ -13,13 +13,6 @@ export default defineConfig({
     ]
   },
   server: {
-    open: true,
-    proxy: {
-      '/dragon': {
-        target: 'http://47.95.209.71/', // 实际请求地址
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/dragon/, "/dragon"),
-      },
-    },
+    open: true
   }
 })

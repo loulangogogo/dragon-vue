@@ -38,7 +38,7 @@
         <template #second>
           <div style="padding-left: 5px">
             <a-form-item field="code" label="编码">
-              <a-input v-model="formData.code" placeholder="请输入编码" :disabled="isAddEdit===AddEditEnum.EDIT"/>
+              <a-input v-model="formData.code" placeholder="编码自动生成" :disabled="true"/>
               <template #extra>
                 <div>只能是英文字母，数字和下划线。</div>
               </template>
@@ -47,7 +47,7 @@
               <a-input v-model="formData.name" placeholder="请输入名称"/>
             </a-form-item>
             <a-form-item field="type" label="类型">
-              <a-select v-model="formData.type" placeholder="请选择类型">
+              <a-select v-model="formData.type" :scrollbar="false" placeholder="请选择类型">
                 <a-option v-for="(typeOption,index) in typeOptions" :value="typeOption.code">{{
                     typeOption.name
                   }}
@@ -135,10 +135,6 @@ const initFormData = {
 const formData = ref({...initFormData})
 
 const formRules = {
-  code: [
-    {required: true, message: "编码不能为空"},
-    {match: /^\w*$/, message: "只能是英文字母，数字和下划线"}
-  ],
   name: {
     required: true,
     message: "名称不能为空"

@@ -19,19 +19,13 @@
         </a-radio-group>
       </a-form-item>
       <a-form-item field="roleIds" label="角色">
-        <a-select v-model="formData.roleIds" placeholder="请选择角色数据" multiple>
+        <a-select v-model="formData.roleIds" :scrollbar="false" placeholder="请选择角色数据" multiple>
           <a-optgroup v-for="(roleType,index) in roleSelectData.roleTypeOptions" :label="roleType.name" :key="index">
             <template  v-for="(role,index) in roleSelectData.roleOptions" :key="index">
               <a-option v-if="role.typeId==roleType.id" :value="role.id">{{role.name}}</a-option>
             </template>
           </a-optgroup>
         </a-select>
-      </a-form-item>
-      <a-form-item field="phone" label="手机号码">
-        <a-input v-model="formData.phone" placeholder="请输入手机号码"/>
-      </a-form-item>
-      <a-form-item field="email" label="邮箱">
-        <a-input v-model="formData.email" placeholder="请输入邮箱"/>
       </a-form-item>
       <a-form-item field="birthday" label="出生日期">
         <a-date-picker v-model="formData.birthday" placeholder="请输入出生日期" style="width: 100%"/>
@@ -80,8 +74,6 @@ const modalVisible = ref(false);
 const initFormData = {
   username: undefined,
   name: undefined,
-  phone: undefined,
-  email: undefined,
   sex: undefined,
   birthday: undefined,
   idCard:undefined,

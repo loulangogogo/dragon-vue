@@ -10,7 +10,7 @@
         <a-input v-model="formData.name" placeholder="请输入名称"/>
       </a-form-item>
       <a-form-item  field="method" label="方法">
-        <a-select v-model="formData.method" placeholder="请选择请求方法">
+        <a-select v-model="formData.method" :scrollbar="false" placeholder="请选择请求方法">
           <a-option value="GET">GET</a-option>
           <a-option value="PUT">PUT</a-option>
           <a-option value="POST">POST</a-option>

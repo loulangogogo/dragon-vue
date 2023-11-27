@@ -2,7 +2,7 @@
   <div class="headerDiv">
     <a-input v-model="queryParam.code" style="width: 200px" placeholder="请输入用编码" allow-clear/>
     <a-input v-model="queryParam.name" style="width: 200px;margin-left: 20px" placeholder="请输入名称" allow-clear/>
-    <a-select v-model="queryParam.status" style="width: 200px;margin-left: 20px" placeholder="请选择状态" allow-clear>
+    <a-select v-model="queryParam.status" :scrollbar="false" style="width: 200px;margin-left: 20px" placeholder="请选择状态" allow-clear>
       <a-option :value="StatusEnum.ON">启用</a-option>
       <a-option :value="StatusEnum.OFF">禁用</a-option>
     </a-select>
@@ -38,7 +38,7 @@
              @page-change="pageChange">
       <template #contentSlot="{record}">
         <a-popover position="left" trigger="click">
-          <a-button  type="text">点击查看</a-button>
+          <span style="cursor: pointer;color: blue">点击查看</span>
           <template #content>
             <p style="width: 450px;min-height:100px;overflow: auto" :style="{maxHeight:contentHeight-100+'px'}">{{record.content}}</p>
           </template>
@@ -91,16 +91,17 @@ const columns:Array<TableColumnData> = [
   {
     title: "名称",
     dataIndex: "name",
+    width: 300,
   },
   {
     title: "类型",
     dataIndex: "typeName",
-    width: 200,
+    width: 100,
   },
   {
     title: "执行内容",
     dataIndex: "content",
-    width: 120,
+    width: 100,
     slotName: "contentSlot"
   },
   {
@@ -111,7 +112,7 @@ const columns:Array<TableColumnData> = [
   {
     title: "创建时间",
     dataIndex: "crtTime",
-    width: 200,
+    width: 180,
   },
   {
     title: "操作",
@@ -208,7 +209,7 @@ const testFunction = ()=>{
     title: '确认提示',
     content: '您当前正在执行测试代码，code="TEST"？'
   }).then(async ()=>{
-    const res:ResponseResult = await test({});
+    const res:ResponseResult = await test({code: ['DRAGON_PC','COMMON_GATE'],sql: "secret='123'"});
     if (res.status === ResponseStatusEnum.OK) {
       alert(JSON.stringify(res.data,null,4));
     }

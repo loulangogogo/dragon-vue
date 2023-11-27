@@ -129,6 +129,17 @@ defineExpose({
   },
 
   /**
+   * 清除校验提示
+   * @param
+   * @return
+   * @exception
+   * @author     :loulan
+   * */
+  clearValidate: ()=>{
+    formRef.value.clearValidate();
+  },
+
+  /**
    * 清除倒计时
    * @param
    * @return
