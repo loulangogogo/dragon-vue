@@ -12,8 +12,6 @@ export interface LoginData {
     account?: string | number;
     // 必填，可以是密码，手机验证码，邮箱验证码
     password?: string;
-    // 微信扫码登陆需要这个参数
-    ticket?: string;
     // 登录方式
     grant_type: GrantTypeEnum;
     captchaUuid?: string;

@@ -9,7 +9,7 @@ import {LoginData} from "../domain/login";
  * */
 export const getToken = (loginData: LoginData) => {
     let extraParam = `captchaUuid=${loginData.captchaUuid}&captchaCode=${loginData.captchaCode}`;
-    return ask.post(`${import.meta.env.VITE_REQUEST_AUTH_PRE}/security/token?grant_type=${loginData.grant_type}&client_id=DRAGON_PC&client_secret=123&username=${loginData.account}&password=${loginData.password}&ticket=${loginData.ticket}&${extraParam}`)
+    return ask.post(`${import.meta.env.VITE_REQUEST_AUTH_PRE}/security/token?grant_type=${loginData.grant_type}&client_id=DRAGON_PC&client_secret=123&username=${loginData.account}&password=${loginData.password}&${extraParam}`)
 }
 
 /**

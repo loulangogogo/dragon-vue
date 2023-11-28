@@ -25,7 +25,7 @@ const emit = defineEmits(['loginSubmit']);
 
 // 登录需要的信息
 const loginData = reactive({
-  ticket: "",
+  account: "",
   grant_type: GrantTypeEnum.WECHAT_SCAN
 });
 
@@ -55,7 +55,7 @@ const getQrcode = async () => {
   if (res.status === ResponseStatusEnum.OK) {
     functionTool.combineObj(qrcode, res.data)
 
-    loginData.ticket = <string>qrcode.ticket;
+    loginData.account = <string>qrcode.ticket;
     loading.value = false;
     // 成功请求到数据之后，进入定时器进行定时token的请求
     setIntervalObj = setInterval(() => {
