@@ -48,7 +48,8 @@ export const userDel = (id:number) => {
  * @author     :loulan
  * */
 export const currentUserBindingWechat = (ticket:string)=>{
-    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserBindingWechat?ticket=${ticket}`);
+    // mode=30，表示通过微信公众号的方式进行解绑
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserBindWechat?key=${ticket}&mode=30`);
 }
 
 /**
@@ -58,7 +59,8 @@ export const currentUserBindingWechat = (ticket:string)=>{
  * @author     :loulan
  * */
 export const currentUserUnbindingWechat = (ticket:string)=>{
-    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserUnbindingWechat?ticket=${ticket}`);
+    // mode=30，表示通过微信公众号的方式进行解绑
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserUnbindWechat?key=${ticket}&mode=30`);
 }
 
 /**
