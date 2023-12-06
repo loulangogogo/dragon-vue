@@ -33,6 +33,9 @@ export const dragonConfirm = (config: ModalConfig) => {
             alignCenter: true,
             onOk: () => {
                 resolve(true);
+            },
+            onCancel:() => {
+                reject(false);
             }
         });
     })
