@@ -31,7 +31,7 @@
         </a-radio-group>
       </a-form-item>
       <a-form-item  field="runTime" label="运行时间">
-        <a-input-number v-model="formData.runTime" :precision="0" :min="5" max="1800" placeholder="请输入大概的运行时间"  hide-button>
+        <a-input-number v-model="formData.runTime" :precision="0" :min="5" :max="1800" placeholder="请输入大概的运行时间"  hide-button>
           <template #append>
             <span>秒</span>
           </template>

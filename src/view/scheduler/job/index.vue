@@ -40,7 +40,8 @@
         </a-switch>
       </template>
       <template #operate="{record}">
-        <a-button type="primary" size="mini" @click="edit(record)">编辑</a-button>
+        <a-button type="primary" size="mini" status="success" @click="lookLogs(record)">日志</a-button>
+        <a-button type="primary" size="mini" @click="edit(record)" style="margin-left: 10px">编辑</a-button>
         <a-button type="primary" status="danger" size="mini" style="margin-left: 10px" @click="del(record)">删除
         </a-button>
       </template>
@@ -48,12 +49,14 @@
   </div>
   <div v-show="false">
     <info ref="infoRef" @query="search"></info>
+    <look-log ref="lookLogsRef"></look-log>
   </div>
 </template>
 
 <script lang="ts" setup>
 
 import Info from './info.vue';
+import LookLog from "./look-log.vue";
 import {onMounted, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {TableColumnData, TableData} from "@arco-design/web-vue";
@@ -70,6 +73,7 @@ const props = defineProps({
 });
 
 const infoRef = ref();
+const lookLogsRef = ref();
 
 // 表格数据
 const tableData = ref();
@@ -135,7 +139,7 @@ const columns: Array<TableColumnData> = [
   },
   {
     title: "操作",
-    width: 150,
+    width: 200,
     fixed: "right",
     slotName: "operate"
   },
@@ -151,6 +155,17 @@ const queryParam = reactive({
 })
 
 const loading = ref(true);
+
+/**
+ * 查看定时任务的运行日志
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const lookLogs = (data:any)=>{
+  lookLogsRef.value.init(data);
+}
 
 /**
  * 任务状态发生改变
