@@ -57,7 +57,7 @@ import Info from './info.vue';
 import {onMounted, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {TableColumnData, TableData} from "@arco-design/web-vue";
-import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
+import {dragonConfirm, DragonMessage, DragonNotice} from "../../../common/domain/component";
 import {StatusEnum} from "../../../common/domain/enums";
 import {jobChangeStatus, jobDel, jobPageList} from "../../../common/api/scheduler/schedulerJob";
 
@@ -103,7 +103,7 @@ const columns: Array<TableColumnData> = [
   {
     title: "模式",
     dataIndex: "modeName",
-    width: 70,
+    width: 150,
   },
   {
     title: "并行",
@@ -250,7 +250,12 @@ const add = () => {
  * @author     :loulan
  * */
 const edit = (data: any) => {
-  infoRef.value.init(data);
+  // 进行编辑的时候要先禁用数据状态
+  if (StatusEnum.ON == data.status) {
+    DragonMessage.warning("请先禁用当前定时任务");
+  } else {
+    infoRef.value.init(data);
+  }
 }
 
 const del = (data: any) => {

@@ -10,16 +10,19 @@
         <a-input v-model="formData.name" placeholder="请输入任务名称"/>
       </a-form-item>
       <a-form-item field="applicationName" label="应用服务">
-        <a-input v-model="formData.applicationName" placeholder="请输入应用名称"/>
+        <a-input v-model="formData.applicationName" placeholder="请输入应用名称（serviceId）"/>
       </a-form-item>
       <a-form-item field="cron" label="cron">
         <a-input v-model="formData.cron" placeholder="请输入表达式"/>
       </a-form-item>
-      <a-form-item field="mode" label="模式">
-        <a-radio-group v-model="formData.mode">
-          <a-radio :value="SexEnum.MAN">男</a-radio>
-          <a-radio :value="SexEnum.MEN">女</a-radio>
-        </a-radio-group>
+      <a-form-item field="mode" label="执行模式">
+        <a-select v-model="formData.mode" :scrollbar="false" style="width: 100%"
+                  placeholder="请选择错过执行的策略" allow-clear>
+          <a-option :value="0">默认</a-option>
+          <a-option :value="10">立即触发执行</a-option>
+          <a-option :value="20">触发一次执行</a-option>
+          <a-option :value="30">不触发立即执行</a-option>
+        </a-select>
       </a-form-item>
       <a-form-item field="isConcurrent" label="是否并行">
         <a-radio-group v-model="formData.isConcurrent">
@@ -28,7 +31,11 @@
         </a-radio-group>
       </a-form-item>
       <a-form-item  field="runTime" label="运行时间">
-        <a-input v-model="formData.runTime" placeholder="请输入运行时间"/>
+        <a-input-number v-model="formData.runTime" :precision="0" :min="5" max="1800" placeholder="请输入大概的运行时间"  hide-button>
+          <template #append>
+            <span>秒</span>
+          </template>
+        </a-input-number>
       </a-form-item>
     </a-form>
     <template #footer>
@@ -41,12 +48,11 @@
 <script lang="ts" setup>
 
 import {core as coreTool, functionTool} from 'owner-tool-js';
-import {onMounted, reactive, ref} from "vue";
-import {AddEditEnum, MenuTypeEnum, StatusEnum, UserStatusEnum,SexEnum} from "../../../common/domain/enums";
+import {ref} from "vue";
+import {AddEditEnum} from "../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {DragonNotice} from "../../../common/domain/component";
-import {userSave, userUpdate} from "../../../common/api/system/user";
-import {getRoleList, getRoleType} from "../../../common/api/system/role";
+import {jobSave, jobUpdate} from "../../../common/api/scheduler/schedulerJob";
 
 const emits = defineEmits(["query"]);
 
@@ -62,6 +68,7 @@ const formRef = ref();
 const modalVisible = ref(false);
 // 表单数据
 const initFormData = {
+  id: undefined,
   name: undefined,
   applicationName: undefined,
   cron: undefined,
@@ -73,42 +80,25 @@ const formData = ref({...initFormData});
 const formRules = {
   name: {
     required: true,
-    message: "姓名不能为空"
+    message: "任务名称不能为空"
   },
-  username: {
+  cron: {
     required: true,
-    message: "用户名不能为空"
+    message: "cron表达式不能为空"
   },
-  sex: {
+  mode: {
     required: true,
-    message: "性别不能为空"
+    message: "执行模式不能为空"
   },
-  roleIds: {
+  isConcurrent: {
     required: true,
-    message: "角色不能为空"
+    message: "是否并行不能为空"
   },
-  status: {
+  runTime: {
     required: true,
-    message: "状态不能为空"
+    message: "运行时间不能为空"
   }
 };
-
-// 角色下拉框的数据
-const roleSelectData:{
-  roleTypeOptions:Array<{
-    name:string,
-    id:number
-  }>,
-  roleOptions:Array<{
-    name:string,
-    id:number,
-    typeId: number
-  }>,
-} = reactive({
-  roleTypeOptions: [],
-  roleOptions: []
-})
-
 
 /**
  * 点击确定按钮
@@ -121,7 +111,7 @@ const submit = () => {
   formRef.value.validate(async (errors: any) => {
     // 如果没有错误进行提交
     if (coreTool.isUndefined(errors)) {
-      const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await userSave(formData.value) : await userUpdate(formData.value));
+      const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await jobSave(formData.value) : await jobUpdate(formData.value));
       if (res.status === ResponseStatusEnum.OK) {
         DragonNotice.success("操作成功");
         emits("query");
@@ -151,17 +141,6 @@ const close = () => {
   submitLoading.value = false;
 }
 
-onMounted(async ()=>{
-  if (coreTool.isEmpty(<any>roleSelectData.roleTypeOptions)) {
-    const res: ResponseResult = await getRoleType();
-    roleSelectData.roleTypeOptions = res.data;
-  }
-
-  if (coreTool.isEmpty(<any>roleSelectData.roleOptions)) {
-    const res: ResponseResult = await getRoleList();
-    roleSelectData.roleOptions = res.data;
-  }
-})
 
 defineExpose({
   init: (data: object) => {
