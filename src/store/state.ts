@@ -15,4 +15,5 @@ export default {
 
     menus:[],                   // 当前用户的菜单
     userInfo: {},               // 当前用户信息
+    components:[],              // 当前用户组件权限数据
 };

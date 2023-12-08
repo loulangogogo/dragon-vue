@@ -5,7 +5,7 @@
  ** @author loulan
  ** @version 0.0.0
  *********************************************************/
-import {Menu, UserInfo} from "../common/domain/common";
+import {PermissionComponent, Menu, UserInfo} from "../common/domain/common";
 import state from "./state";
 
 export default {
@@ -31,5 +31,8 @@ export default {
     menus: (state: any): Array<Menu> => state.menus,
     // 获取用户信息
     userInfo: (state: any): UserInfo => state.userInfo,
+    // 组件权限数据
+    components: (state: any): Array<PermissionComponent> => state.components,
+
 
 }

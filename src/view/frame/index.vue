@@ -25,7 +25,10 @@ import FrameSider from './sider.vue';
 import FrameContent from './content.vue';
 import FrameFooter from './footer.vue';
 import {useStore} from 'vuex';
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
+import {currentUserComponent} from "../../common/api/frame";
+import {core as coreTool} from "owner-tool-js";
 
 // 是否折叠
 const collapsed = ref(false);
@@ -60,6 +63,23 @@ const changeCollapsed = (value:boolean):void => {
   }
 }
 
+/**
+ * 当前用户组件权限（在当前客户端下的）
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const currentUserComponentPermission = async ()=>{
+  const res: ResponseResult = await currentUserComponent();
+  if (ResponseStatusEnum.OK == res.status && coreTool.isExist(res.data)) {
+    useStore().commit("setUserComponents", res.data);
+  }
+}
+
+onMounted(()=>{
+  currentUserComponentPermission()
+})
 </script>
 
 <style scoped>

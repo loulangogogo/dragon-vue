@@ -21,6 +21,20 @@ export interface Menu{
 }
 
 /*********************************************************
+ ** 组件权限数据
+ ** <br><br>
+ ** Date: Created in 2023/12/8 15:13
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export interface PermissionComponent{
+    id?:number,
+    code?:string;
+    name?:string;
+    menuId?:number
+}
+
+/*********************************************************
  ** 用户信息接口
  ** <br><br>
  ** Date: Created in 2022/9/22 14:00

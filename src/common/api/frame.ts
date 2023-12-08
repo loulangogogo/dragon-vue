@@ -42,4 +42,14 @@ export const currentUserMenu = () => {
     return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/menu/getCurrentUserMenu`);
 }
 
+/**
+ * 获取当前用户组件权限数据
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const currentUserComponent = () => {
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/permission/getCurrentUserComponent`);
+}
+
 
