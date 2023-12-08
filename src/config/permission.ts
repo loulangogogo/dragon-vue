@@ -2,7 +2,7 @@ import router from '../router/index';
 import store from "../store";
 import * as $L from 'owner-tool-js';
 import {LocalStorageEnum} from "../common/domain/storage";
-import {generateMenuRouter} from "../router/routerMenu";
+import {generateMenuRouter,currentUserComponentPermission} from "../router/routerMenu";
 
 /**
  * 路由全局前置守卫
@@ -21,6 +21,7 @@ router.beforeEach(async (to, from) => {
 
         // 如果菜单数据为空，那么就获取菜单并重新生成菜单路由(整个数据的获取必须在token存在，也就是登录成功之后才能进行)
         if ($L.core.isEmpty(store.getters.menus)) {
+            await currentUserComponentPermission();
             await generateMenuRouter();
             return {...to,replace: true};
         }

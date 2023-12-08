@@ -11,8 +11,9 @@ import store from "../store";
 import router from "./index";
 import {RouteRecordRaw,} from "vue-router";
 import {Menu} from "../common/domain/common";
-import {currentUserMenu} from "../common/api/frame";
+import {currentUserComponent, currentUserMenu} from "../common/api/frame";
 import {ResponseResult, ResponseStatusEnum} from "../common/domain/response";
+import {core as coreTool} from "owner-tool-js";
 
 const viteComponents = import.meta.glob("../**/*.vue");
 
@@ -70,5 +71,19 @@ export const generateMenuRouter = async ()=>{
         router.addRoute(menuRouter);
     } else {
         console.error("获取菜单错误。");
+    }
+}
+
+/**
+ * 当前用户组件权限（在当前客户端下的）
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+export const currentUserComponentPermission = async ()=>{
+    const res: ResponseResult = await currentUserComponent();
+    if (ResponseStatusEnum.OK == res.status && coreTool.isExist(res.data)) {
+        store.commit("setUserComponents", res.data);
     }
 }
