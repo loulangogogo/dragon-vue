@@ -6,7 +6,7 @@
            :mask-closable="false"
            :footer="false"
            @close="close">
-    <job-log ref="jobLogRef" content-height="550"></job-log>
+    <job-log ref="jobLogRef" :content-height="550"></job-log>
   </a-modal>
 </template>
 
