@@ -1,6 +1,6 @@
 <template>
   <a-modal v-model:visible="modalVisible"
-           :title="isAddEdit===AddEditEnum.ADD?'用户添加':'用户编辑'"
+           :title="isAddEdit===AddEditEnum.ADD?'类型添加':'类型编辑'"
            title-align="start"
            width="550px"
            :mask-closable="false"
@@ -11,18 +11,6 @@
       </a-form-item>
       <a-form-item field="code" label="编码">
         <a-input v-model="formData.code" placeholder="请输入编码"/>
-      </a-form-item>
-      <a-form-item field="type" label="类型">
-        <a-input v-model="formData.type" placeholder="请输入所属类型"/>
-      </a-form-item>
-      <a-form-item field="orderNum" label="排序">
-        <a-input-number v-model="formData.orderNum" placeholder="请输入排序号码"  hide-button></a-input-number>
-      </a-form-item>
-      <a-form-item v-if="isAddEdit===AddEditEnum.EDIT" field="status" label="是否启用">
-        <a-radio-group v-model="formData.status">
-          <a-radio :value="StatusEnum.ON">启用</a-radio>
-          <a-radio :value="StatusEnum.OFF">禁止</a-radio>
-        </a-radio-group>
       </a-form-item>
     </a-form>
     <template #footer>
@@ -36,10 +24,10 @@
 
 import {core as coreTool, functionTool} from 'owner-tool-js';
 import {ref} from "vue";
-import {AddEditEnum, StatusEnum} from "../../../common/domain/enums";
+import {AddEditEnum} from "../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {DragonNotice} from "../../../common/domain/component";
-import {dictSave, dictUpdate} from "../../../common/api/system/dict";
+import {dictTypeSave, dictTypeUpdate} from "../../../common/api/system/dictType";
 
 const emits = defineEmits(["query"]);
 
@@ -57,9 +45,6 @@ const modalVisible = ref(false);
 const initFormData = {
   code: undefined,
   name: undefined,
-  type: undefined,
-  orderNum: undefined,
-  status: StatusEnum.ON
 };
 const formData = ref({...initFormData});
 const formRules = {
@@ -71,14 +56,6 @@ const formRules = {
     required: true,
     message: "编码不能为空"
   },
-  type: {
-    required: true,
-    message: "类型不能为空"
-  },
-  status: {
-    required: true,
-    message: "状态不能为空"
-  }
 };
 
 /**
@@ -92,7 +69,7 @@ const submit = () => {
   formRef.value.validate(async (errors: any) => {
     // 如果没有错误进行提交
     if (coreTool.isUndefined(errors)) {
-      const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await dictSave(formData.value) : await dictUpdate(formData.value));
+      const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await dictTypeSave(formData.value) : await dictTypeUpdate(formData.value));
       if (res.status === ResponseStatusEnum.OK) {
         DragonNotice.success("操作成功");
         emits("query");

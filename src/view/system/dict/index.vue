@@ -7,10 +7,10 @@
            v-model:size="splitSize"
   >
     <template #first>
-      <type :content-height="contentHeight"></type>
+      <type :content-height="contentHeight" @query="query"></type>
     </template>
     <template #second>
-      <dict :content-height="contentHeight"></dict>
+      <dict ref="dictRef" :content-height="contentHeight"></dict>
     </template>
   </a-split>
 </template>
@@ -29,6 +29,20 @@ const props = defineProps({
     default: 0
   }
 });
+
+const dictRef = ref();
+
+
+/**
+ * 当点击查询的时候
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const query = (data:any)=>{
+  dictRef.value.queryByType(data);
+}
 </script>
 
 <style scoped lang="scss">

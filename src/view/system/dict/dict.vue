@@ -1,7 +1,6 @@
 <template>
   <div class="headerDiv">
     <a-input v-model="queryParam.name" style="width: 200px" placeholder="请输入名称" allow-clear/>
-    <a-input v-model="queryParam.type" style="width: 200px;margin-left: 20px" placeholder="请输入类型" allow-clear/>
     <a-select v-model="queryParam.status" :scrollbar="false" style="width: 200px;margin-left: 20px" placeholder="请输入状态" allow-clear>
       <a-option :value="StatusEnum.ON">启用</a-option>
       <a-option :value="StatusEnum.OFF">禁用</a-option>
@@ -39,19 +38,20 @@
     </a-table>
   </div>
   <div v-show="false">
-    <info ref="infoRef" @query="search"></info>
+    <info ref="infoRef" @query="search" :type="queryParam.type"></info>
   </div>
 </template>
 
 <script lang="ts" setup>
 
-import Info from './info.vue';
+import Info from './dict-info.vue';
 import {onMounted, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {TableColumnData} from "@arco-design/web-vue";
 import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
 import {dictDel, pageDictList} from "../../../common/api/system/dict";
-import {StatusEnum} from "../../../common/domain/enums";
+import {AddEditEnum, StatusEnum} from "../../../common/domain/enums";
+import {core as coreTool, functionTool} from "owner-tool-js";
 
 const props = defineProps({
   contentHeight: {
@@ -77,11 +77,6 @@ const columns:Array<TableColumnData> = [
     title: "编码",
     dataIndex: "code",
     width: 300,
-  },
-  {
-    title: "类型",
-    dataIndex: "type",
-    width: 200,
   },
   {
     title: "排序",
@@ -110,7 +105,7 @@ const queryParam = reactive({
   pageTotal: 0
 })
 
-const loading = ref(true);
+const loading = ref(false);
 
 /**
  * 分页查询数据
@@ -198,9 +193,12 @@ const del = (data:any) => {
 }
 
 
-onMounted(() => {
-  pageList();
-})
+defineExpose({
+  queryByType: (data:any) => {
+    queryParam.type=data.code;
+    pageList();
+  }
+});
 </script>
 
 <style scoped>

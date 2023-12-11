@@ -1,11 +1,7 @@
 <template>
   <div class="headerDiv">
     <a-input v-model="queryParam.name" style="width: 200px" placeholder="请输入名称" allow-clear/>
-    <a-input v-model="queryParam.type" style="width: 200px;margin-left: 20px" placeholder="请输入类型" allow-clear/>
-    <a-select v-model="queryParam.status" :scrollbar="false" style="width: 200px;margin-left: 20px" placeholder="请输入状态" allow-clear>
-      <a-option :value="StatusEnum.ON">启用</a-option>
-      <a-option :value="StatusEnum.OFF">禁用</a-option>
-    </a-select>
+    <a-input v-model="queryParam.code" style="width: 200px;margin-left: 20px" placeholder="请输入编码" allow-clear/>
     <a-button type="primary" style="margin-left: 20px" @click="search">查询</a-button>
     <a-button type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
   </div>
@@ -13,6 +9,7 @@
     <a-table :columns="columns"
              :data="tableData"
              :stripe="true"
+             row-class="selectRowStyle"
              page-position="bottom"
              :pagination="{
                 total: queryParam.pageTotal,
@@ -30,6 +27,7 @@
              column-resizable
              :bordered="{cell:true}"
              :loading="loading"
+             @row-click="clickRow"
              @page-size-change="pageSizeChange"
              @page-change="pageChange">
       <template #operate="{record}">
@@ -45,13 +43,14 @@
 
 <script lang="ts" setup>
 
-import Info from './info.vue';
+import Info from './type-info.vue';
 import {onMounted, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
-import {TableColumnData} from "@arco-design/web-vue";
+import {TableColumnData, TableData} from "@arco-design/web-vue";
 import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
-import {dictDel, pageDictList} from "../../../common/api/system/dict";
-import {StatusEnum} from "../../../common/domain/enums";
+import {dictTypeDel, dictTypePageList} from "../../../common/api/system/dictType";
+
+const emits = defineEmits(["query"]);
 
 const props = defineProps({
   contentHeight: {
@@ -79,21 +78,6 @@ const columns:Array<TableColumnData> = [
     width: 300,
   },
   {
-    title: "类型",
-    dataIndex: "type",
-    width: 200,
-  },
-  {
-    title: "排序",
-    dataIndex: "orderNum",
-    width: 300,
-  },
-  {
-    title: "状态",
-    dataIndex: "statusName",
-    width: 100,
-  },
-  {
     title: "操作",
     width: 150,
     fixed: "right",
@@ -102,15 +86,25 @@ const columns:Array<TableColumnData> = [
 ];
 // 查询参数
 const queryParam = reactive({
-  type: undefined,
+  code: undefined,
   name: undefined,
-  status: undefined,
   pageCurrent: 1,
   pageSize: 10,
   pageTotal: 0
 })
 
 const loading = ref(true);
+
+/**
+ * 点击行的时候
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const clickRow = (record:TableData)=>{
+  emits('query', record);
+}
 
 /**
  * 分页查询数据
@@ -121,7 +115,7 @@ const loading = ref(true);
 const pageList =async () => {
   // 查询之前进入加载状态
   loading.value = true;
-  const res:ResponseResult = await pageDictList(queryParam);
+  const res:ResponseResult = await dictTypePageList(queryParam);
   if (res.status === ResponseStatusEnum.OK) {
     const data = res.data;
     tableData.value = data.records;
@@ -189,7 +183,7 @@ const del = (data:any) => {
     title: '确认提示',
     content: '您确认删除这条数据吗？'
   }).then(async ()=>{
-    const res:ResponseResult = await dictDel(data.id);
+    const res:ResponseResult = await dictTypeDel(data.id);
     if (res.status === ResponseStatusEnum.OK) {
       search();
       DragonNotice.success("删除成功");
@@ -213,5 +207,9 @@ onMounted(() => {
 .bodyDiv {
   /*70头部div的高度，5是多一个安全距离*/
   height: v-bind(contentHeight-75+ 'px');
+}
+
+.selectRowStyle{
+  background-color: red;
 }
 </style>
