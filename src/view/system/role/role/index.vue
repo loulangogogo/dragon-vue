@@ -29,7 +29,7 @@
     </a-table>
   </div>
   <div v-show="false">
-    <Info ref="infoRef" :role-type-id="roleTypeId" @query-role="queryRole"></Info>
+    <Info ref="infoRef" :role-type-id="roleTypeId" :is-dept="props.isDept" :dept-id="queryParam.deptId" @query-role="queryRole"></Info>
     <permission ref="permissionRef"></permission>
   </div>
 </template>
@@ -40,24 +40,35 @@ import Permission from './permission.vue';
 import {onMounted, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {TableColumnData} from "@arco-design/web-vue";
-import {getRoleByType, roleDel, roleUpdate} from "../../../../common/api/system/role";
+import {getRoleByDept, getRoleByType, roleDel, roleUpdate} from "../../../../common/api/system/role";
 import {StatusEnum} from "../../../../common/domain/enums";
 import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
+import {core} from "owner-tool-js";
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
+  // 高度
   height:number,
-  roleTypeId:number
-}>();
+  // 角色类型
+  roleTypeId:number,
+  // 是否是部门
+  isDept:boolean,
+}>(),{
+  height: undefined,
+  roleTypeId: undefined,
+  isDept:false,
+})
 
 // 添加编辑组件的ref
 const infoRef = ref();
 const permissionRef = ref();
 // 表格数据
 const tableData = ref();
+
+
 // 表格列配置
 const columns:Array<TableColumnData> = [
   {
-    title: "名称",
+    title: (props.isDept?"岗位":"角色")+"名称",
     dataIndex: "name",
     width: 300,
     fixed: "left",
@@ -84,9 +95,10 @@ const columns:Array<TableColumnData> = [
 // 查询参数
 const queryParam = reactive({
   name: undefined,
+  deptId: undefined
 })
 
-const loading = ref(true);
+const loading = ref(false);
 
 /**
  * 分页查询数据
@@ -95,9 +107,15 @@ const loading = ref(true);
  * @author     :loulan
  * */
 const queryRole = async () => {
+  // 判断是否是部门角色查询
+  if (props.isDept && core.isNotExist(queryParam.deptId)) {
+    // 如果是部门角色查询，但是部门id有不存在，那么不进行查询
+      return;
+  }
+
   // 查询之前进入加载状态
   loading.value = true;
-  const res: ResponseResult = await getRoleByType(props.roleTypeId);
+  const res: ResponseResult = await (props.isDept?getRoleByDept(queryParam.deptId,queryParam.name):getRoleByType(props.roleTypeId,queryParam.name));
   if (res.status === ResponseStatusEnum.OK) {
     tableData.value = res.data;
   }
@@ -181,6 +199,20 @@ const permissionEdit = (data:any)=>{
 onMounted(() => {
   queryRole();
 })
+
+defineExpose({
+  /**
+   * 根据部门查询数据
+   * @param
+   * @return
+   * @exception
+   * @author     :loulan
+   * */
+  queryByDept:(deptId:any)=>{
+    queryParam.deptId = deptId;
+    queryRole();
+  }
+});
 </script>
 
 <style scoped>

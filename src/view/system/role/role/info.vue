@@ -1,6 +1,6 @@
 <template>
   <a-modal v-model:visible="modalVisible"
-           :title="isAddEdit===AddEditEnum.ADD?'角色添加':'角色编辑'"
+           :title="isAddEdit===AddEditEnum.ADD?getTitle()+'添加':getTitle()+'编辑'"
            title-align="start"
            width="550px"
            :mask-closable="false"
@@ -28,10 +28,10 @@
 <script lang="ts" setup>
 
 import {core as coreTool, functionTool} from 'owner-tool-js';
-import {reactive, ref} from "vue";
+import {ref} from "vue";
 import {AddEditEnum} from "../../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
-import {DragonNotice} from "../../../../common/domain/component";
+import {DragonMessage, DragonNotice} from "../../../../common/domain/component";
 import {roleSave, roleUpdate} from "../../../../common/api/system/role";
 
 const emits = defineEmits(["queryRole"]);
@@ -39,9 +39,18 @@ const emits = defineEmits(["queryRole"]);
 // 确定提交按钮的加载状态
 const submitLoading = ref(false);
 
-const props = defineProps<{
-  roleTypeId: any
-}>();
+const props = withDefaults(defineProps<{
+  // 角色类型
+  roleTypeId:number,
+  // 是否是部门
+  isDept:boolean,
+  // 部门
+  deptId:any,
+}>(),{
+  roleTypeId: undefined,
+  isDept: false,
+  deptId:undefined,
+})
 
 // 当前是添加还是编辑，默认添加
 const isAddEdit = ref(AddEditEnum.ADD);
@@ -69,18 +78,39 @@ const formRules = {
 };
 
 /**
+ * 判断标题展示
+ * 根据部门是否存来判断，岗位也是角色
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const getTitle = ()=>{
+  if (props.isDept) {
+    return '岗位';
+  } else {
+    return '角色';
+  }
+}
+
+/**
  * 点击确定按钮
  * @param
  * @return
  * @author     :loulan
  * */
 const submit = () => {
+  // 如果是部门，但是部门id不存在那么提示选择部门
+  if (props.isDept && coreTool.isNotExist(props.deptId)) {
+    DragonMessage.warning("请选择部门");
+    return;
+  }
   submitLoading.value = true;
   formRef.value.validate(async (errors: any) => {
     // 如果没有错误进行提交
     if (coreTool.isUndefined(errors)) {
       formData.value.typeId = props.roleTypeId;
-      const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await roleSave(formData.value) : await roleUpdate(formData.value));
+      const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await roleSave(formData.value,props.deptId) : await roleUpdate(formData.value));
       if (res.status === ResponseStatusEnum.OK) {
         DragonNotice.success("操作成功");
         emits("queryRole");
@@ -112,6 +142,13 @@ const close = () => {
 
 defineExpose({
   init: (data: object) => {
+    // 如果是部门，但是部门id不存在那么提示选择部门
+    if (props.isDept && coreTool.isNotExist(props.deptId)) {
+      DragonMessage.warning("请选择部门");
+      return;
+    }
+
+
     if (coreTool.isNotExist(data)) {
       // 数据不存在是添加
       isAddEdit.value = AddEditEnum.ADD;

@@ -1,4 +1,5 @@
 import ask from "../../ask";
+import {core as coreTool} from "owner-tool-js";
 
 /**
  * 获取所有的角色类型
@@ -36,8 +37,18 @@ export const getRoleAllList = () => {
  * @return
  * @author     :loulan
  * */
-export const getRoleByType = (roleTypeId:number) => {
-    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/getRoleByType/${roleTypeId}`);
+export const getRoleByType = (roleTypeId:number,name?:string) => {
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/getRoleByType/${roleTypeId}?name=${name?name:""}`);
+}
+
+/**
+ * 根据部门id获取角色数据
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const getRoleByDept = (deptId:any,name?:string) => {
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/getRoleByDept/${deptId}?name=${name?name:""}`);
 }
 
 /**
@@ -76,8 +87,9 @@ export const roleTypeDel = (id:number) => {
  * @return
  * @author     :loulan
  * */
-export const roleSave = (data:any) => {
-    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/save`,data);
+export const roleSave = (data:any,deptId?:any) => {
+    const param:string = coreTool.isExist(deptId) ? `deptId=${deptId}` : '';
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/save?${param}`,data);
 }
 
 /**
