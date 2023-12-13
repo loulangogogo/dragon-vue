@@ -53,7 +53,7 @@ const props = withDefaults(defineProps<{
   // 是否是部门
   isDept:boolean,
 }>(),{
-  height: undefined,
+  height: 0,
   roleTypeId: undefined,
   isDept:false,
 })
