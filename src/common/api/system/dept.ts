@@ -1,4 +1,5 @@
 import ask from "../../ask";
+import {core as coreTool} from "owner-tool-js";
 
 /**
  * 获取所有的部门
@@ -6,8 +7,9 @@ import ask from "../../ask";
  * @return
  * @author     :loulan
  * */
-export const getAllDept = () => {
-    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/dept/getAllDept`);
+export const getAllDept = (status?:number) => {
+    const param:string = coreTool.isExist(status) ? `status=${status}` : '';
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/dept/getAllDept?${param}`);
 }
 
 /**

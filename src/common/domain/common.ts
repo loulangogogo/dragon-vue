@@ -53,9 +53,10 @@ export interface UserInfo{
     birthday?: string;
     idCard?: string;
     openid?: string;
-    unionid?: string,
+    unionid?: string;
     headerImageFileId?: string;
     headerImageFileInfo?: FileInfo;
+    deptId?:number;
 }
 
 /*********************************************************

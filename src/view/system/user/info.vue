@@ -18,11 +18,30 @@
           <a-radio :value="SexEnum.MEN">女</a-radio>
         </a-radio-group>
       </a-form-item>
-      <a-form-item field="roleIds" label="角色">
-        <a-select v-model="formData.roleIds" :scrollbar="false" placeholder="请选择角色数据" multiple>
-          <a-optgroup v-for="(roleType,index) in roleSelectData.roleTypeOptions" :label="roleType.name" :key="index">
+      <a-form-item field="pid" label="部门">
+        <a-tree-select v-model="formData.deptId"
+                       :field-names="{
+                          key: 'id',
+                          title: 'name'
+                        }"
+                       :data="deptTreeData"
+                       @change="deptChange"
+                       placeholder="请选择部门">
+        </a-tree-select>
+      </a-form-item>
+      <a-form-item field="roleIds" label="岗位角色">
+        <a-select v-model="formData.roleIds" :scrollbar="false" placeholder="请选择角色数据" :multiple="formData.deptId == SpecialValueEnum.TOP">
+          <a-optgroup v-if="coreTool.isNotExist(formData.deptId)" >
+
+          </a-optgroup>
+          <a-optgroup v-else-if="formData.deptId == SpecialValueEnum.TOP" v-for="(roleType,index) in roleSelectData.roleTypeOptions" :label="roleType.name" :key="index">
             <template  v-for="(role,index) in roleSelectData.roleOptions" :key="index">
               <a-option v-if="role.typeId==roleType.id" :value="role.id">{{role.name}}</a-option>
+            </template>
+          </a-optgroup>
+          <a-optgroup v-else label="部门岗位">
+            <template  v-for="(role,index) in roleSelectData.roleOptions" :key="index">
+              <a-option :value="role.id">{{role.name}}</a-option>
             </template>
           </a-optgroup>
         </a-select>
@@ -50,13 +69,21 @@
 
 <script lang="ts" setup>
 
-import {core as coreTool, functionTool} from 'owner-tool-js';
-import {onMounted, reactive, ref} from "vue";
-import {AddEditEnum, MenuTypeEnum, StatusEnum, UserStatusEnum,SexEnum} from "../../../common/domain/enums";
+import {arrayTool, core as coreTool, functionTool} from 'owner-tool-js';
+import {computed, onMounted, reactive, ref} from "vue";
+import {
+  AddEditEnum,
+  MenuTypeEnum,
+  StatusEnum,
+  UserStatusEnum,
+  SexEnum,
+  RoleTypeSpecialEnum, SpecialValueEnum
+} from "../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {DragonNotice} from "../../../common/domain/component";
 import {userSave, userUpdate} from "../../../common/api/system/user";
-import {getRoleList, getRoleType} from "../../../common/api/system/role";
+import {getRoleByDept, getRoleList, getRoleType} from "../../../common/api/system/role";
+import {getAllDept} from "../../../common/api/system/dept";
 
 const emits = defineEmits(["query"]);
 
@@ -78,7 +105,8 @@ const initFormData = {
   birthday: undefined,
   idCard:undefined,
   status: UserStatusEnum.NORMAL,
-  roleIds: undefined
+  roleIds: undefined,
+  deptId: undefined,
 };
 const formData = ref({...initFormData});
 const formRules = {
@@ -120,6 +148,23 @@ const roleSelectData:{
   roleOptions: []
 })
 
+// 部门下拉框的数据
+const deptOptions = ref([]);
+
+// 部门树
+const deptTreeData = computed(() => {
+  if (coreTool.isNotEmpty(deptOptions.value)) {
+    const dirData: Array<any> = functionTool.deepCopy(deptOptions.value);
+    dirData.push({
+      id: SpecialValueEnum.TOP,
+      name: "顶级",
+      pid: -2
+    })
+    return arrayTool.arrayToTree(dirData, "id", "pid", -2);
+  } else {
+    return [];
+  }
+})
 
 /**
  * 点击确定按钮
@@ -144,6 +189,19 @@ const submit = () => {
   })
 }
 
+/**
+ * 部门选择框内容发生改变事件
+ * @param       
+ * @return
+ * @exception  
+ * @author     :loulan
+ * */
+const deptChange = async (value:any)=>{
+  // 当选择框的内容发生改变的时候要清除调已经选择的角色
+  formData.value.roleIds = undefined;
+  await getRoleByDeptId(value);
+}
+
 
 /**
  * 对话框关闭触发的事件
@@ -162,20 +220,62 @@ const close = () => {
   submitLoading.value = false;
 }
 
+/**
+ * 获取部门数据
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const getDept = async ()=>{
+  const res: ResponseResult = await getAllDept(StatusEnum.ON);
+  if (ResponseStatusEnum.OK == res.status) {
+    deptOptions.value = res.data;
+  }
+}
+
+/**
+ * 通过部门获取角色
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const getRoleByDeptId = async (deptId:any)=>{
+  roleSelectData.roleOptions=[];
+
+  if (coreTool.isNotExist(deptId)) {
+    // 如果部门不存在
+    formData.value.roleIds = undefined;
+    return;
+  }else if (deptId == SpecialValueEnum.TOP) {
+    // 如果是特殊顶级部门
+    // fixme 这个地方要改成只获取非部门和客户端的角色数据
+    const res: ResponseResult = await getRoleList();
+    if (ResponseStatusEnum.OK == res.status) {
+      roleSelectData.roleOptions = res.data;
+    }
+  } else {
+    // 如果是普通部门
+    const res: ResponseResult = await getRoleByDept(deptId);
+    if (ResponseStatusEnum.OK == res.status) {
+      roleSelectData.roleOptions = res.data;
+    }
+  }
+}
+
 onMounted(async ()=>{
+  await getDept();
   if (coreTool.isEmpty(<any>roleSelectData.roleTypeOptions)) {
     const res: ResponseResult = await getRoleType();
-    roleSelectData.roleTypeOptions = res.data;
-  }
-
-  if (coreTool.isEmpty(<any>roleSelectData.roleOptions)) {
-    const res: ResponseResult = await getRoleList();
-    roleSelectData.roleOptions = res.data;
+    if (ResponseStatusEnum.OK == res.status) {
+      roleSelectData.roleTypeOptions = res.data.filter((o:any)=>(RoleTypeSpecialEnum.CLIENT != o.id && RoleTypeSpecialEnum.DEPT != o.id));
+    }
   }
 })
 
 defineExpose({
-  init: (data: object) => {
+  init: async (data: object) => {
     if (coreTool.isNotExist(data)) {
       // 数据不存在是添加
       isAddEdit.value = AddEditEnum.ADD;
@@ -184,6 +284,8 @@ defineExpose({
       // 数据存在是编辑
       isAddEdit.value = AddEditEnum.EDIT;
       functionTool.combineObj(formData.value, data);
+      // 获取用户部门的角色
+      await getRoleByDeptId(formData.value.deptId);
       modalVisible.value = true;
     }
   }

@@ -6,9 +6,9 @@
  ** @version 0.0.0
  *********************************************************/
 export enum EnvEnum {
-    DEV=0,
-    PROD=1,
-    TEST=2,
+    DEV = 0,
+    PROD = 1,
+    TEST = 2,
 }
 
 
@@ -119,7 +119,7 @@ export enum RoleResourcesTypeEnum {
     USER = 20,
     MENU = 30,
     PERMISSION = 40,
-    DEPT=50,
+    DEPT = 50,
 }
 
 /*********************************************************
@@ -136,6 +136,18 @@ export enum RoleTypeSpecialEnum {
     USER = 1,
     // 部门角色类型id
     DEPT = 3,
+}
+
+/*********************************************************
+ ** 特殊值枚举
+ ** 比如很多树的顶级就是-1，一些特殊的存在都是-1
+ ** <br><br>
+ ** Date: Created in 2023/12/13 20:00
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export enum SpecialValueEnum {
+    TOP = -1
 }
 
 /*********************************************************
@@ -176,7 +188,7 @@ export enum GrantTypeEnum {
  ** @author loulan
  ** @version 0.0.0
  *********************************************************/
-export enum WechatQrcodeTypeEnum{
+export enum WechatQrcodeTypeEnum {
     // 登陆
     LOGIN = 10,
     // 注册
@@ -192,7 +204,7 @@ export enum WechatQrcodeTypeEnum{
  ** @author loulan
  ** @version 0.0.0
  *********************************************************/
-export enum EmailMessageTypeEnum{
+export enum EmailMessageTypeEnum {
     VALIFY_CODE = 10,
     REGISTER = 20,
     UN_REGISTER = 21,
@@ -208,7 +220,7 @@ export enum EmailMessageTypeEnum{
  ** @author loulan
  ** @version 0.0.0
  *********************************************************/
-export enum PhoneMessageTypeEnum{
+export enum PhoneMessageTypeEnum {
     VALIFY_CODE = 10,
     REGISTER = 20,
     UN_REGISTER = 21,

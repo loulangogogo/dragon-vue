@@ -29,9 +29,9 @@
       </a-form-item>
       <a-form-item field="roleIds" label="角色">
         <a-select v-model="formData.roleIds" :scrollbar="false" placeholder="请选择角色数据" multiple>
-          <a-optgroup v-for="(roleType,index) in roleSelectData.roleTypeOptions" :label="roleType.name" :key="index">
+          <a-optgroup label="客户端角色">
             <template v-for="(role,index) in roleSelectData.roleOptions" :key="index">
-              <a-option v-if="role.typeId==roleType.id" :value="role.id">{{ role.name }}</a-option>
+              <a-option :value="role.id">{{ role.name }}</a-option>
             </template>
           </a-optgroup>
         </a-select>
@@ -76,11 +76,11 @@
 
 import {core as coreTool, functionTool} from 'owner-tool-js';
 import {reactive, ref, onMounted} from "vue";
-import {AddEditEnum, GrantTypeEnum, StatusEnum} from "../../../common/domain/enums";
+import {AddEditEnum, GrantTypeEnum, RoleTypeSpecialEnum, StatusEnum} from "../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {DragonNotice} from "../../../common/domain/component";
 import {clientSave, clientUpdate} from "../../../common/api/system/client";
-import {getRoleList, getRoleType} from "../../../common/api/system/role";
+import {getRoleByType, getRoleList, getRoleType} from "../../../common/api/system/role";
 
 const emits = defineEmits(["query"]);
 
@@ -129,17 +129,12 @@ const formRules = {
 
 // 角色下拉框的数据
 const roleSelectData:{
-  roleTypeOptions:Array<{
-    name:string,
-    id:number
-  }>,
   roleOptions:Array<{
     name:string,
     id:number,
     typeId: number
   }>,
 } = reactive({
-  roleTypeOptions: [],
   roleOptions: []
 })
 
@@ -183,14 +178,11 @@ const close = () => {
 }
 
 onMounted(async () => {
-  if (coreTool.isEmpty(<any>roleSelectData.roleTypeOptions)) {
-    const res: ResponseResult = await getRoleType();
-    roleSelectData.roleTypeOptions = res.data;
-  }
-
   if (coreTool.isEmpty(<any>roleSelectData.roleOptions)) {
-    const res: ResponseResult = await getRoleList();
-    roleSelectData.roleOptions = res.data;
+    const res: ResponseResult = await getRoleByType(RoleTypeSpecialEnum.CLIENT);
+    if (ResponseStatusEnum.OK == res.status) {
+      roleSelectData.roleOptions = res.data;
+    }
   }
 })
 
