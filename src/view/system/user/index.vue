@@ -8,7 +8,7 @@
     <a-button v-if="!props.isRole" type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
   </div>
   <div class="bodyDiv">
-    <a-table :columns="columns"
+    <a-table :columns="props.isRole?roleColumns:columns"
              :data="tableData"
              :stripe="true"
              page-position="bottom"
@@ -132,6 +132,53 @@ const columns: Array<TableColumnData> = [
     width: 150,
   },
 
+  {
+    title: "操作",
+    width: 150,
+    fixed: "right",
+    slotName: "operate"
+  },
+];
+
+// 表格列配置
+const roleColumns: Array<TableColumnData> = [
+  {
+    title: "姓名/昵称",
+    dataIndex: "name",
+    width: 150,
+    fixed: "left",
+  },
+  {
+    title: "用户名",
+    dataIndex: "username",
+    width: 200,
+  },
+  {
+    title: "手机号码",
+    dataIndex: "phone",
+    width: 120,
+  },
+  {
+    title: "部门",
+    dataIndex: "deptName",
+    width: 150,
+    render: (data:{ record: TableData, column: TableColumnData, rowIndex: number}) => {
+      if (coreTool.isNotExist(data.record?.deptId)) {
+        return "无";
+      }else if (data.record.deptId == SpecialValueEnum.TOP) {
+        return "顶级";
+      } else {
+        return data.record.deptName;
+      }
+    },
+  },
+  {
+    title: "岗位角色",
+    dataIndex: "roleName",
+    width: 150,
+    ellipsis: true,
+    tooltip: true
+  },
   {
     title: "操作",
     width: 150,
