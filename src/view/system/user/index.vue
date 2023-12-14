@@ -5,7 +5,7 @@
     <a-input v-model="queryParam.phone" style="width: 200px;margin-left: 20px" placeholder="请输入手机号码"
              allow-clear/>
     <a-button type="primary" style="margin-left: 20px" @click="search">查询</a-button>
-    <a-button type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
+    <a-button v-if="!props.isRole" type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
   </div>
   <div class="bodyDiv">
     <a-table :columns="columns"
@@ -50,14 +50,17 @@ import {pageUserList, userDel} from "../../../common/api/system/user";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {TableColumnData} from "@arco-design/web-vue";
 import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
+import {core as coreTool} from "owner-tool-js";
 
-const props = defineProps({
-  contentHeight: {
-    type: Number,
-    required: true,
-    default: 0
-  }
-});
+const props = withDefaults(defineProps<{
+  // 是否是通过角色查询
+  isRole: boolean;
+  // 高度设置
+  contentHeight: number;
+}>(),{
+  isRole: false,
+  seconds: 0
+})
 
 const infoRef = ref();
 
@@ -113,17 +116,21 @@ const columns: Array<TableColumnData> = [
     slotName: "operate"
   },
 ];
+
+
 // 查询参数
-const queryParam = reactive({
+const initQueryParam = {
   username: undefined,
   name: undefined,
   phone: undefined,
+  roleId: undefined,
   pageCurrent: 1,
   pageSize: 10,
   pageTotal: 0
-})
+};
+const queryParam = ref({...initQueryParam})
 
-const loading = ref(true);
+const loading = ref(false);
 
 /**
  * 分页查询数据
@@ -132,13 +139,18 @@ const loading = ref(true);
  * @author     :loulan
  * */
 const pageList = async () => {
+  if (props.isRole && coreTool.isNotExist(queryParam.value.roleId)) {
+    // 如果是根据角色查询，那么角色id必须存在
+    return;
+  }
+
   // 查询之前进入加载状态
   loading.value = true;
-  const res: ResponseResult = await pageUserList(queryParam);
+  const res: ResponseResult = await pageUserList(queryParam.value);
   if (res.status === ResponseStatusEnum.OK) {
     const data = res.data;
     tableData.value = data.records;
-    queryParam.pageTotal = data.total;
+    queryParam.value.pageTotal = data.total;
   }
   // 查询无论成功与否退出加载状态
   loading.value = false;
@@ -151,7 +163,7 @@ const pageList = async () => {
  * @author     :loulan
  * */
 const search = () => {
-  queryParam.pageCurrent = 1;
+  queryParam.value.pageCurrent = 1;
   pageList();
 }
 
@@ -162,7 +174,7 @@ const search = () => {
  * @author     :loulan
  * */
 const pageChange = (pageCurrent: number) => {
-  queryParam.pageCurrent = pageCurrent;
+  queryParam.value.pageCurrent = pageCurrent;
   pageList();
 }
 
@@ -173,7 +185,7 @@ const pageChange = (pageCurrent: number) => {
  * @author     :loulan
  * */
 const pageSizeChange = (pageSize: number) => {
-  queryParam.pageSize = pageSize;
+  queryParam.value.pageSize = pageSize;
   pageList();
 }
 
@@ -214,6 +226,22 @@ const del = (data: any) => {
 onMounted(() => {
   pageList();
 })
+
+defineExpose({
+  /**
+   * 根据角色查询
+   * @param       
+   * @return
+   * @exception  
+   * @author     :loulan
+   * */
+  searchByRole: (roleId: any) => {
+    queryParam.value = {...initQueryParam};
+    tableData.value = [];
+    queryParam.value.roleId = roleId;
+    pageList();
+  }
+});
 </script>
 
 <style scoped>

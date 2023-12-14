@@ -22,6 +22,8 @@
       <template #operate="{record}">
         <a-space>
           <a-button type="primary" status="warning" size="mini" @click="permissionEdit(record)">权限编辑</a-button>
+          <a-button v-if="roleTypeId == RoleTypeSpecialEnum.CLIENT" type="primary" status="success" size="mini" @click="()=>DragonMessage.success('正在开发中')">查看客户端</a-button>
+          <a-button v-else type="primary" status="success" size="mini" @click="lookUsers(record)">查看用户</a-button>
           <a-button type="primary" size="mini" @click="edit(record)">编辑</a-button>
           <a-button type="primary" status="danger" size="mini" @click="del(record)">删除</a-button>
         </a-space>
@@ -31,18 +33,20 @@
   <div v-show="false">
     <Info ref="infoRef" :role-type-id="roleTypeId" :is-dept="props.isDept" :dept-id="queryParam.deptId" @query-role="queryRole"></Info>
     <permission ref="permissionRef"></permission>
+    <look-user ref="lookUserRef"></look-user>
   </div>
 </template>
 
 <script lang="ts" setup>
 import Info from './info.vue';
 import Permission from './permission.vue';
+import LookUser from "./look-user.vue";
 import {onMounted, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {TableColumnData} from "@arco-design/web-vue";
 import {getRoleByDept, getRoleByType, roleDel, roleUpdate} from "../../../../common/api/system/role";
-import {StatusEnum} from "../../../../common/domain/enums";
-import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
+import {RoleTypeSpecialEnum, StatusEnum} from "../../../../common/domain/enums";
+import {dragonConfirm, DragonMessage, DragonNotice} from "../../../../common/domain/component";
 import {core} from "owner-tool-js";
 
 const props = withDefaults(defineProps<{
@@ -50,7 +54,7 @@ const props = withDefaults(defineProps<{
   height:number,
   // 角色类型
   roleTypeId:number,
-  // 是否是部门
+  // 是否是部门,部门管理也有角色查询
   isDept:boolean,
 }>(),{
   height: 0,
@@ -60,6 +64,9 @@ const props = withDefaults(defineProps<{
 
 // 添加编辑组件的ref
 const infoRef = ref();
+// 查看用户组件的ref
+const lookUserRef = ref();
+
 const permissionRef = ref();
 // 表格数据
 const tableData = ref();
@@ -87,7 +94,7 @@ const columns:Array<TableColumnData> = [
   },
   {
     title: "操作",
-    width: 250,
+    width: 300,
     fixed: "right",
     slotName: "operate"
   },
@@ -183,6 +190,17 @@ const del = (data:any)=>{
       DragonNotice.success("删除成功");
     }
   })
+}
+
+/**
+ * 查看该角色下存在的用户
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const lookUsers = (data:any)=>{
+  lookUserRef.value.init(data);
 }
 
 /**
