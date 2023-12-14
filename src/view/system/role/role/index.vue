@@ -44,7 +44,7 @@ import {onMounted, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {TableColumnData} from "@arco-design/web-vue";
 import {getRoleByDept, getRoleByType, roleDel, roleUpdate} from "../../../../common/api/system/role";
-import {RoleTypeSpecialEnum, StatusEnum} from "../../../../common/domain/enums";
+import {RoleTypeSpecialEnum, SpecialValueEnum, StatusEnum} from "../../../../common/domain/enums";
 import {dragonConfirm, DragonMessage, DragonNotice} from "../../../../common/domain/component";
 import {core} from "owner-tool-js";
 
@@ -93,7 +93,7 @@ const columns:Array<TableColumnData> = [
   },
   {
     title: "操作",
-    width: 300,
+    width: props.roleTypeId == RoleTypeSpecialEnum.CLIENT?220:300,
     fixed: "right",
     slotName: "operate"
   },
