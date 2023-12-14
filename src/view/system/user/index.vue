@@ -48,9 +48,10 @@ import Info from './info.vue';
 import {onMounted, reactive, ref} from "vue";
 import {pageUserList, userDel} from "../../../common/api/system/user";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
-import {TableColumnData} from "@arco-design/web-vue";
+import {TableColumnData, TableData} from "@arco-design/web-vue";
 import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
 import {core as coreTool} from "owner-tool-js";
+import {SpecialValueEnum} from "../../../common/domain/enums";
 
 const props = withDefaults(defineProps<{
   // 是否是通过角色查询
@@ -90,6 +91,30 @@ const columns: Array<TableColumnData> = [
     width: 200,
   },
   {
+    title: "身份证号码",
+    dataIndex: "idCard",
+    width: 200,
+  },
+  {
+    title: "部门",
+    dataIndex: "deptName",
+    width: 150,
+    render: (data:{ record: TableData, column: TableColumnData, rowIndex: number}) => {
+      if (coreTool.isNotExist(data.record?.deptId)) {
+        return "无";
+      }else if (data.record.deptId == SpecialValueEnum.TOP) {
+        return "顶级";
+      } else {
+        return data.record.deptName;
+      }
+    },
+  },
+  {
+    title: "岗位角色",
+    dataIndex: "roleName",
+    width: 150,
+  },
+  {
     title: "状态",
     dataIndex: "statusName",
     width: 70,
@@ -104,11 +129,7 @@ const columns: Array<TableColumnData> = [
     dataIndex: "birthday",
     width: 150,
   },
-  {
-    title: "身份证号码",
-    dataIndex: "idCard",
-    width: 200,
-  },
+
   {
     title: "操作",
     width: 150,
