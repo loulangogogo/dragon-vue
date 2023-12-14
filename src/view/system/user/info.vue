@@ -30,7 +30,7 @@
         </a-tree-select>
       </a-form-item>
       <a-form-item field="roleIds" label="岗位角色">
-        <a-select v-model="formData.roleIds" :scrollbar="false" placeholder="请选择角色数据" :multiple="formData.deptId == SpecialValueEnum.TOP">
+        <a-select v-model="formData.roleIds" :scrollbar="false" :loading="roleSelectLoading" placeholder="请选择角色数据" :multiple="formData.deptId == SpecialValueEnum.TOP">
           <a-optgroup v-if="coreTool.isNotExist(formData.deptId)" >
 
           </a-optgroup>
@@ -82,13 +82,15 @@ import {
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {DragonNotice} from "../../../common/domain/component";
 import {userSave, userUpdate} from "../../../common/api/system/user";
-import {getRoleByDept, getRoleList, getRoleType} from "../../../common/api/system/role";
+import {getRoleByDept, getRoleByNoType, getRoleList, getRoleType} from "../../../common/api/system/role";
 import {getAllDept} from "../../../common/api/system/dept";
 
 const emits = defineEmits(["query"]);
 
 // 确定提交按钮的加载状态
 const submitLoading = ref(false);
+// 角色下拉框的加载状态
+const roleSelectLoading = ref(false);
 
 // 当前是添加还是编辑，默认添加
 const isAddEdit = ref(AddEditEnum.ADD);
@@ -242,6 +244,7 @@ const getDept = async ()=>{
  * @author     :loulan
  * */
 const getRoleByDeptId = async (deptId:any)=>{
+  roleSelectLoading.value = true;
   roleSelectData.roleOptions=[];
 
   if (coreTool.isNotExist(deptId)) {
@@ -249,9 +252,8 @@ const getRoleByDeptId = async (deptId:any)=>{
     formData.value.roleIds = undefined;
     return;
   }else if (deptId == SpecialValueEnum.TOP) {
-    // 如果是特殊顶级部门
-    // fixme 这个地方要改成只获取非部门和客户端的角色数据
-    const res: ResponseResult = await getRoleList();
+    // 如果是特殊顶级部门(获取非客户端和部门角色的角色数据)
+    const res: ResponseResult = await getRoleByNoType([RoleTypeSpecialEnum.CLIENT,RoleTypeSpecialEnum.DEPT],StatusEnum.ON);
     if (ResponseStatusEnum.OK == res.status) {
       roleSelectData.roleOptions = res.data;
     }
@@ -262,6 +264,7 @@ const getRoleByDeptId = async (deptId:any)=>{
       roleSelectData.roleOptions = res.data;
     }
   }
+  roleSelectLoading.value = false;
 }
 
 onMounted(async ()=>{

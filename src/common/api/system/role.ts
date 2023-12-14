@@ -32,13 +32,29 @@ export const getRoleAllList = () => {
 }
 
 /**
- * 根据角色类型获取角色数据
- * @param
+ * 获取非指定类型id集合的角色数据
  * @return
  * @author     :loulan
+ * @param roleTypeIds 数组类型
+ * @param status
  * */
-export const getRoleByType = (roleTypeId:number,name?:string) => {
-    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/getRoleByType/${roleTypeId}?name=${name?name:""}`);
+export const getRoleByNoType = (roleTypeIds: any, status?: number) => {
+    let param: string = coreTool.isExist(status) ? `status=${status}` : '';
+    return ask.post(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/getRoleByNoType?${param}`, roleTypeIds);
+}
+
+/**
+ * 根据角色类型获取角色数据
+ * @return
+ * @author     :loulan
+ * @param roleTypeId
+ * @param name
+ * @param status
+ * */
+export const getRoleByType = (roleTypeId: number, name?: string, status?: number) => {
+    let param: string = coreTool.isExist(name) ? `&name=${name}` : '';
+    param += coreTool.isExist(status) ? `&status=${status}` : '';
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/getRoleByType/${roleTypeId}?1=1&${param}`);
 }
 
 /**
@@ -47,8 +63,9 @@ export const getRoleByType = (roleTypeId:number,name?:string) => {
  * @return
  * @author     :loulan
  * */
-export const getRoleByDept = (deptId:any,name?:string) => {
-    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/getRoleByDept/${deptId}?name=${name?name:""}`);
+export const getRoleByDept = (deptId: any, name?: string) => {
+    let param: string = coreTool.isExist(name) ? `name=${name}` : '';
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/getRoleByDept/${deptId}?${param}`);
 }
 
 /**
@@ -57,8 +74,8 @@ export const getRoleByDept = (deptId:any,name?:string) => {
  * @return
  * @author     :loulan
  * */
-export const roleTypeSave = (data:any) => {
-    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/roleType/save`,data);
+export const roleTypeSave = (data: any) => {
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/roleType/save`, data);
 }
 
 /**
@@ -67,8 +84,8 @@ export const roleTypeSave = (data:any) => {
  * @return
  * @author     :loulan
  * */
-export const roleTypeUpdate = (data:any) => {
-    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/roleType/update`,data);
+export const roleTypeUpdate = (data: any) => {
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/roleType/update`, data);
 }
 
 /**
@@ -77,7 +94,7 @@ export const roleTypeUpdate = (data:any) => {
  * @return
  * @author     :loulan
  * */
-export const roleTypeDel = (id:number) => {
+export const roleTypeDel = (id: number) => {
     return ask.delete(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/roleType/delete/${id}`);
 }
 
@@ -87,9 +104,9 @@ export const roleTypeDel = (id:number) => {
  * @return
  * @author     :loulan
  * */
-export const roleSave = (data:any,deptId?:any) => {
-    const param:string = coreTool.isExist(deptId) ? `deptId=${deptId}` : '';
-    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/save?${param}`,data);
+export const roleSave = (data: any, deptId?: any) => {
+    const param: string = coreTool.isExist(deptId) ? `deptId=${deptId}` : '';
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/save?${param}`, data);
 }
 
 /**
@@ -98,8 +115,8 @@ export const roleSave = (data:any,deptId?:any) => {
  * @return
  * @author     :loulan
  * */
-export const roleUpdate = (data:any) => {
-    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/update`,data);
+export const roleUpdate = (data: any) => {
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/update`, data);
 }
 
 /**
@@ -108,7 +125,7 @@ export const roleUpdate = (data:any) => {
  * @return
  * @author     :loulan
  * */
-export const roleDel = (id:number) => {
+export const roleDel = (id: number) => {
     return ask.delete(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/delete/${id}`);
 }
 
@@ -118,8 +135,8 @@ export const roleDel = (id:number) => {
  * @return
  * @author     :loulan
  * */
-export const permissionMenuSaveAndUpdate = (roleId:number,data:any) => {
-    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/resourcesRole/permissionMenuSaveAndUpdate/${roleId}`,data);
+export const permissionMenuSaveAndUpdate = (roleId: number, data: any) => {
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/resourcesRole/permissionMenuSaveAndUpdate/${roleId}`, data);
 }
 
 /**
@@ -128,6 +145,6 @@ export const permissionMenuSaveAndUpdate = (roleId:number,data:any) => {
  * @return
  * @author     :loulan
  * */
-export const getPermissionMenuByRoleId = (roleId:number) => {
+export const getPermissionMenuByRoleId = (roleId: number) => {
     return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/resourcesRole/getPermissionMenuByRoleId/${roleId}`);
 }
