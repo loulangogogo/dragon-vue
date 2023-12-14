@@ -70,6 +70,7 @@ import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/resp
 import Info from './info.vue';
 import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
 import {MenuIconTypeEnum} from "../../../../common/domain/enums";
+import {currentUserMenu} from "../../../../common/api/frame";
 
 const emit = defineEmits(["selectMenu"]);
 
@@ -88,6 +89,12 @@ const props = defineProps({
     type: [Array<string|number>],
     required: false,
     default: []
+  },
+  // 下级部门管理菜单，只能设置当前用户菜单以及当前用所拥有的权限
+  isNextDept:{
+    type: Boolean,
+    required: false,
+    default: false
   }
 });
 
@@ -122,13 +129,12 @@ const treeData = computed(() => {
  * @return
  * @author     :loulan
  * */
-const getMenus = ()=>{
-  getAllMenu().then((res:ResponseResult) => {
-    if (res.status === ResponseStatusEnum.OK && res.data) {
-      originListData.value = res.data;
-      originTreeData.value = $L.arrayTool.arrayToTree(originListData.value, "id", "pid", -1);
-    }
-  })
+const getMenus = async ()=>{
+  const res: ResponseResult = await (props.isNextDept ? currentUserMenu() : getAllMenu());
+  if (res.status === ResponseStatusEnum.OK && res.data) {
+    originListData.value = res.data;
+    originTreeData.value = $L.arrayTool.arrayToTree(originListData.value, "id", "pid", -1);
+  }
 }
 
 /**

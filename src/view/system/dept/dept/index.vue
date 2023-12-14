@@ -37,7 +37,7 @@
     </a-tree>
   </div>
   <div v-show="false">
-    <Info ref="infoRef" :datas="originListData" @query="getDepts"></Info>
+    <Info ref="infoRef" :datas="originListData" :is-next-dept="props.isNextDept" @query="getDepts"></Info>
   </div>
 </template>
 <script lang="ts" setup>
@@ -46,17 +46,25 @@ import {computed, nextTick, onMounted, ref} from 'vue';
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import Info from './info.vue';
 import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
-import {deptDel, getAllDept} from "../../../../common/api/system/dept";
+import {deptDel, getAllDept, getCurrentUserNextDept} from "../../../../common/api/system/dept";
+import {SpecialValueEnum} from "../../../../common/domain/enums";
+import {UserInfo} from "../../../../common/domain/common";
+import {useStore} from "vuex";
 
 const emits = defineEmits(["select"]);
 
-const props = defineProps({
-  height: {
-    type: Number,
-    required: true,
-    default: 0
-  },
-});
+const props = withDefaults(defineProps<{
+  // 高度设置
+  contentHeight: number;
+  isNextDept: boolean
+}>(), {
+  contentHeight: 0,
+  isNextDept:false
+})
+
+const storeGetters = useStore().getters;
+const currentUser = computed<UserInfo>(()=>storeGetters.userInfo);
+
 
 // 添加编辑组件的ref
 const infoRef = ref();
@@ -84,18 +92,18 @@ const treeData = computed(() => {
 })
 
 /**
- * 获取所有菜单信息
+ * 获取部门信息
  * @param
  * @return
  * @author     :loulan
  * */
-const getDepts = ()=>{
-  getAllDept().then((res:ResponseResult) => {
-    if (res.status === ResponseStatusEnum.OK && res.data) {
-      originListData.value = res.data;
-      originTreeData.value = arrayTool.arrayToTree(originListData.value, "id", "pid", -1);
-    }
-  })
+const getDepts = async ()=>{
+  // 如果是下级部门则只能获取当前用户下级所有部门数据
+  const res: ResponseResult = await (props.isNextDept?getCurrentUserNextDept():getAllDept());
+  if (res.status === ResponseStatusEnum.OK && res.data) {
+    originListData.value = res.data;
+    originTreeData.value = arrayTool.arrayToTree(originListData.value, "id", "pid", props.isNextDept?currentUser.value.deptId:SpecialValueEnum.TOP);
+  }
 }
 
 /**

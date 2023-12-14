@@ -4,6 +4,7 @@
       <template #first>
         <div style="padding: 5px">
           <dragon-menu ref="menuRef" :height="contentHeight-5"
+                       :is-next-dept="props.isNextDept"
                        :is-role-permission="isRolePermission"
                        :selected-keys="menuCheckSelectedKeys"
                        @update:selected-keys = "(val:Array<string|number>)=>$emit('update:menuCheckSelectedKeys', val)"
@@ -15,6 +16,7 @@
           <a-split class="menuSplitV" v-model:size="menuSplitSizeV" direction="vertical" min="0.3" max="0.7">
             <template #first>
               <dragon-permission :height="contentHeight*menuSplitSizeV-3" ref="permissionRef"
+                                 :is-next-dept="props.isNextDept"
                                  :is-role-permission="isRolePermission"
                                  :selected-keys="tableCheckSelectedKeys"
                                  @update:selected-keys="(val:Array<string|number>)=>$emit('update:tableCheckSelectedKeys', val)"
@@ -22,6 +24,7 @@
             </template>
             <template #second>
               <dragon-component :height="contentHeight*(1-menuSplitSizeV)-3" ref="componentRef"
+                                :is-next-dept="props.isNextDept"
                                 :is-role-permission="isRolePermission"
                                 :selected-keys="tableCheckSelectedKeys"
                                 @update:selected-keys="(val:Array<string|number>)=>$emit('update:tableCheckSelectedKeys', val)"
@@ -63,6 +66,12 @@ const props = defineProps({
     type: [Array<string|number>],
     required: false,
     default: []
+  },
+  // 下级部门管理菜单，只能设置当前用户菜单以及当前用所拥有的权限
+  isNextDept:{
+    type: Boolean,
+    required: false,
+    default: false
   }
 });
 

@@ -13,6 +13,17 @@ export const getAllDept = (status?:number) => {
 }
 
 /**
+ * 获取当前用户的下级所有部门
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const getCurrentUserNextDept = (status?:number) => {
+    const param:string = coreTool.isExist(status) ? `status=${status}` : '';
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/dept/getCurrentUserNextDept?${param}`);
+}
+
+/**
  * 部门的插入
  * @param
  * @return

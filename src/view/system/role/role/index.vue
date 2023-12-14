@@ -31,7 +31,7 @@
   </div>
   <div v-show="false">
     <Info ref="infoRef" :role-type-id="roleTypeId" :is-dept="props.isDept" :dept-id="queryParam.deptId" @query-role="queryRole"></Info>
-    <permission ref="permissionRef"></permission>
+    <permission ref="permissionRef" :is-next-dept="props.isNextDept"></permission>
     <look-user ref="lookUserRef"></look-user>
   </div>
 </template>
@@ -55,10 +55,14 @@ const props = withDefaults(defineProps<{
   roleTypeId:number,
   // 是否是部门,部门管理也有角色查询
   isDept:boolean,
+  // 下级部门管理菜单，只能设置当前用户菜单以及当前用所拥有的权限
+  isNextDept:boolean
 }>(),{
   height: 0,
   roleTypeId: undefined,
   isDept:false,
+  // 下级部门管理菜单，只能设置当前用户菜单以及当前用所拥有的权限
+  isNextDept:false
 })
 
 // 添加编辑组件的ref

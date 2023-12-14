@@ -56,16 +56,19 @@ import {AddEditEnum, DeptTypeEnum, StatusEnum} from "../../../../common/domain/e
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {DragonNotice} from "../../../../common/domain/component";
 import {deptSave, deptUpdate} from "../../../../common/api/system/dept";
+import {useStore} from "vuex";
+import {UserInfo} from "../../../../common/domain/common";
 
 const emits = defineEmits(["query"]);
 
-const props = defineProps({
-  datas: {
-    type: Array,
-    required: false,
-    default: []
-  }
-});
+const props = withDefaults(defineProps<{
+  // 高度设置
+  datas: Array<any>;
+  isNextDept: boolean
+}>(), {
+  datas: undefined,
+  isNextDept:false
+})
 
 // 确定提交按钮的加载状态
 const submitLoading = ref(false);
@@ -73,15 +76,20 @@ const submitLoading = ref(false);
 // 当前是添加还是编辑，默认添加
 const isAddEdit = ref(AddEditEnum.ADD);
 
+const storeGetters = useStore().getters;
+const currentUser = computed<UserInfo>(()=>storeGetters.userInfo);
+
 // 父级菜单的树数据（只需要展示菜单组文件夹的菜单）
 const treeData = computed(() => {
   if (coreTool.isNotEmpty(props.datas)) {
     const dirData: Array<any> = props.datas?.filter((o: any) => o.type === DeptTypeEnum.DIR);
-    dirData.push({
-      id: -1,
-      name: "顶级",
-      pid: -2
-    })
+    if (props.isNextDept) {
+      dirData.push({
+        id: currentUser.value.deptId,
+        name: currentUser.value.deptName,
+        pid: -2
+      });
+    }
     return arrayTool.arrayToTree(dirData, "id", "pid", -2);
   } else {
     return [];
@@ -97,7 +105,7 @@ const initFormData = {
   name: undefined,
   type: DeptTypeEnum.DEPT,
   code: undefined,
-  pid: -1,
+  pid: undefined,
   orderNum: 100,
   status: StatusEnum.ON
 };

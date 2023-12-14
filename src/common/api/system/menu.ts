@@ -21,6 +21,16 @@ export const getPermissionByMenuId = (menuId:number,type:number=NaN) => {
 }
 
 /**
+ * 通过当前用户菜单的id获取当前用户的权限数据
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const getCurrentUserPermissionByCurrentUserMenuId = (menuId:number,type:number=NaN) => {
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/permission/getCurrentUserPermissionByCurrentUserMenuId/${menuId}?type=${type}`);
+}
+
+/**
  * 菜单的插入
  * @param
  * @return

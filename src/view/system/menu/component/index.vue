@@ -44,7 +44,12 @@ import {computed, ref, watch} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {PermissionTypeEnum, StatusEnum} from "../../../../common/domain/enums";
 import {TableColumnData} from "@arco-design/web-vue";
-import {getPermissionByMenuId, permissionDel, permissionUpdate} from "../../../../common/api/system/menu";
+import {
+  getCurrentUserPermissionByCurrentUserMenuId,
+  getPermissionByMenuId,
+  permissionDel,
+  permissionUpdate
+} from "../../../../common/api/system/menu";
 import * as $L from "owner-tool-js";
 import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
 
@@ -63,6 +68,12 @@ const props = defineProps({
     type: [Array<string|number>],
     required: false,
     default: []
+  },
+  // 下级部门管理菜单，只能设置当前用户菜单以及当前用所拥有的权限
+  isNextDept:{
+    type: Boolean,
+    required: false,
+    default: false
   }
 });
 
@@ -127,7 +138,7 @@ const menuId = ref();
  * @author     :loulan
  * */
 const query = async () => {
-  const res: ResponseResult = await getPermissionByMenuId(menuId.value,PermissionTypeEnum.COMPONENT);
+  const res: ResponseResult = await (props.isNextDept?getCurrentUserPermissionByCurrentUserMenuId(menuId.value, PermissionTypeEnum.COMPONENT):getPermissionByMenuId(menuId.value,PermissionTypeEnum.COMPONENT));
   if (res.status === ResponseStatusEnum.OK) {
     const datas: Array<any> = res.data;
     if ($L.core.isNotEmpty(datas)) {

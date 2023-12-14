@@ -57,6 +57,7 @@ export interface UserInfo{
     headerImageFileId?: string;
     headerImageFileInfo?: FileInfo;
     deptId?:number;
+    deptName?:string;
 }
 
 /*********************************************************

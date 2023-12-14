@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Info from './info.vue';
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, ref} from "vue";
 import {pageUserList, userDel} from "../../../common/api/system/user";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {TableColumnData, TableData} from "@arco-design/web-vue";
@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<{
   contentHeight: number;
 }>(), {
   isRole: false,
-  seconds: 0
+  contentHeight: 0
 })
 
 const infoRef = ref();
@@ -58,8 +58,6 @@ const columns: Array<TableColumnData> = [
     render: (data: { record: TableData, column: TableColumnData, rowIndex: number }) => {
       if (coreTool.isNotExist(data.record?.deptId)) {
         return "无";
-      } else if (data.record.deptId == SpecialValueEnum.TOP) {
-        return "顶级";
       } else {
         return data.record.deptName;
       }

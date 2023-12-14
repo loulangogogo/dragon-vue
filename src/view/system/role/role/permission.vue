@@ -9,6 +9,7 @@
     <!--48表示头部高度，53表示脚部高度，20表示空隙高度-->
     <div :style="{height:screenHeight - 48 - 53  - 20 +'px'}">
       <menu-permission ref="menuPermissionRef"
+                       :is-next-dept="props.isNextDept"
                        :is-role-permission="true"
                        v-model:menu-check-selected-keys="menuCheckSelectedKeys"
                        v-model:table-check-selected-keys="tableCheckSelectedKeys"
@@ -30,6 +31,16 @@ import {getPermissionMenuByRoleId, permissionMenuSaveAndUpdate} from "../../../.
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {RoleResourcesTypeEnum} from "../../../../common/domain/enums";
 import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
+
+const props = defineProps({
+  // 下级部门管理菜单，只能设置当前用户菜单以及当前用所拥有的权限
+  isNextDept:{
+    type: Boolean,
+    required: false,
+    default: false
+  }
+});
+
 
 const modalVisible = ref(false);
 
