@@ -22,8 +22,7 @@
       <template #operate="{record}">
         <a-space>
           <a-button type="primary" status="warning" size="mini" @click="permissionEdit(record)">权限编辑</a-button>
-          <a-button v-if="roleTypeId == RoleTypeSpecialEnum.CLIENT" type="primary" status="success" size="mini" @click="()=>DragonMessage.success('正在开发中')">查看客户端</a-button>
-          <a-button v-else type="primary" status="success" size="mini" @click="lookUsers(record)">查看用户</a-button>
+          <a-button v-if="roleTypeId != RoleTypeSpecialEnum.CLIENT" type="primary" status="success" size="mini" @click="lookUsers(record)">查看用户</a-button>
           <a-button type="primary" size="mini" @click="edit(record)">编辑</a-button>
           <a-button type="primary" status="danger" size="mini" @click="del(record)">删除</a-button>
         </a-space>
