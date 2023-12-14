@@ -113,6 +113,8 @@ const columns: Array<TableColumnData> = [
     title: "岗位角色",
     dataIndex: "roleName",
     width: 150,
+    ellipsis: true,
+    tooltip: true
   },
   {
     title: "状态",
