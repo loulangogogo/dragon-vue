@@ -89,11 +89,10 @@
 <script lang="ts" setup>
 
 import {core as coreTool, functionTool} from 'owner-tool-js';
-import {onMounted, reactive, ref} from "vue";
+import {ref} from "vue";
 import {AddEditEnum, StatusEnum} from "../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {DragonNotice} from "../../../common/domain/component";
-import {getRoleList, getRoleType} from "../../../common/api/system/role";
 import {exeSave, exeUpdate} from "../../../common/api/system/exe";
 
 const emits = defineEmits(["query"]);
@@ -157,12 +156,6 @@ const formRules = {
   }
 };
 
-// 角色下拉框的数据
-const roleSelectData = reactive({
-  roleTypeOptions: undefined,
-  roleOptions: undefined
-})
-
 /**
  * 点击确定按钮
  * @param
@@ -201,17 +194,6 @@ const close = () => {
   submitLoading.value = false;
 }
 
-onMounted(async () => {
-  if (coreTool.isEmpty(<any>roleSelectData.roleTypeOptions)) {
-    const res: ResponseResult = await getRoleType();
-    roleSelectData.roleTypeOptions = res.data;
-  }
-
-  if (coreTool.isEmpty(<any>roleSelectData.roleOptions)) {
-    const res: ResponseResult = await getRoleList();
-    roleSelectData.roleOptions = res.data;
-  }
-})
 
 defineExpose({
   init: (data: object) => {
