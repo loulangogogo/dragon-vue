@@ -51,7 +51,7 @@ import {
   permissionDel,
   permissionUpdate
 } from "../../../../common/api/system/menu";
-import * as $L from "owner-tool-js";
+import {core as coreTool} from "owner-tool-js";
 import {dragonConfirm, DragonMessage, DragonNotice} from "../../../../common/domain/component";
 
 const props = defineProps({
@@ -137,7 +137,7 @@ const columns: Array<TableColumnData> = props.isRolePermission?[
 const searchKey = ref();
 const originTableData = ref();
 const tableData = computed(() => {
-  if ($L.core.isEmpty(searchKey.value)) {
+  if (coreTool.isEmpty(searchKey.value)) {
     return originTableData.value;
   } else {
     return originTableData.value.filter((o: any) => o.name.includes(searchKey.value));
@@ -156,7 +156,7 @@ const query = async () => {
   const res: ResponseResult = await (props.isNextDept?getCurrentUserPermissionByCurrentUserMenuId(menuId.value, PermissionTypeEnum.URL):getPermissionByMenuId(menuId.value, PermissionTypeEnum.URL));
   if (res.status === ResponseStatusEnum.OK) {
     const datas: Array<any> = res.data;
-    if ($L.core.isNotEmpty(datas)) {
+    if (coreTool.isNotEmpty(datas)) {
       originTableData.value = datas;
     } else {
       originTableData.value = [];

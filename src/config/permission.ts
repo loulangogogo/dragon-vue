@@ -1,6 +1,6 @@
 import router from '../router/index';
 import store from "../store";
-import * as $L from 'owner-tool-js';
+import {core as coreTool,windowsTool} from 'owner-tool-js';
 import {LocalStorageEnum} from "../common/domain/storage";
 import {generateMenuRouter,currentUserComponentPermission} from "../router/routerMenu";
 
@@ -15,12 +15,12 @@ router.beforeEach(async (to, from) => {
     if (to.path != '/login') {
 
         // 如果token不存在就去登录页面
-        if (!$L.windowsTool.localStorageTool.get(LocalStorageEnum.token)) {
+        if (!windowsTool.localStorageTool.get(LocalStorageEnum.token)) {
             return  "/login";
         }
 
         // 如果菜单数据为空，那么就获取菜单并重新生成菜单路由(整个数据的获取必须在token存在，也就是登录成功之后才能进行)
-        if ($L.core.isEmpty(store.getters.menus)) {
+        if (coreTool.isEmpty(store.getters.menus)) {
             await currentUserComponentPermission();
             await generateMenuRouter();
             return {...to,replace: true};

@@ -8,7 +8,7 @@
 
 import {onMounted, ref} from "vue";
 import {useStore} from "vuex";
-import * as $L from 'owner-tool-js';
+import {windowsTool} from 'owner-tool-js';
 /***************************************************************************************************************/
 
 let screenHeight = ref(0);
@@ -18,10 +18,10 @@ const store = useStore();
 /***************************************************************************************************************/
 onMounted(()=>{
   // 浏览器的页面监听器不会再刚打开页面的时候监听，注释再页面宽高发生变化的时候才会监听，所以再这里额外的添加一个获取高度的代码
-  screenHeight.value = $L.windowsTool.pageViewHeight();
+  screenHeight.value = windowsTool.pageViewHeight();
   store.commit("setScreenHeight", screenHeight.value);
-  store.commit("setScreenWidth", $L.windowsTool.pageViewWidth());
-  $L.windowsTool.watchPageView((width:number,height:number)=>{
+  store.commit("setScreenWidth", windowsTool.pageViewWidth());
+  windowsTool.watchPageView((width:number,height:number)=>{
     screenHeight.value = height;
     store.commit("setScreenHeight", height);
     store.commit("setScreenWidth", width);

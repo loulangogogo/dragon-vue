@@ -16,9 +16,8 @@
 
 <script lang="ts" setup>
 import {ref} from "vue";
-import {useRoute, useRouter} from "vue-router";
+import {useRoute} from "vue-router";
 import TitleBlockMiddle from './title-block-middle.vue';
-import * as $L from 'owner-tool-js';
 
 const emit = defineEmits(['changeCollapsed']);
 

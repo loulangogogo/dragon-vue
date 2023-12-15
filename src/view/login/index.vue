@@ -48,7 +48,7 @@ import LoginAccount from './account.vue';
 import LoginPhone from './phone.vue';
 import LoginEmail from './email.vue';
 import LoginWechat from './wechat.vue';
-import * as $L from "owner-tool-js";
+import {windowsTool} from "owner-tool-js";
 import { LoginData, LoginModeEnum } from "../../common/domain/login";
 import { ResponseResult, ResponseStatusEnum } from "../../common/domain/response";
 import { getToken } from "../../common/api/login";
@@ -92,7 +92,7 @@ const login = async (loginData: LoginData) => {
   loginButtonLoading.value = true;
   const res: ResponseResult = await getToken(loginData);
   if (res.status == ResponseStatusEnum.OK) {
-    $L.windowsTool.localStorageTool.set(LocalStorageEnum.token, res.data.tokenType + " " + res.data.accessToken);
+    windowsTool.localStorageTool.set(LocalStorageEnum.token, res.data.tokenType + " " + res.data.accessToken);
     // 将token保存完成之后进行跳转
     router.push({ path: "/", replace: true });
     // loginButtonLoading.value = false;

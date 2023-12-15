@@ -38,7 +38,7 @@
 
 <script lang="ts" setup>
 import {useStore} from 'vuex';
-import * as $L from 'owner-tool-js';
+import {windowsTool} from 'owner-tool-js';
 import {LocalStorageEnum} from "../../../common/domain/storage";
 import {useRouter} from "vue-router";
 import {computed, onMounted, ref} from "vue";
@@ -94,7 +94,7 @@ const selectOption = (value: any,ev: Event) => {
  * @author     :loulan
  * */
 const logout = ()=>{
-    $L.windowsTool.localStorageTool.del(LocalStorageEnum.token);
+    windowsTool.localStorageTool.del(LocalStorageEnum.token);
     router.push("/login");
 }
 

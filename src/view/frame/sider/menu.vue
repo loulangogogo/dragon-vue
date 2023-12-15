@@ -10,7 +10,7 @@
 <script lang="ts" setup>
 import {computed, onMounted, ref} from "vue";
 import {useStore} from "vuex";
-import * as $L from 'owner-tool-js';
+import {arrayTool} from 'owner-tool-js';
 import {Menu} from "../../../common/domain/common";
 import MenuVisible from "./menu-visible.vue";
 
@@ -18,7 +18,7 @@ import MenuVisible from "./menu-visible.vue";
 const storeGetters = useStore().getters;
 const frameSiderHeight = computed(() => storeGetters.frameSiderHeight);
 const menus = computed((): Array<Menu> => {
-  return $L.arrayTool.arrayToTree(storeGetters.menus, "id", "pid", -1);
+  return arrayTool.arrayToTree(storeGetters.menus, "id", "pid", -1);
 });
 
 

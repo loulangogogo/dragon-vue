@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import * as $L from 'owner-tool-js';
+import {core as coreTool} from 'owner-tool-js';
 import {Menu} from "../../../common/domain/common";
 import {MenuIconTypeEnum, MenuTypeEnum} from "../../../common/domain/enums";
 
@@ -43,7 +43,7 @@ import {MenuIconTypeEnum, MenuTypeEnum} from "../../../common/domain/enums";
  * @return
  * @author     :loulan
  * */
-const isEmpty = (data: any): boolean => $L.core.isEmpty(data);
+const isEmpty = (data: any): boolean => coreTool.isEmpty(data);
 
 const {menus} = defineProps<{
   menus:Array<Menu> | undefined

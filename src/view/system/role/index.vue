@@ -39,7 +39,7 @@ import TypeInfo from './type/info.vue';
 import {onMounted, ref} from "vue";
 import {getRoleType, roleTypeDel} from "../../../common/api/system/role";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
-import * as $L from 'owner-tool-js';
+import {core as coreTool} from 'owner-tool-js';
 import {dragonConfirm, DragonMessage, DragonNotice} from "../../../common/domain/component";
 import {RoleTypeSpecialEnum} from "../../../common/domain/enums";
 
@@ -87,7 +87,7 @@ const add = () => {
  * @author     :loulan
  * */
 const edit = () => {
-  if ($L.core.isEmpty(roleTypes.value) || roleTypes.value.length <= currentTabKey.value) {
+  if (coreTool.isEmpty(roleTypes.value) || roleTypes.value.length <= currentTabKey.value) {
     DragonMessage.error("当前未选中任何橘色类型，无法进行编辑操作。");
     return;
   }
@@ -102,7 +102,7 @@ const edit = () => {
  * @author     :loulan
  * */
 const del = () => {
-  if ($L.core.isEmpty(roleTypes.value) || roleTypes.value.length <= currentTabKey.value) {
+  if (coreTool.isEmpty(roleTypes.value) || roleTypes.value.length <= currentTabKey.value) {
     DragonMessage.error("当前未选中任何橘色类型，无法进行删除操作。");
     return;
   }

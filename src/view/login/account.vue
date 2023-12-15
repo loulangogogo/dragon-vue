@@ -19,9 +19,8 @@
 <script lang="ts" setup>
 
 import {onMounted, reactive, ref} from "vue";
-import {FieldRule, Modal, ValidatedError} from "@arco-design/web-vue";
-import * as $L from 'owner-tool-js';
-import {LoginModeEnum} from "../../common/domain/login";
+import {FieldRule, ValidatedError} from "@arco-design/web-vue";
+import {core as coreTool} from 'owner-tool-js';
 import {generatePicCaptcha} from "../../common/api/common";
 import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
 import {GrantTypeEnum} from "../../common/domain/enums";
@@ -88,7 +87,7 @@ const getCaptcha = () => {
 const submit = () => {
   accountFormRef.value.validate((errors: undefined | Record<string, ValidatedError>) => {
     // 当errors为undefined的时候表示校验成功没有错误
-    if ($L.core.isUndefined(errors)) {
+    if (coreTool.isUndefined(errors)) {
       emits('loginSubmit', loginData);
     }
   });

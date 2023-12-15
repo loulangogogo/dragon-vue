@@ -29,7 +29,7 @@
 
 <script lang="ts" setup>
 import {nextTick, onMounted, onUnmounted, ref, watch} from "vue";
-import * as $L from 'owner-tool-js';
+import {Watcher,windowsTool} from 'owner-tool-js';
 import {useRoute, useRouter} from "vue-router";
 import {MenuIconTypeEnum} from "../../../common/domain/enums";
 
@@ -54,7 +54,7 @@ let outerDivScrollMouseDownPositionX: any = 0;
 let outerDivMouseDownMousePositionX: number = 0;
 
 // 鼠标移动监听事件
-let watcher: $L.Watcher;
+let watcher: Watcher;
 /**
  * outerDiv被鼠标点下去的事件
  * @param
@@ -64,7 +64,7 @@ let watcher: $L.Watcher;
 const outerDivMouseDown = (event: any) => {
   // 获取鼠标的初始位置
   outerDivMouseDownMousePositionX = parseFloat(event.pageX.toString());
-  outerDivScrollMouseDownPositionX = $L.windowsTool.getScrollPosition(outerDivRef.value).x;
+  outerDivScrollMouseDownPositionX = windowsTool.getScrollPosition(outerDivRef.value).x;
   // 打开鼠标移动监听事件
   watcher.open();
 }
@@ -132,17 +132,17 @@ watch(() => route.path,
         const tagDom: any = document.getElementById(val);
         const tagDomStartPosition: number = tagDom.offsetLeft; // 标签开始位置
         const tagDomEndPosittion: number = tagDomStartPosition + tagDom.offsetWidth; // 标签结束位置
-        const {x, y} = $L.windowsTool.getScrollPosition(outerDivRef.value);
+        const {x, y} = windowsTool.getScrollPosition(outerDivRef.value);
         const outerDivWidth: number = outerDivRef.value.offsetWidth;
         const viewStartPosition: number = <number>x;  // 可视区域开始位置
         const viewEndPostition: any = viewStartPosition + outerDivWidth; // 可视区域结束位置
 
         if (tagDomStartPosition < viewStartPosition) {
           // 如果标签的开始位置小于可视区域的开始位置，那么将标签开始位置移动到可视区域开始位置
-          $L.windowsTool.setScrollPosition(tagDomStartPosition, 0, outerDivRef.value)
+          windowsTool.setScrollPosition(tagDomStartPosition, 0, outerDivRef.value)
         } else if (tagDomEndPosittion > viewEndPostition) {
           // 如果标签结束位置大于可视区域的结束位置，那么将标签的结束位置移动到可视区域结束位置
-          $L.windowsTool.setScrollPosition(tagDomEndPosittion - outerDivWidth, <number>y, outerDivRef.value);
+          windowsTool.setScrollPosition(tagDomEndPosittion - outerDivWidth, <number>y, outerDivRef.value);
         } else {
           // 其他情况不移动滚动条的位置
         }
@@ -155,13 +155,13 @@ watch(() => route.path,
 )
 
 onMounted(() => {
-  watcher = $L.windowsTool.watchMousePosition((x: number, y: number) => {
+  watcher = windowsTool.watchMousePosition((x: number, y: number) => {
     // 鼠标点下去向右移动距离（向左就变成负数了）
     let moveRight: number = x - outerDivMouseDownMousePositionX;
 
     // 滚动轴向左，鼠标拖拽的东西才是向右，所以滚动轴移动位置和鼠标相反
     let scrollX = outerDivScrollMouseDownPositionX - moveRight;
-    $L.windowsTool.setScrollPosition(scrollX <= 0 ? 0 : scrollX, 0, outerDivRef.value);
+    windowsTool.setScrollPosition(scrollX <= 0 ? 0 : scrollX, 0, outerDivRef.value);
   });
   watcher.close();
   // 只要鼠标弹起就停止tag移动事件

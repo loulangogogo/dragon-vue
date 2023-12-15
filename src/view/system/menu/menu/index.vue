@@ -63,7 +63,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import * as $L from 'owner-tool-js';
+import {core as coreTool,arrayTool} from 'owner-tool-js';
 import {ref, computed, onMounted, nextTick,watch} from 'vue';
 import {getAllMenu, menuDel} from "../../../../common/api/system/menu";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
@@ -109,7 +109,7 @@ const originListData= ref([]);
 const searchKey = ref();
 // 树数据
 const treeData = computed(() => {
-  if ($L.core.isEmpty(searchKey.value)) {
+  if (coreTool.isEmpty(searchKey.value)) {
     nextTick(()=>{
       menuTreeRef.value.expandAll(false);
     })
@@ -133,7 +133,7 @@ const getMenus = async ()=>{
   const res: ResponseResult = await (props.isNextDept ? currentUserMenu() : getAllMenu());
   if (res.status === ResponseStatusEnum.OK && res.data) {
     originListData.value = res.data;
-    originTreeData.value = $L.arrayTool.arrayToTree(originListData.value, "id", "pid", -1);
+    originTreeData.value = arrayTool.arrayToTree(originListData.value, "id", "pid", -1);
   }
 }
 
@@ -149,9 +149,9 @@ const searchData = (keyword: string) => {
     data.forEach((item: any) => {
       if (item.name.toLowerCase().includes(keyword.toLowerCase())) {
         result.push({...item});
-      } else if ($L.core.isNotEmpty(item.children)) {
+      } else if (coreTool.isNotEmpty(item.children)) {
         const filterData: Array<any> = loop(item.children);
-        if ($L.core.isNotEmpty(filterData)) {
+        if (coreTool.isNotEmpty(filterData)) {
           result.push({
             ...item,
             children: filterData
