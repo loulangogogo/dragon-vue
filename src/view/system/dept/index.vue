@@ -58,6 +58,7 @@ const selectDept = (deptId:any)=>{
             </template>
             <template #second>
               <dragon-user ref="dragonUserRef" :is-dept="true"
+                           :is-next-dept="props.isNextDept"
                            :content-height="contentHeight*splitSizeV-3">
               </dragon-user>
             </template>
