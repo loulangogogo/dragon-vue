@@ -18,7 +18,7 @@
           <a-radio :value="SexEnum.MEN">女</a-radio>
         </a-radio-group>
       </a-form-item>
-      <a-form-item field="pid" label="部门">
+      <a-form-item field="deptId" label="部门">
         <a-tree-select v-model="formData.deptId"
                        :field-names="{
                           key: 'id',
@@ -81,7 +81,7 @@ import {
 } from "../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {DragonNotice} from "../../../common/domain/component";
-import {userSave, userUpdate} from "../../../common/api/system/user";
+import {fixUserAndSetRole, addUserAndSetRole} from "../../../common/api/system/user";
 import {getRoleByDept, getRoleByNoType, getRoleList, getRoleType} from "../../../common/api/system/role";
 import {getAllDept, getCurrentUserNextDept} from "../../../common/api/system/dept";
 import {useStore} from "vuex";
@@ -143,13 +143,13 @@ const formRules = {
     required: true,
     message: "性别不能为空"
   },
-  roleIds: {
-    required: true,
-    message: "角色不能为空"
-  },
   status: {
     required: true,
     message: "状态不能为空"
+  },
+  deptId: {
+    required: true,
+    message: "部门不能为空"
   }
 };
 
@@ -211,7 +211,7 @@ const submit = () => {
       }
 
 
-      const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await userSave(formData.value) : await userUpdate(formData.value));
+      const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await addUserAndSetRole(formData.value) : await fixUserAndSetRole(formData.value));
       if (res.status === ResponseStatusEnum.OK) {
         DragonNotice.success("操作成功");
         emits("query");

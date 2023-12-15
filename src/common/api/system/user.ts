@@ -27,8 +27,8 @@ export const pageCurrentUserNextDeptUserList = <T extends pageQuery>(query: T) =
  * @return
  * @author     :loulan
  * */
-export const userSave = (data:any) => {
-    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/save`,data);
+export const addUserAndSetRole = (data:any) => {
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/addUserAndSetRole`,data);
 }
 
 /**
@@ -37,8 +37,8 @@ export const userSave = (data:any) => {
  * @return
  * @author     :loulan
  * */
-export const userUpdate = (data:any) => {
-    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/update`,data);
+export const fixUserAndSetRole = (data:any) => {
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/fixUserAndSetRole`,data);
 }
 
 /**
