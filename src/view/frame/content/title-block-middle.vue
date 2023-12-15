@@ -4,7 +4,8 @@
       <a-tag :id="'/'"
              :color="'/' == route.path?'green':'gray'"
              size="large"
-             style="margin-left: 10px"
+             style="margin-left: 10px;user-select: none"
+             class="tagCommonClass"
              :bordered="true"
              @click="clickTag('/')">
         <template #icon>
@@ -16,7 +17,8 @@
         <a-tag :id="tag.path"
                :color="tag.path === route.path?'green':'gray'"
                size="large"
-               style="margin-left: 10px"
+               style="margin-left: 10px;user-select: none"
+               class="tagCommonClass"
                :bordered="true"
                @click="clickTag(tag.path)">
           {{ tag.name }}
@@ -29,9 +31,8 @@
 
 <script lang="ts" setup>
 import {nextTick, onMounted, onUnmounted, ref, watch} from "vue";
-import {Watcher,windowsTool} from 'owner-tool-js';
+import {Watcher, windowsTool} from 'owner-tool-js';
 import {useRoute, useRouter} from "vue-router";
-import {MenuIconTypeEnum} from "../../../common/domain/enums";
 
 interface routeTag {
   name: any,
@@ -216,5 +217,9 @@ onUnmounted(() => {
 .tagCloseIcon:hover {
   color: blue;
   font-weight: bolder;
+}
+
+.tagCommonClass{
+  cursor: default;
 }
 </style>
