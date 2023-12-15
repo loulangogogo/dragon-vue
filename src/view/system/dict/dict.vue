@@ -68,13 +68,13 @@ const tableData = ref();
 // 表格列配置
 const columns:Array<TableColumnData> = [
   {
-    title: "名称",
+    title: "字典名称",
     dataIndex: "name",
     width: 150,
     fixed: "left",
   },
   {
-    title: "编码",
+    title: "字典编码",
     dataIndex: "code",
     width: 300,
   },
