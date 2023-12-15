@@ -102,7 +102,7 @@ const getDepts = async ()=>{
   const res: ResponseResult = await (props.isNextDept?getCurrentUserNextDept():getAllDept());
   if (res.status === ResponseStatusEnum.OK && res.data) {
     originListData.value = res.data;
-    originTreeData.value = arrayTool.arrayToTree(originListData.value, "id", "pid", props.isNextDept?currentUser.value.deptId:SpecialValueEnum.TOP);
+    originTreeData.value = arrayTool.arrayToTree(originListData.value, "id", "pid", props.isNextDept?(<any>originListData.value.find((o:any)=>currentUser.value.deptId == o.id))?.pid:SpecialValueEnum.TOP);
   }
 }
 

@@ -9,12 +9,6 @@
       <a-form-item field="name" label="部门名称">
         <a-input v-model="formData.name" placeholder="请输入部门名称"/>
       </a-form-item>
-      <a-form-item field="type" label="类型">
-        <a-radio-group v-model="formData.type">
-          <a-radio :value="DeptTypeEnum.DEPT">部门</a-radio>
-          <a-radio :value="DeptTypeEnum.DIR">部门组</a-radio>
-        </a-radio-group>
-      </a-form-item>
       <a-form-item field="code" label="部门编码">
         <a-input v-model="formData.code" placeholder="请输入编码"/>
       </a-form-item>
@@ -52,7 +46,7 @@
 
 import {arrayTool, core as coreTool, functionTool} from 'owner-tool-js';
 import {computed, ref} from "vue";
-import {AddEditEnum, DeptTypeEnum, StatusEnum} from "../../../../common/domain/enums";
+import {AddEditEnum, StatusEnum} from "../../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {DragonNotice} from "../../../../common/domain/component";
 import {deptSave, deptUpdate} from "../../../../common/api/system/dept";
@@ -82,7 +76,7 @@ const currentUser = computed<UserInfo>(()=>storeGetters.userInfo);
 // 父级菜单的树数据（只需要展示菜单组文件夹的菜单）
 const treeData = computed(() => {
   if (coreTool.isNotEmpty(props.datas)) {
-    const dirData: Array<any> = props.datas?.filter((o: any) => o.type === DeptTypeEnum.DIR);
+    const dirData: Array<any> = functionTool.deepCopy(props.datas);
     if (props.isNextDept) {
       dirData.push({
         id: currentUser.value.deptId,
@@ -103,7 +97,6 @@ const modalVisible = ref(false);
 // 表单数据
 const initFormData = {
   name: undefined,
-  type: DeptTypeEnum.DEPT,
   code: undefined,
   pid: undefined,
   orderNum: 100,
