@@ -21,8 +21,7 @@
         </a-space>
       </template>
       <template v-for="(roleType,index) in roleTypes" :key="index">
-        <!--        部门角色不再这里展示-->
-        <a-tab-pane v-if="RoleTypeSpecialEnum.DEPT != roleType.id" :title="roleType.name">
+        <a-tab-pane :title="roleType.name">
           <!--20是padding,32是type,16是tab-pane的padding-->
           <role :height="contentHeight-20-32-16" :role-type-id="roleType.id"></role>
         </a-tab-pane>
@@ -129,7 +128,8 @@ const del = () => {
 const queryRoleType = async () => {
   const res: ResponseResult = await getRoleType();
   if (res.status === ResponseStatusEnum.OK) {
-    roleTypes.value = res.data;
+    // 目前不再这里暂时部门角色
+    roleTypes.value = res.data.filter((o:any) => RoleTypeSpecialEnum.DEPT != o.id);
   }
 }
 

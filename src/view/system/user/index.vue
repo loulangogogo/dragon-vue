@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Info from './info.vue';
 import {onMounted, ref} from "vue";
-import {pageUserList, userDel} from "../../../common/api/system/user";
+import {pageCurrentUserNextDeptUserList, pageUserList, userDel} from "../../../common/api/system/user";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {TableColumnData, TableData} from "@arco-design/web-vue";
 import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
@@ -17,14 +17,14 @@ const props = withDefaults(defineProps<{
   // 是否是部门,部门管理也有用户查询，只能查询指定部门
   isDept:boolean,
   // 下级部门管理菜单，编辑只能编辑下级部门
-  isNextDept:boolean
+  isNextDept:boolean,
 }>(), {
   isRole: false,
   contentHeight: 0,
   // 是否是部门,部门管理也有用户查询，只能查询指定部门
   isDept:false,
   // 下级部门管理菜单，编辑只能编辑下级部门
-  isNextDept:false
+  isNextDept:false,
 })
 
 const infoRef = ref();
@@ -182,7 +182,7 @@ const pageList = async () => {
 
   // 查询之前进入加载状态
   loading.value = true;
-  const res: ResponseResult = await pageUserList(queryParam.value);
+  const res: ResponseResult = await (props.isNextDept?pageCurrentUserNextDeptUserList(queryParam.value):pageUserList(queryParam.value));
   if (res.status === ResponseStatusEnum.OK) {
     const data = res.data;
     tableData.value = data.records;
