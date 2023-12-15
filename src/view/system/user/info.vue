@@ -83,7 +83,17 @@ import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/respons
 import {DragonNotice} from "../../../common/domain/component";
 import {userSave, userUpdate} from "../../../common/api/system/user";
 import {getRoleByDept, getRoleByNoType, getRoleList, getRoleType} from "../../../common/api/system/role";
-import {getAllDept} from "../../../common/api/system/dept";
+import {getAllDept, getCurrentUserNextDept} from "../../../common/api/system/dept";
+import {useStore} from "vuex";
+import {UserInfo} from "../../../common/domain/common";
+
+const props = withDefaults(defineProps<{
+  // 下级部门管理菜单，只能操作当前用户下级部门
+  isNextDept:boolean
+}>(), {
+  // 下级部门管理菜单，只能操作当前用户下级部门
+  isNextDept:false
+})
 
 const emits = defineEmits(["query"]);
 
@@ -100,7 +110,16 @@ const formRef = ref();
 // 模态框的显示状态
 const modalVisible = ref(false);
 // 表单数据
-const initFormData = {
+const initFormData:{
+  username: any,
+  name: any,
+  sex: any,
+  birthday: any,
+  idCard:any,
+  status: number,
+  roleIds: any,
+  deptId: any,
+} = {
   username: undefined,
   name: undefined,
   sex: undefined,
@@ -153,15 +172,21 @@ const roleSelectData:{
 // 部门下拉框的数据
 const deptOptions = ref([]);
 
+const storeGetters = useStore().getters;
+const currentUser = computed<UserInfo>(()=>storeGetters.userInfo);
+
+
 // 部门树
 const deptTreeData = computed(() => {
   if (coreTool.isNotEmpty(deptOptions.value)) {
     const dirData: Array<any> = functionTool.deepCopy(deptOptions.value);
-    dirData.push({
-      id: SpecialValueEnum.TOP,
-      name: "顶级",
-      pid: -2
-    })
+    if (props.isNextDept) {
+      dirData.push({
+        id: currentUser.value.deptId,
+        name: currentUser.value.deptName,
+        pid: -2
+      });
+    }
     return arrayTool.arrayToTree(dirData, "id", "pid", -2);
   } else {
     return [];
@@ -179,6 +204,13 @@ const submit = () => {
   formRef.value.validate(async (errors: any) => {
     // 如果没有错误进行提交
     if (coreTool.isUndefined(errors)) {
+
+      // 因为roleIds在部门岗位角色下是单选不是数组，所以这里需要进行判断然后转换为数组
+      if (coreTool.isExist(formData.value.roleIds) && !coreTool.is(Array,formData.value.roleIds)) {
+        formData.value.roleIds=[formData.value.roleIds]
+      }
+
+
       const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await userSave(formData.value) : await userUpdate(formData.value));
       if (res.status === ResponseStatusEnum.OK) {
         DragonNotice.success("操作成功");
@@ -230,7 +262,7 @@ const close = () => {
  * @author     :loulan
  * */
 const getDept = async ()=>{
-  const res: ResponseResult = await getAllDept(StatusEnum.ON);
+  const res: ResponseResult = await (props.isNextDept?getCurrentUserNextDept(StatusEnum.ON):getAllDept(StatusEnum.ON));
   if (ResponseStatusEnum.OK == res.status) {
     deptOptions.value = res.data;
   }
@@ -267,14 +299,23 @@ const getRoleByDeptId = async (deptId:any)=>{
   roleSelectLoading.value = false;
 }
 
+/**
+ * 获取角色类型
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const getRoleAllType = async ()=>{
+  const res: ResponseResult = await getRoleType();
+  if (ResponseStatusEnum.OK == res.status) {
+    roleSelectData.roleTypeOptions = res.data.filter((o:any)=>(RoleTypeSpecialEnum.CLIENT != o.id && RoleTypeSpecialEnum.DEPT != o.id));
+  }
+}
+
 onMounted(async ()=>{
   await getDept();
-  if (coreTool.isEmpty(<any>roleSelectData.roleTypeOptions)) {
-    const res: ResponseResult = await getRoleType();
-    if (ResponseStatusEnum.OK == res.status) {
-      roleSelectData.roleTypeOptions = res.data.filter((o:any)=>(RoleTypeSpecialEnum.CLIENT != o.id && RoleTypeSpecialEnum.DEPT != o.id));
-    }
-  }
+  await getRoleAllType();
 })
 
 defineExpose({

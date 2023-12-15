@@ -200,7 +200,7 @@ onMounted(()=>{
 /*树部分样式设置*/
 .treeDiv {
   /*其中35是查询部分高度，5属于安全高度*/
-  height: v-bind(height-40+ 'px');
+  height: v-bind(contentHeight-40+ 'px');
   overflow: auto;
 }
 

@@ -14,9 +14,13 @@ const props = withDefaults(defineProps<{
   isRole: boolean;
   // 高度设置
   contentHeight: number;
+  // 下级部门管理菜单，只能操作当前用户下级部门
+  isNextDept:boolean
 }>(), {
   isRole: false,
-  contentHeight: 0
+  contentHeight: 0,
+  // 下级部门管理菜单，只能操作当前用户下级部门
+  isNextDept:false
 })
 
 const infoRef = ref();
@@ -119,8 +123,6 @@ const roleColumns: Array<TableColumnData> = [
     render: (data: { record: TableData, column: TableColumnData, rowIndex: number }) => {
       if (coreTool.isNotExist(data.record?.deptId)) {
         return "无";
-      } else if (data.record.deptId == SpecialValueEnum.TOP) {
-        return "顶级";
       } else {
         return data.record.deptName;
       }
@@ -309,7 +311,7 @@ defineExpose({
     </a-table>
   </div>
   <div v-show="false">
-    <info ref="infoRef" @query="search"></info>
+    <info ref="infoRef" :is-next-dept="props.isNextDept" @query="search"></info>
   </div>
 </template>
 

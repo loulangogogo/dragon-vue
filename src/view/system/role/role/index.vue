@@ -32,7 +32,7 @@
   <div v-show="false">
     <Info ref="infoRef" :role-type-id="roleTypeId" :is-dept="props.isDept" :dept-id="queryParam.deptId" @query-role="queryRole"></Info>
     <permission ref="permissionRef" :is-next-dept="props.isNextDept"></permission>
-    <look-user ref="lookUserRef"></look-user>
+    <look-user ref="lookUserRef" :is-next-dept="props.isNextDept"></look-user>
   </div>
 </template>
 
