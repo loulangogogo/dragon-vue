@@ -122,3 +122,13 @@ export const currentUserUnbindingPhone = (data:any)=>{
 export const fixCurrentuserPassword = (data:any) => {
     return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/fixCurrentuserPassword`,data);
 }
+
+/**
+ * 查看用户手机号码
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const getPhoneByUserId = (userId:any)=>{
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/getPhoneByUserId?id=${userId}`);
+}

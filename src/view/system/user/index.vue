@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 import Info from './info.vue';
 import {onMounted, ref} from "vue";
-import {pageCurrentUserNextDeptUserList, pageUserList, userDel} from "../../../common/api/system/user";
+import {
+  getPhoneByUserId,
+  pageCurrentUserNextDeptUserList,
+  pageUserList,
+  userDel
+} from "../../../common/api/system/user";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {TableColumnData, TableData} from "@arco-design/web-vue";
 import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
@@ -47,7 +52,8 @@ const columns: Array<TableColumnData> = [
   {
     title: "手机号码",
     dataIndex: "phone",
-    width: 120,
+    width: 160,
+    slotName: 'phoneSlot'
   },
   {
     title: "邮箱",
@@ -118,7 +124,8 @@ const roleDeptColumns: Array<TableColumnData> = [
   {
     title: "手机号码",
     dataIndex: "phone",
-    width: 120,
+    width: 160,
+    slotName: 'phoneSlot'
   },
   {
     title: "部门",
@@ -245,6 +252,22 @@ const edit = (data: any) => {
   infoRef.value.init(data);
 }
 
+/**
+ * 根据用户的id获取用户的手机号码
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const getPhone = (data: any) => {
+  getPhoneByUserId(data.id).then((res: ResponseResult) => {
+    if (res.status === ResponseStatusEnum.OK) {
+      data["phoneReal"] = res.data;
+      data["phoneEye"] = true;
+    }
+  });
+};
+
 const del = (data: any) => {
   dragonConfirm({
     title: '确认提示',
@@ -327,6 +350,19 @@ defineExpose({
              :loading="loading"
              @page-size-change="pageSizeChange"
              @page-change="pageChange">
+      <template #phoneSlot="{ record }">
+        <span v-if="record.phoneEye == true">{{ record.phoneReal }}</span>
+        <span v-else>{{ record.phone }}</span>
+        &nbsp;
+        <span v-if="record.phone">
+          <icon-eye-invisible
+              v-if="record.phoneEye == true"
+              class="phoneEyeClass"
+              @click="record.phoneEye = false"
+          ></icon-eye-invisible>
+          <icon-eye v-else class="phoneEyeClass" @click="getPhone(record)"></icon-eye>
+        </span>
+      </template>
       <template #operate="{record}">
         <a-button type="primary" size="mini" @click="edit(record)">编辑</a-button>
         <a-button type="primary" status="danger" size="mini" style="margin-left: 10px" @click="del(record)">删除
@@ -349,5 +385,9 @@ defineExpose({
 .bodyDiv {
   /*70头部div的高度，5是多一个安全距离*/
   height: v-bind(contentHeight-75+ 'px');
+}
+
+.phoneEyeClass {
+  cursor: pointer;
 }
 </style>
