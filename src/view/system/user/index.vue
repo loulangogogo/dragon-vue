@@ -14,12 +14,16 @@ const props = withDefaults(defineProps<{
   isRole: boolean;
   // 高度设置
   contentHeight: number;
-  // 下级部门管理菜单，只能操作当前用户下级部门
+  // 是否是部门,部门管理也有用户查询，只能查询指定部门
+  isDept:boolean,
+  // 下级部门管理菜单，编辑只能编辑下级部门
   isNextDept:boolean
 }>(), {
   isRole: false,
   contentHeight: 0,
-  // 下级部门管理菜单，只能操作当前用户下级部门
+  // 是否是部门,部门管理也有用户查询，只能查询指定部门
+  isDept:false,
+  // 下级部门管理菜单，编辑只能编辑下级部门
   isNextDept:false
 })
 
@@ -99,7 +103,7 @@ const columns: Array<TableColumnData> = [
 ];
 
 // 表格列配置
-const roleColumns: Array<TableColumnData> = [
+const roleDeptColumns: Array<TableColumnData> = [
   {
     title: "姓名/昵称",
     dataIndex: "name",
@@ -150,6 +154,7 @@ const initQueryParam = {
   name: undefined,
   phone: undefined,
   roleId: undefined,
+  deptId: undefined,
   pageCurrent: 1,
   pageSize: 10,
   pageTotal: 0
@@ -167,6 +172,11 @@ const loading = ref(false);
 const pageList = async () => {
   if (props.isRole && coreTool.isNotExist(queryParam.value.roleId)) {
     // 如果是根据角色查询，那么角色id必须存在
+    return;
+  }
+
+  if (props.isDept && coreTool.isNotExist(queryParam.value.deptId)) {
+    // 如果是根据部门id查询那部门id必须存在
     return;
   }
 
@@ -266,6 +276,20 @@ defineExpose({
     tableData.value = [];
     queryParam.value.roleId = roleId;
     pageList();
+  },
+
+  /**
+   * 根据部门查询
+   * @param
+   * @return
+   * @exception
+   * @author     :loulan
+   * */
+  searchByDept: (deptId: any) => {
+    queryParam.value = {...initQueryParam};
+    tableData.value = [];
+    queryParam.value.deptId = deptId;
+    pageList();
   }
 });
 </script>
@@ -277,11 +301,11 @@ defineExpose({
     <a-input v-model="queryParam.phone" style="width: 200px;margin-left: 20px" placeholder="请输入手机号码"
              allow-clear/>
     <a-button type="primary" style="margin-left: 20px" @click="search">查询</a-button>
-    <a-button v-if="!props.isRole" type="primary" status="success" style="margin-left: 20px" @click="add">添加
+    <a-button v-if="!props.isRole && !props.isDept" type="primary" status="success" style="margin-left: 20px" @click="add">添加
     </a-button>
   </div>
   <div class="bodyDiv">
-    <a-table :columns="props.isRole?roleColumns:columns"
+    <a-table :columns="(props.isRole || props.isDept)?roleDeptColumns:columns"
              :data="tableData"
              :stripe="true"
              page-position="bottom"

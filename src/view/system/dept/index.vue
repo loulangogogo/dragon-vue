@@ -2,6 +2,7 @@
 <script lang="ts" setup>
 import DragonDept from './dept/index.vue';
 import DragonRole from '../role/role/index.vue';
+import DragonUser from '../user/index.vue';
 
 import {ref} from "vue";
 import {RoleTypeSpecialEnum} from "../../../common/domain/enums";
@@ -17,6 +18,10 @@ const props = withDefaults(defineProps<{
 })
 
 const dragonRoleRef = ref();
+const dragonUserRef = ref();
+
+// 纵向分割比
+const splitSizeV = ref(0.4);
 
 /**
  * 选择部门
@@ -27,6 +32,7 @@ const dragonRoleRef = ref();
  * */
 const selectDept = (deptId:any)=>{
   dragonRoleRef.value.queryByDept(deptId);
+  dragonUserRef.value.searchByDept(deptId);
 }
 </script>
 
@@ -41,12 +47,21 @@ const selectDept = (deptId:any)=>{
       </template>
       <template #second>
         <div>
-          <dragon-role ref="dragonRoleRef" :is-dept="true"
-                       :is-next-dept="props.isNextDept"
-                       :role-type-id="RoleTypeSpecialEnum.DEPT"
-                       :height="contentHeight-5">
+          <a-split class="splitV" v-model:size="splitSizeV" direction="vertical" min="0.3" max="0.7">
+            <template #first>
+              <dragon-role ref="dragonRoleRef" :is-dept="true"
+                           :is-next-dept="props.isNextDept"
+                           :role-type-id="RoleTypeSpecialEnum.DEPT"
+                           :height="contentHeight*splitSizeV-3">
 
-          </dragon-role>
+              </dragon-role>
+            </template>
+            <template #second>
+              <dragon-user ref="dragonUserRef" :is-dept="true"
+                           :content-height="contentHeight*splitSizeV-3">
+              </dragon-user>
+            </template>
+          </a-split>
         </div>
       </template>
     </a-split>
