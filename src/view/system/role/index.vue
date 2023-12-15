@@ -1,21 +1,28 @@
 <template>
-  <div style="padding: 10px" >
+  <div style="padding: 10px">
     <a-tabs :animation="true" type="rounded" lazy-load @change="tabsChange" :default-active-key="currentTabKey">
       <template #extra>
         <a-space>
           <a-button type="primary" status="success" size="small" shape="round" @click="add">
-            <template #icon><icon-plus /></template>
+            <template #icon>
+              <icon-plus/>
+            </template>
           </a-button>
           <a-button type="primary" size="small" shape="round" @click="edit">
-            <template #icon><icon-edit/></template>
+            <template #icon>
+              <icon-edit/>
+            </template>
           </a-button>
           <a-button type="primary" status="danger" size="small" shape="round" @click="del">
-            <template #icon><icon-delete /></template>
+            <template #icon>
+              <icon-delete/>
+            </template>
           </a-button>
         </a-space>
       </template>
       <template v-for="(roleType,index) in roleTypes" :key="index">
-        <a-tab-pane  :title="roleType.name">
+        <!--        部门角色不再这里展示-->
+        <a-tab-pane v-if="RoleTypeSpecialEnum.DEPT != roleType.id" :title="roleType.name">
           <!--20是padding,32是type,16是tab-pane的padding-->
           <role :height="contentHeight-20-32-16" :role-type-id="roleType.id"></role>
         </a-tab-pane>
@@ -35,6 +42,7 @@ import {getRoleType, roleTypeDel} from "../../../common/api/system/role";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import * as $L from 'owner-tool-js';
 import {dragonConfirm, DragonMessage, DragonNotice} from "../../../common/domain/component";
+import {RoleTypeSpecialEnum} from "../../../common/domain/enums";
 
 const props = defineProps({
   contentHeight: {
@@ -59,7 +67,7 @@ const currentTabKey = ref(0);
  * @return
  * @author     :loulan
  * */
-const tabsChange = (key:any)=>{
+const tabsChange = (key: any) => {
   currentTabKey.value = key;
 }
 
@@ -69,7 +77,7 @@ const tabsChange = (key:any)=>{
  * @return
  * @author     :loulan
  * */
-const add = ()=>{
+const add = () => {
   TypeInfoRef.value.init();
 }
 
@@ -94,7 +102,7 @@ const edit = () => {
  * @return
  * @author     :loulan
  * */
-const del = ()=>{
+const del = () => {
   if ($L.core.isEmpty(roleTypes.value) || roleTypes.value.length <= currentTabKey.value) {
     DragonMessage.error("当前未选中任何橘色类型，无法进行删除操作。");
     return;
@@ -103,8 +111,8 @@ const del = ()=>{
   dragonConfirm({
     title: '确认提示',
     content: '您确认删除这条数据吗？'
-  }).then(async ()=>{
-    const res:ResponseResult = await roleTypeDel(data.id);
+  }).then(async () => {
+    const res: ResponseResult = await roleTypeDel(data.id);
     if (res.status === ResponseStatusEnum.OK) {
       queryRoleType();
       DragonNotice.success("删除成功");
@@ -118,14 +126,14 @@ const del = ()=>{
  * @return
  * @author     :loulan
  * */
-const queryRoleType = async ()=>{
+const queryRoleType = async () => {
   const res: ResponseResult = await getRoleType();
   if (res.status === ResponseStatusEnum.OK) {
     roleTypes.value = res.data;
   }
 }
 
-onMounted(async ()=>{
+onMounted(async () => {
   queryRoleType();
 })
 </script>
