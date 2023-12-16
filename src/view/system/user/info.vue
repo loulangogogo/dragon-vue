@@ -18,13 +18,14 @@
           <a-radio :value="SexEnum.MEN">女</a-radio>
         </a-radio-group>
       </a-form-item>
-      <a-form-item field="deptId" label="部门">
+      <a-form-item :field="props.isNextDept?'deptId':''" label="部门">
         <a-tree-select v-model="formData.deptId"
                        :field-names="{
                           key: 'id',
                           title: 'name'
                         }"
                        :data="deptTreeData"
+                       allow-clear
                        @change="deptChange"
                        placeholder="请选择部门">
         </a-tree-select>
@@ -52,7 +53,7 @@
       <a-form-item v-if="false" field="idCard" label="身份证号码">
         <a-input v-model="formData.idCard" placeholder="请输入身份证号码"/>
       </a-form-item>
-      <a-form-item v-if="isAddEdit===AddEditEnum.EDIT" field="status" label="是否启用">
+      <a-form-item v-if="isAddEdit===AddEditEnum.EDIT" field="status" label="用户状态">
         <a-radio-group v-model="formData.status">
           <a-radio :value="UserStatusEnum.NORMAL">正常</a-radio>
           <a-radio :value="UserStatusEnum.HANG_UP">挂起</a-radio>
@@ -282,7 +283,6 @@ const getRoleByDeptId = async (deptId:any)=>{
   if (coreTool.isNotExist(deptId)) {
     // 如果部门不存在
     formData.value.roleIds = undefined;
-    return;
   }else if (deptId == SpecialValueEnum.TOP) {
     // 如果是特殊顶级部门(获取非客户端和部门角色的角色数据)
     const res: ResponseResult = await getRoleByNoType([RoleTypeSpecialEnum.CLIENT,RoleTypeSpecialEnum.DEPT],StatusEnum.ON);
