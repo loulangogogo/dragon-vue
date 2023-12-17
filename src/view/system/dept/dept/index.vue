@@ -1,45 +1,3 @@
-<template>
-  <div class="queryDiv">
-    <a-row>
-      <a-col :span="20">
-        <a-input-search v-model="searchKey"  placeholder="请输入要进行搜索的名称" allow-clear/>
-      </a-col>
-      <a-col :span="4">
-        <div align="right">
-          <a-button type="primary" status="success" @click="add">添加</a-button>
-        </div>
-      </a-col>
-    </a-row>
-  </div>
-  <div class="treeDiv">
-    <a-tree ref="treeRef"
-            block-node
-            :data="treeData"
-            :field-names="{
-              key: 'id',
-              title: 'name'
-            }"
-            @select="treeSelect">
-      <template #switcher-icon="{ isLeaf }">
-        <icon-caret-right class="treeSwitcherIcon" v-if="isLeaf"/>
-        <icon-caret-down class="treeSwitcherIcon" v-if="!isLeaf" />
-      </template>
-      <template #extra="nodeData">
-        <a-space align="center">
-          <div class="treeNodeOperateIconDiv" align="center">
-            <icon-edit class="treeNodeOperateIcon" style="color: blue" @click="edit(nodeData)"/>
-          </div>
-          <div class="treeNodeOperateIconDiv" align="center">
-            <icon-delete class="treeNodeOperateIcon" style="color: red" @click="del(nodeData)"/>
-          </div>
-        </a-space>
-      </template>
-    </a-tree>
-  </div>
-  <div v-show="false">
-    <Info ref="infoRef" :datas="originListData" :is-next-dept="props.isNextDept" @query="getDepts"></Info>
-  </div>
-</template>
 <script lang="ts" setup>
 import {core as coreTool,arrayTool} from 'owner-tool-js';
 import {computed, nextTick, onMounted, ref} from 'vue';
@@ -70,23 +28,44 @@ const currentUser = computed<UserInfo>(()=>storeGetters.userInfo);
 const infoRef = ref();
 // 菜单树的ref
 const treeRef = ref();
-// 原始树数据
-const originTreeData = ref(new Array<any>());
-const originListData= ref([]);
 // 搜索值
 const searchKey = ref();
+// 原始树数据
+const originListData= ref([]);
+const originTreeData = computed<Array<any>>(():Array<any> => {
+  if (coreTool.isNotEmpty(<any>currentUser.value?.deptId) && originListData.value?.length > 0) {
+    // 返回树数据
+    let pidValue = SpecialValueEnum.TOP;
+    if (props.isNextDept) {
+      // 如果是下级部门查询，那么只能当前用户部门以及下级部门
+      if (currentUser.value.deptId == SpecialValueEnum.TOP) {
+        // 如果当前用户是顶级用户，那么不显示这个顶级部门
+        pidValue = SpecialValueEnum.TOP;
+      } else {
+        // 如果当前用不不是顶级用户，那么就正常展示
+        pidValue = (<any>originListData.value.find((o: any) => currentUser.value.deptId == o.id))?.pid;
+      }
+    }
+    return arrayTool.arrayToTree(originListData.value, "id", "pid", pidValue);
+  } else {
+    return [];
+  }
+})
+
 // 树数据
 const treeData = computed(() => {
   if (coreTool.isEmpty(searchKey.value)) {
     nextTick(()=>{
       treeRef.value.expandAll(false);
     })
+
     return originTreeData.value;
   } else {
     nextTick(()=>{
       // 查询的时候一定要展开节点才能看到查询的内容
       treeRef.value.expandAll(true);
     })
+    console.error("Asdf")
     return searchData(searchKey.value);
   }
 })
@@ -102,19 +81,6 @@ const getDepts = async ()=>{
   const res: ResponseResult = await (props.isNextDept?getCurrentUserNextDept():getAllDept());
   if (res.status === ResponseStatusEnum.OK && res.data) {
     originListData.value = res.data;
-
-    let pidValue = SpecialValueEnum.TOP;
-    if (props.isNextDept) {
-      // 如果是下级部门查询，那么只能当前用户部门以及下级部门
-      if (currentUser.value.deptId == SpecialValueEnum.TOP) {
-        // 如果当前用户是顶级用户，那么不显示这个顶级部门
-        pidValue = SpecialValueEnum.TOP;
-      } else {
-        // 如果当前用不不是顶级用户，那么就正常展示
-        pidValue = (<any>originListData.value.find((o: any) => currentUser.value.deptId == o.id))?.pid;
-      }
-    }
-    originTreeData.value = arrayTool.arrayToTree(originListData.value, "id", "pid", pidValue);
   }
 }
 
@@ -196,10 +162,53 @@ const treeSelect = (selectedKeys: Array<string | number>)=>{
   emits('select', deptId);
 }
 
-onMounted(()=>{
-  getDepts();
+onMounted(async ()=>{
+  await getDepts();
 })
 </script>
+
+<template>
+  <div class="queryDiv">
+    <a-row>
+      <a-col :span="20">
+        <a-input-search v-model="searchKey"  placeholder="请输入要进行搜索的名称" allow-clear/>
+      </a-col>
+      <a-col :span="4">
+        <div align="right">
+          <a-button type="primary" status="success" @click="add">添加</a-button>
+        </div>
+      </a-col>
+    </a-row>
+  </div>
+  <div class="treeDiv">
+    <a-tree ref="treeRef"
+            block-node
+            :data="treeData"
+            :field-names="{
+              key: 'id',
+              title: 'name'
+            }"
+            @select="treeSelect">
+      <template #switcher-icon="{ isLeaf }">
+        <icon-caret-right class="treeSwitcherIcon" v-if="isLeaf"/>
+        <icon-caret-down class="treeSwitcherIcon" v-if="!isLeaf" />
+      </template>
+      <template #extra="nodeData">
+        <a-space align="center">
+          <div class="treeNodeOperateIconDiv" align="center">
+            <icon-edit class="treeNodeOperateIcon" style="color: blue" @click="edit(nodeData)"/>
+          </div>
+          <div class="treeNodeOperateIconDiv" align="center">
+            <icon-delete class="treeNodeOperateIcon" style="color: red" @click="del(nodeData)"/>
+          </div>
+        </a-space>
+      </template>
+    </a-tree>
+  </div>
+  <div v-show="false">
+    <Info ref="infoRef" :datas="originListData" :is-next-dept="props.isNextDept" @query="getDepts"></Info>
+  </div>
+</template>
 
 <style scoped>
 /*查询条件部分样式设置*/
