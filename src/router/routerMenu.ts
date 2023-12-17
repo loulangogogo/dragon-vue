@@ -34,7 +34,7 @@ const createrMenuRouter = (menus:Array<Menu>):RouteRecordRaw => {
 
     // 遍历这个菜单
     for (const menu of menus) {
-        // 将菜单类型为menu的用作路由，dirt只是下拉文件夹(10 menu, 20 dirt)
+        // 将菜单类型为menu的用作路由，dirt只是下拉文件夹(10 menu, 20 dirt，30不显示)
         if (menu.type == 10) {
             // 定义一个路由对象
             const routerObj:RouteRecordRaw = {
