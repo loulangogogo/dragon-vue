@@ -1,76 +1,11 @@
-<template>
-  <div class="queryDiv">
-    <a-row>
-      <a-col :span="20">
-        <a-input-search v-model="searchKey"  placeholder="请输入要进行搜索的名称" allow-clear/>
-      </a-col>
-      <a-col :span="4" v-if="!isRolePermission">
-        <div align="right">
-          <a-button type="primary" status="success" @click="add">添加</a-button>
-        </div>
-      </a-col>
-    </a-row>
-  </div>
-  <div class="treeDiv">
-    <a-tree ref="menuTreeRef"
-            block-node
-            :data="treeData"
-            :field-names="{
-              key: 'id',
-              title: 'name',
-              icon: 'existIcon'
-            }"
-            :checkable="isRolePermission"
-            :check-strictly="true"
-            :checked-keys="selectedKeys"
-            @update:checked-keys="(val:Array<string|number>) => $emit('update:selectedKeys', val)"
-            @select="treeSelect">
-      <template #switcher-icon="{ isLeaf }">
-        <icon-caret-right class="treeSwitcherIcon" v-if="isLeaf"/>
-        <icon-caret-down class="treeSwitcherIcon" v-if="!isLeaf" />
-      </template>
-      <template #icon="{node}">
-        <template v-if="node.iconType===MenuIconTypeEnum.ICON">
-          <component :is="node.icon" size="18" style="margin: 0px"></component>
-        </template>
-        <template v-else-if="node.iconType===MenuIconTypeEnum.ALI">
-          <span class="iconfont" :class="node.icon" style="font-size: 15px"></span>
-        </template>
-        <template v-else-if="node.iconType===MenuIconTypeEnum.IMG">
-          <a-image  width="15" :preview="false" :src="node.icon" style="filter: invert(100)"/>
-        </template>
-      </template>
-      <template #title="nodeData">
-        <template v-if="!searchKey">{{ nodeData?.name }}</template>
-        <template v-else>
-          <span v-html="getTitleHtml(nodeData?.name)"></span>
-        </template>
-      </template>
-      <template #extra="nodeData" v-if="!isRolePermission">
-        <a-space align="center">
-          <div class="treeNodeOperateIconDiv" align="center">
-            <icon-edit class="treeNodeOperateIcon" style="color: blue" @click="edit(nodeData)"/>
-          </div>
-          <div class="treeNodeOperateIconDiv" align="center">
-            <icon-delete class="treeNodeOperateIcon" style="color: red" @click="del(nodeData)"/>
-          </div>
-        </a-space>
-      </template>
-    </a-tree>
-  </div>
-  <div v-show="false">
-    <Info ref="infoRef" :menu-data="originListData" @query-menu="getMenus"></Info>
-  </div>
-</template>
 <script lang="ts" setup>
-import {core as coreTool,arrayTool} from 'owner-tool-js';
-import {ref, computed, onMounted, nextTick,watch} from 'vue';
-import {getAllMenu, menuDel} from "../../../../common/api/system/menu";
+import {arrayTool, core as coreTool} from 'owner-tool-js';
+import {computed, nextTick, onMounted, ref} from 'vue';
+import {getAllMenu, menuDel, queryCurrentUserAllMenu} from "../../../../common/api/system/menu";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import Info from './info.vue';
 import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
 import {MenuIconTypeEnum} from "../../../../common/domain/enums";
-import {currentUserMenu} from "../../../../common/api/frame";
 
 const emit = defineEmits(["selectMenu"]);
 
@@ -130,7 +65,7 @@ const treeData = computed(() => {
  * @author     :loulan
  * */
 const getMenus = async ()=>{
-  const res: ResponseResult = await (props.isNextDept ? currentUserMenu() : getAllMenu());
+  const res: ResponseResult = await (props.isNextDept ? queryCurrentUserAllMenu() : getAllMenu());
   if (res.status === ResponseStatusEnum.OK && res.data) {
     originListData.value = res.data;
     originTreeData.value = arrayTool.arrayToTree(originListData.value, "id", "pid", -1);
@@ -238,8 +173,8 @@ const treeSelect = (selectedKeys: Array<string | number>)=>{
   emit("selectMenu", menuId);
 }
 
-onMounted(()=>{
-  getMenus();
+onMounted(async ()=>{
+  await getMenus();
 })
 
 defineExpose({
@@ -254,6 +189,71 @@ defineExpose({
   }
 })
 </script>
+
+<template>
+  <div class="queryDiv">
+    <a-row>
+      <a-col :span="20">
+        <a-input-search v-model="searchKey"  placeholder="请输入要进行搜索的名称" allow-clear/>
+      </a-col>
+      <a-col :span="4" v-if="!isRolePermission">
+        <div align="right">
+          <a-button type="primary" status="success" @click="add">添加</a-button>
+        </div>
+      </a-col>
+    </a-row>
+  </div>
+  <div class="treeDiv">
+    <a-tree ref="menuTreeRef"
+            block-node
+            :data="treeData"
+            :field-names="{
+              key: 'id',
+              title: 'name',
+              icon: 'existIcon'
+            }"
+            :checkable="isRolePermission"
+            :check-strictly="true"
+            :checked-keys="selectedKeys"
+            @update:checked-keys="(val:Array<string|number>) => $emit('update:selectedKeys', val)"
+            @select="treeSelect">
+      <template #switcher-icon="{ isLeaf }">
+        <icon-caret-right class="treeSwitcherIcon" v-if="isLeaf"/>
+        <icon-caret-down class="treeSwitcherIcon" v-if="!isLeaf" />
+      </template>
+      <template #icon="{node}">
+        <template v-if="node.iconType===MenuIconTypeEnum.ICON">
+          <component :is="node.icon" size="18" style="margin: 0px"></component>
+        </template>
+        <template v-else-if="node.iconType===MenuIconTypeEnum.ALI">
+          <span class="iconfont" :class="node.icon" style="font-size: 15px"></span>
+        </template>
+        <template v-else-if="node.iconType===MenuIconTypeEnum.IMG">
+          <a-image  width="15" :preview="false" :src="node.icon" style="filter: invert(100)"/>
+        </template>
+      </template>
+      <template #title="nodeData">
+        <template v-if="!searchKey">{{ nodeData?.name }}</template>
+        <template v-else>
+          <span v-html="getTitleHtml(nodeData?.name)"></span>
+        </template>
+      </template>
+      <template #extra="nodeData" v-if="!isRolePermission">
+        <a-space align="center">
+          <div class="treeNodeOperateIconDiv" align="center">
+            <icon-edit class="treeNodeOperateIcon" style="color: blue" @click="edit(nodeData)"/>
+          </div>
+          <div class="treeNodeOperateIconDiv" align="center">
+            <icon-delete class="treeNodeOperateIcon" style="color: red" @click="del(nodeData)"/>
+          </div>
+        </a-space>
+      </template>
+    </a-tree>
+  </div>
+  <div v-show="false">
+    <Info ref="infoRef" :menu-data="originListData" @query-menu="getMenus"></Info>
+  </div>
+</template>
 
 <style scoped>
 /*查询条件部分样式设置*/

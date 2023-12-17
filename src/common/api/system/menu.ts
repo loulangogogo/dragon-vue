@@ -11,6 +11,17 @@ export const getAllMenu = () => {
 }
 
 /**
+ * 获取当前用户的的全部菜单，包括各种状态和客户端的菜单
+ * 目前这个接口是用来下级用户进行授权使用的
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const queryCurrentUserAllMenu = () => {
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/menu/queryCurrentUserAllMenu`);
+}
+
+/**
  * 通过菜单的id获取当前菜单的下的权限信息
  * @param
  * @return
