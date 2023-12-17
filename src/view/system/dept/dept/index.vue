@@ -102,7 +102,19 @@ const getDepts = async ()=>{
   const res: ResponseResult = await (props.isNextDept?getCurrentUserNextDept():getAllDept());
   if (res.status === ResponseStatusEnum.OK && res.data) {
     originListData.value = res.data;
-    originTreeData.value = arrayTool.arrayToTree(originListData.value, "id", "pid", props.isNextDept?(<any>originListData.value.find((o:any)=>currentUser.value.deptId == o.id))?.pid:SpecialValueEnum.TOP);
+
+    let pidValue = SpecialValueEnum.TOP;
+    if (props.isNextDept) {
+      // 如果是下级部门查询，那么只能当前用户部门以及下级部门
+      if (currentUser.value.deptId == SpecialValueEnum.TOP) {
+        // 如果当前用户是顶级用户，那么不显示这个顶级部门
+        pidValue = SpecialValueEnum.TOP;
+      } else {
+        // 如果当前用不不是顶级用户，那么就正常展示
+        pidValue = (<any>originListData.value.find((o: any) => currentUser.value.deptId == o.id))?.pid;
+      }
+    }
+    originTreeData.value = arrayTool.arrayToTree(originListData.value, "id", "pid", pidValue);
   }
 }
 
