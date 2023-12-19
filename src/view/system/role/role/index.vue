@@ -8,13 +8,24 @@
     <a-table :columns="columns"
              :data="tableData"
              :stripe="true"
-             :pagination="false"
+             page-position="bottom"
+             :pagination="!props.isDept?{
+                total: queryParam.pageTotal,
+                showTotal: true,
+                showJumper: true,
+                showPageSize: true,
+                pageSizeOptions:[10,20,30,40,50],
+                current:queryParam.pageCurrent,
+                pageSize: queryParam.pageSize,
+              }:false"
              :scroll="{
                 y:'100%'
               }"
              :scrollbar="false"
              column-resizable
              :bordered="{cell:true}"
+             @page-size-change="pageSizeChange"
+             @page-change="pageChange"
              :loading="loading">
       <template #fieldStatus="{record}">
         <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF" @change="(val:any)=>statusChange(val,record)"/>
@@ -43,7 +54,7 @@ import LookUser from "./look-user.vue";
 import {onMounted, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {TableColumnData} from "@arco-design/web-vue";
-import {getRoleByDept, getRoleByType, roleDel, roleUpdate} from "../../../../common/api/system/role";
+import {getRoleByDept, getRoleByType, roleDel, rolePageList, roleUpdate} from "../../../../common/api/system/role";
 import {RoleTypeSpecialEnum, SpecialValueEnum, StatusEnum} from "../../../../common/domain/enums";
 import {dragonConfirm, DragonMessage, DragonNotice} from "../../../../common/domain/component";
 import {core} from "owner-tool-js";
@@ -102,10 +113,15 @@ const columns:Array<TableColumnData> = [
     slotName: "operate"
   },
 ];
+
 // 查询参数
 const queryParam = reactive({
   name: undefined,
-  deptId: undefined
+  roleTypeId:undefined,
+  deptId: undefined,
+  pageCurrent: 1,
+  pageSize: 10,
+  pageTotal: 0
 })
 
 const loading = ref(false);
@@ -119,16 +135,30 @@ const loading = ref(false);
 const queryRole = async () => {
   // 判断是否是部门角色查询
   if (props.isDept && core.isNotExist(queryParam.deptId)) {
-    // 如果是部门角色查询，但是部门id有不存在，那么不进行查询
+    // 如果是部门角色查询，但是部门id不存在，那么不进行查询
       return;
   }
 
   // 查询之前进入加载状态
   loading.value = true;
-  const res: ResponseResult = await (props.isDept?getRoleByDept(queryParam.deptId,queryParam.name):getRoleByType(props.roleTypeId,queryParam.name));
-  if (res.status === ResponseStatusEnum.OK) {
-    tableData.value = res.data;
+  if (props.isDept) {
+    // 如果是部门查询不进行分页
+    const res: ResponseResult = await getRoleByDept(queryParam.deptId,queryParam.name);
+    if (res.status === ResponseStatusEnum.OK) {
+      tableData.value = res.data;
+    }
+  } else {
+    // 如果不是部门查询，那么进行分页查询
+    queryParam.roleTypeId = <any>props.roleTypeId;
+    const res: ResponseResult = await rolePageList(queryParam);
+    if (res.status === ResponseStatusEnum.OK) {
+      const data = res.data;
+      tableData.value = data.records;
+      queryParam.pageTotal = data.total;
+    }
   }
+
+
 
   loading.value = false;
 }
@@ -153,6 +183,29 @@ const statusChange = async (status:any,data:any)=>{
  * @author     :loulan
  * */
 const search = ()=>{
+  queryParam.pageCurrent = 1;
+  queryRole();
+}
+
+/**
+ * 当页码发生变化的时候
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+const pageChange = (pageCurrent: number) => {
+  queryParam.pageCurrent = pageCurrent;
+  queryRole();
+}
+
+/**
+ * 当每页的数目发生变化的时候
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+const pageSizeChange = (pageSize: number) => {
+  queryParam.pageSize = pageSize;
   queryRole();
 }
 

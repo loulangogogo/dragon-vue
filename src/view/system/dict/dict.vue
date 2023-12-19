@@ -101,7 +101,7 @@ const queryParam = reactive({
   name: undefined,
   status: undefined,
   pageCurrent: 1,
-  pageSize: 10,
+  pageSize: 20,
   pageTotal: 0
 })
 

@@ -16,7 +16,7 @@
                 showTotal: true,
                 showJumper: true,
                 showPageSize: true,
-                pageSizeOptions:[10,20,30,40,50],
+                pageSizeOptions:[15,20,30,40,50],
                 current:queryParam.pageCurrent,
                 pageSize: queryParam.pageSize,
               }"
@@ -89,7 +89,7 @@ const queryParam = reactive({
   code: undefined,
   name: undefined,
   pageCurrent: 1,
-  pageSize: 10,
+  pageSize: 15,
   pageTotal: 0
 })
 

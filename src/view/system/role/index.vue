@@ -128,8 +128,7 @@ const del = () => {
 const queryRoleType = async () => {
   const res: ResponseResult = await getRoleType();
   if (res.status === ResponseStatusEnum.OK) {
-    // 目前不再这里暂时部门角色
-    roleTypes.value = res.data.filter((o:any) => RoleTypeSpecialEnum.DEPT != o.id);
+    roleTypes.value = res.data;
   }
 }
 

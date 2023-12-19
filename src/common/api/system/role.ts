@@ -1,6 +1,6 @@
 import ask from "../../ask";
 import {core as coreTool} from "owner-tool-js";
-
+import {pageQuery} from "../../domain/common";
 /**
  * 获取所有的角色类型
  * @param
@@ -29,6 +29,16 @@ export const getRoleList = () => {
  * */
 export const getRoleAllList = () => {
     return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/getAllList`);
+}
+
+/**
+ * 分页查询角色数据
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const rolePageList = <T extends pageQuery>(query: T)=> {
+    return ask.post(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/pageList`,query);
 }
 
 /**
