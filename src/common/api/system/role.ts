@@ -150,6 +150,17 @@ export const permissionMenuSaveAndUpdate = (roleId: number, data: any) => {
 }
 
 /**
+ * 角色关联权限和菜单,只能修改当前用户拥有的权限菜单
+ * 并且角色必须是当前用户部门或下级部门的角色
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const permissionMenuSaveAndUpdateByCurrentUser = (roleId: number, data: any) => {
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/resourcesRole/permissionMenuSaveAndUpdateByCurrentUser/${roleId}`, data);
+}
+
+/**
  * 通过角色id获取权限菜单关联数据
  * @param
  * @return
