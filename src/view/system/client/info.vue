@@ -11,11 +11,14 @@
       <a-form-item field="code" label="编码">
         <a-input v-model="formData.code" placeholder="请输入客户端编码"/>
       </a-form-item>
+      <a-form-item field="name" label="名称">
+        <a-input v-model="formData.name" placeholder="请输入客户端名称"/>
+      </a-form-item>
       <a-form-item field="authorizedGrantTypes" label="授权类型">
         <a-select v-model="formData.authorizedGrantTypes" placeholder="请选择授权类型" :scrollbar="false" :multiple="true">
           <a-option :value="GrantTypeEnum.AUTHORIZATION_CODE">授权码模式</a-option>
           <a-option :value="GrantTypeEnum.CLIENT_CREDENTIALS">客户端模式</a-option>
-          <a-option :value="GrantTypeEnum.IMPLICIT">简单模式</a-option>
+          <a-option :value="GrantTypeEnum.IMPLICIT">隐式授权码模式</a-option>
           <a-option :value="GrantTypeEnum.PASSWORD">密码模式</a-option>
           <a-option :value="GrantTypeEnum.WECHAT_MINI_PROGRAM">微信小程序</a-option>
           <a-option :value="GrantTypeEnum.WECHAT_SCAN">微信扫码</a-option>
@@ -97,6 +100,7 @@ const modalVisible = ref(false);
 
 const initFormData = {
   code: undefined,
+  name: undefined,
   authorizedGrantTypes: undefined,
   redirectUri: undefined,
   accessTokenValidity: 3600,
@@ -112,6 +116,10 @@ const formRules = {
   code: {
     required: true,
     message: "编码不能为空"
+  },
+  name: {
+    required: true,
+    message: "名称不能为空"
   },
   authorizedGrantTypes: {
     required: true,

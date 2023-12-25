@@ -75,6 +75,13 @@ const columns:Array<TableColumnData> = [
     tooltip: true
   },
   {
+    title: "名称",
+    dataIndex: "name",
+    width: 210,
+    ellipsis: true,
+    tooltip: true
+  },
+  {
     title: "授权类型",
     dataIndex: "authorizedGrantTypesName",
     width: 150,
