@@ -2,6 +2,7 @@
   <a-menu
       class="menuClass"
       theme="dark"
+      :accordion="true"
       :collapsed="collapsed">
     <menu-visible :menus="menus"></menu-visible>
   </a-menu>
