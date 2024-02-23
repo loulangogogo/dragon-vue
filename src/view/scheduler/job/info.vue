@@ -9,6 +9,9 @@
       <a-form-item field="name" label="任务名称">
         <a-input v-model="formData.name" placeholder="请输入任务名称"/>
       </a-form-item>
+      <a-form-item field="target" label="执行目标">
+        <a-input v-model="formData.target" placeholder="请输入执行目标"/>
+      </a-form-item>
       <a-form-item field="applicationName" label="应用服务">
         <a-input v-model="formData.applicationName" placeholder="请输入应用名称（serviceId）"/>
       </a-form-item>
@@ -70,6 +73,7 @@ const modalVisible = ref(false);
 const initFormData = {
   id: undefined,
   name: undefined,
+  target: undefined,
   applicationName: undefined,
   cron: undefined,
   mode: undefined,
