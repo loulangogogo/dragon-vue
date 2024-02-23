@@ -86,6 +86,10 @@ const formRules = {
     required: true,
     message: "任务名称不能为空"
   },
+  target: {
+    required: true,
+    message: "执行目标不能为空"
+  },
   cron: {
     required: true,
     message: "cron表达式不能为空"
