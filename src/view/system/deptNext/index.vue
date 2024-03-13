@@ -10,7 +10,7 @@ const props = withDefaults(defineProps<{
 </script>
 
 <template>
-  <dragon-dept :content-height="props.contentHeight" :is-next-dept="true"></dragon-dept>
+  <dragon-dept :content-height="props.contentHeight"></dragon-dept>
 </template>
 
 <style scoped>

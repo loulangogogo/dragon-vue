@@ -1,7 +1,7 @@
 <template>
   <div class="headerDiv">
     <a-input-search v-model="searchKey" placeholder="请输入要进行搜索的名称" style="width: 50%" allow-clear/>
-    <a-button v-if="!isRolePermission" type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
+    <a-button v-if="menuPermissionIsVisibleAddButton" type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
   </div>
   <div class="bodyDiv">
     <a-table :columns="columns"
@@ -17,13 +17,13 @@
              :scrollbar="false"
              column-resizable
              row-key="id"
-             :row-selection="isRolePermission?{
+             :row-selection="menuPermissionIsVisibleCheckButton?{
                type: 'checkbox',
                fixed: true,
                width: 50
              }:undefined"
-             :selected-keys="selectedKeys"
-             @update:selected-keys="(val:Array<string|number>) => $emit('update:selectedKeys', val)"
+             :loading="loading"
+             v-model:selected-keys="tableCheckSelectedKeys"
              :bordered="{cell:true}">
       <template #fieldStatus="{record}">
         <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF" @change="(val:any)=>statusChange(val,record)"/>
@@ -41,18 +41,13 @@
 
 <script lang="ts" setup>
 import Info from './info.vue';
-import {computed, reactive, ref, watch} from "vue";
+import {computed, inject, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
-import {StatusEnum, PermissionTypeEnum} from "../../../../common/domain/enums";
+import {PermissionTypeEnum, StatusEnum} from "../../../../common/domain/enums";
 import {TableColumnData} from "@arco-design/web-vue";
-import {
-  getCurrentUserPermissionByCurrentUserMenuId,
-  getPermissionByMenuId,
-  permissionDel,
-  permissionUpdate
-} from "../../../../common/api/system/menu";
+import {getPermissionByMenuId, permissionDel, permissionUpdate} from "../../../../common/api/system/menu";
 import {core as coreTool} from "owner-tool-js";
-import {dragonConfirm, DragonMessage, DragonNotice} from "../../../../common/domain/component";
+import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
 
 const props = defineProps({
   height: {
@@ -60,47 +55,15 @@ const props = defineProps({
     required: true,
     default: 0
   },
-  isRolePermission: {
-    type: Boolean,
-    required: false,
-    default: false
-  },
-  selectedKeys:{
-    type: [Array<string|number>],
-    required: false,
-    default: []
-  },
-  // 下级部门管理菜单，只能设置当前用户菜单以及当前用所拥有的权限
-  isNextDept:{
-    type: Boolean,
-    required: false,
-    default: false
-  }
 });
 
 const infoRef = ref();
 
+// 加载状态
+const loading = ref(false);
+
 // 表格列配置(授权展示和菜单展示不一样)
-const columns: Array<TableColumnData> = props.isRolePermission?[
-  {
-    title: "名称",
-    dataIndex: "name",
-    ellipsis: true,
-    tooltip: true,
-    width: 300,
-  },
-  {
-    title: "组件路径",
-    dataIndex: "url",
-    ellipsis: true,
-    tooltip: true
-  },
-  {
-    title: "请求类型",
-    dataIndex: "method",
-    width: 100,
-  }
-]:[
+const columns: Array<TableColumnData> = inject("permissionColumns",[
   {
     title: "名称",
     dataIndex: "name",
@@ -131,7 +94,14 @@ const columns: Array<TableColumnData> = props.isRolePermission?[
     fixed: "right",
     slotName: "operate"
   },
-];
+]);
+
+// 菜单复选框的选中项
+const tableCheckSelectedKeys:Array<any> = inject("tableCheckSelectedKeys",[])
+// 是否显示复选框
+const menuPermissionIsVisibleCheckButton = inject("menuPermissionIsVisibleCheckButton", false);
+// 是否显示添加按钮
+const menuPermissionIsVisibleAddButton = inject("menuPermissionIsVisibleAddButton", true);
 
 // 查询参数
 const searchKey = ref();
@@ -147,13 +117,25 @@ const tableData = computed(() => {
 const menuId = ref();
 
 /**
+ * 权限数据的查询
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const permissionQuery: Function = inject("permissionQuery",async (menuIdParam:any,permissionType:PermissionTypeEnum):Promise<ResponseResult> =>{
+  return await getPermissionByMenuId(menuIdParam, permissionType);
+});
+
+/**
  * 点击查询按钮的时候
  * @param
  * @return
  * @author     :loulan
  * */
 const query = async () => {
-  const res: ResponseResult = await (props.isNextDept?getCurrentUserPermissionByCurrentUserMenuId(menuId.value, PermissionTypeEnum.URL):getPermissionByMenuId(menuId.value, PermissionTypeEnum.URL));
+  loading.value = true;
+  const res: ResponseResult = await permissionQuery(menuId.value,PermissionTypeEnum.URL);
   if (res.status === ResponseStatusEnum.OK) {
     const datas: Array<any> = res.data;
     if (coreTool.isNotEmpty(datas)) {
@@ -162,6 +144,7 @@ const query = async () => {
       originTableData.value = [];
     }
   }
+  loading.value = false;
 }
 
 /**

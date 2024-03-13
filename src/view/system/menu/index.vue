@@ -3,32 +3,17 @@
     <a-split class="menuSplitH" default-size="0.3" min="0.2" max="0.6">
       <template #first>
         <div style="padding: 5px">
-          <dragon-menu ref="menuRef" :height="contentHeight-5"
-                       :is-next-dept="props.isNextDept"
-                       :is-role-permission="isRolePermission"
-                       :selected-keys="menuCheckSelectedKeys"
-                       @update:selected-keys = "(val:Array<string|number>)=>$emit('update:menuCheckSelectedKeys', val)"
-                       @select-menu="selectMenu"></dragon-menu>
+          <dragon-menu ref="menuRef" :height="contentHeight-5" @select-menu="selectMenu"></dragon-menu>
         </div>
       </template>
       <template #second>
         <div>
           <a-split class="menuSplitV" v-model:size="menuSplitSizeV" direction="vertical" min="0.3" max="0.7">
             <template #first>
-              <dragon-permission :height="contentHeight*menuSplitSizeV-3" ref="permissionRef"
-                                 :is-next-dept="props.isNextDept"
-                                 :is-role-permission="isRolePermission"
-                                 :selected-keys="tableCheckSelectedKeys"
-                                 @update:selected-keys="(val:Array<string|number>)=>$emit('update:tableCheckSelectedKeys', val)"
-              ></dragon-permission>
+              <dragon-permission :height="contentHeight*menuSplitSizeV-3" ref="permissionRef"></dragon-permission>
             </template>
             <template #second>
-              <dragon-component :height="contentHeight*(1-menuSplitSizeV)-3" ref="componentRef"
-                                :is-next-dept="props.isNextDept"
-                                :is-role-permission="isRolePermission"
-                                :selected-keys="tableCheckSelectedKeys"
-                                @update:selected-keys="(val:Array<string|number>)=>$emit('update:tableCheckSelectedKeys', val)"
-              ></dragon-component>
+              <dragon-component :height="contentHeight*(1-menuSplitSizeV)-3" ref="componentRef"></dragon-component>
             </template>
           </a-split>
         </div>
@@ -50,29 +35,6 @@ const props = defineProps({
     required: true,
     default: 0
   },
-  // 是否是角色权限授权
-  isRolePermission: {
-    type: Boolean,
-    required: false,
-    default: false
-  },
-  // 表格多选情况
-  tableCheckSelectedKeys:{
-    type: [Array<string|number>],
-    required: false,
-    default: []
-  },
-  menuCheckSelectedKeys:{
-    type: [Array<string|number>],
-    required: false,
-    default: []
-  },
-  // 下级部门管理菜单，只能设置当前用户菜单以及当前用所拥有的权限
-  isNextDept:{
-    type: Boolean,
-    required: false,
-    default: false
-  }
 });
 
 const menuRef = ref();

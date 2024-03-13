@@ -9,7 +9,7 @@
              :data="tableData"
              :stripe="true"
              page-position="bottom"
-             :pagination="!props.isDept?{
+             :pagination="roleIsPage?{
                 total: queryParam.pageTotal,
                 showTotal: true,
                 showJumper: true,
@@ -28,12 +28,15 @@
              @page-change="pageChange"
              :loading="loading">
       <template #fieldStatus="{record}">
-        <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF" @change="(val:any)=>statusChange(val,record)"/>
+        <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF"
+                  @change="(val:any)=>statusChange(val,record)"/>
       </template>
       <template #operate="{record}">
         <a-space>
           <a-button type="primary" status="warning" size="mini" @click="permissionEdit(record)">权限编辑</a-button>
-          <a-button v-if="roleTypeId != RoleTypeSpecialEnum.CLIENT" type="primary" status="success" size="mini" @click="lookUsers(record)">查看用户</a-button>
+          <a-button v-if="(roleTypeId != RoleTypeSpecialEnum.CLIENT) && roleIsVisibleLookUserButton" type="primary" status="success" size="mini"
+                    @click="lookUsers(record)">查看用户
+          </a-button>
           <a-button type="primary" size="mini" @click="edit(record)">编辑</a-button>
           <a-button type="primary" status="danger" size="mini" @click="del(record)">删除</a-button>
         </a-space>
@@ -41,9 +44,9 @@
     </a-table>
   </div>
   <div v-show="false">
-    <Info ref="infoRef" :role-type-id="roleTypeId" :is-dept="props.isDept" :dept-id="queryParam.deptId" @query-role="queryRole"></Info>
-    <permission ref="permissionRef" :is-next-dept="props.isNextDept"></permission>
-    <look-user ref="lookUserRef" :is-next-dept="props.isNextDept"></look-user>
+    <Info ref="infoRef" :role-type-id="roleTypeId" @query-role="queryRole"></Info>
+    <permission ref="permissionRef"></permission>
+    <look-user v-if="roleIsVisibleLookUserButton" ref="lookUserRef"></look-user>
   </div>
 </template>
 
@@ -51,29 +54,20 @@
 import Info from './info.vue';
 import Permission from './permission.vue';
 import LookUser from "./look-user.vue";
-import {onMounted, reactive, ref} from "vue";
+import {inject, onMounted, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
-import {TableColumnData} from "@arco-design/web-vue";
-import {getRoleByDept, getRoleByType, roleDel, rolePageList, roleUpdate} from "../../../../common/api/system/role";
-import {RoleTypeSpecialEnum, SpecialValueEnum, StatusEnum} from "../../../../common/domain/enums";
-import {dragonConfirm, DragonMessage, DragonNotice} from "../../../../common/domain/component";
-import {core} from "owner-tool-js";
+import {roleDel, rolePageList, roleUpdate} from "../../../../common/api/system/role";
+import {RoleTypeSpecialEnum, StatusEnum} from "../../../../common/domain/enums";
+import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
 
 const props = withDefaults(defineProps<{
   // 高度
-  height:number,
+  height: number,
   // 角色类型
-  roleTypeId:number,
-  // 是否是部门,部门管理也有角色查询
-  isDept:boolean,
-  // 下级部门管理菜单，只能设置当前用户菜单以及当前用所拥有的权限
-  isNextDept:boolean
-}>(),{
+  roleTypeId: number,
+}>(), {
   height: 0,
   roleTypeId: undefined,
-  isDept:false,
-  // 下级部门管理菜单，只能设置当前用户菜单以及当前用所拥有的权限
-  isNextDept:false
 })
 
 // 添加编辑组件的ref
@@ -85,11 +79,16 @@ const permissionRef = ref();
 // 表格数据
 const tableData = ref();
 
+// 角色页面是否进行分页
+const roleIsPage:boolean = inject("roleIsPage", true);
+
+// 是否显示查看用户按钮
+const roleIsVisibleLookUserButton:boolean = inject("roleIsVisibleLookUserButton", true);
 
 // 表格列配置
-const columns:Array<TableColumnData> = [
+const columns: Array<any> = inject<Array<any>>("roleColumns", [
   {
-    title: (props.isDept?"岗位":"角色")+"名称",
+    title: "角色名称",
     dataIndex: "name",
     width: 300,
     fixed: "left",
@@ -108,16 +107,16 @@ const columns:Array<TableColumnData> = [
   },
   {
     title: "操作",
-    width: props.roleTypeId == RoleTypeSpecialEnum.CLIENT?220:300,
+    width: props.roleTypeId == RoleTypeSpecialEnum.CLIENT ? 220 : 300,
     fixed: "right",
     slotName: "operate"
   },
-];
+]);
 
 // 查询参数
 const queryParam = reactive({
   name: undefined,
-  roleTypeId:undefined,
+  roleTypeId: undefined,
   deptId: undefined,
   pageCurrent: 1,
   pageSize: 10,
@@ -126,6 +125,11 @@ const queryParam = reactive({
 
 const loading = ref(false);
 
+const getRoleDatas:Function = inject("getRoleData",async (param:any):Promise<ResponseResult>=>{
+  const res: ResponseResult = await rolePageList(param);
+  return res;
+})
+
 /**
  * 分页查询数据
  * @param
@@ -133,33 +137,22 @@ const loading = ref(false);
  * @author     :loulan
  * */
 const queryRole = async () => {
-  // 判断是否是部门角色查询
-  if (props.isDept && core.isNotExist(queryParam.deptId)) {
-    // 如果是部门角色查询，但是部门id不存在，那么不进行查询
-      return;
-  }
-
   // 查询之前进入加载状态
   loading.value = true;
-  if (props.isDept) {
-    // 如果是部门查询不进行分页
-    const res: ResponseResult = await getRoleByDept(queryParam.deptId,queryParam.name);
+  if (!roleIsPage) {
+    const res: ResponseResult = await getRoleDatas(queryParam);
     if (res.status === ResponseStatusEnum.OK) {
       tableData.value = res.data;
     }
-  } else {
-    // 如果不是部门查询，那么进行分页查询
+  }else {
     queryParam.roleTypeId = <any>props.roleTypeId;
-    const res: ResponseResult = await rolePageList(queryParam);
+    const res: ResponseResult = await getRoleDatas(queryParam);
     if (res.status === ResponseStatusEnum.OK) {
       const data = res.data;
       tableData.value = data.records;
       queryParam.pageTotal = data.total;
     }
   }
-
-
-
   loading.value = false;
 }
 
@@ -169,7 +162,7 @@ const queryRole = async () => {
  * @return
  * @author     :loulan
  * */
-const statusChange = async (status:any,data:any)=>{
+const statusChange = async (status: any, data: any) => {
   const res: ResponseResult = await roleUpdate({
     id: data.id,
     status: status
@@ -182,7 +175,7 @@ const statusChange = async (status:any,data:any)=>{
  * @return
  * @author     :loulan
  * */
-const search = ()=>{
+const search = () => {
   queryParam.pageCurrent = 1;
   queryRole();
 }
@@ -215,7 +208,7 @@ const pageSizeChange = (pageSize: number) => {
  * @return
  * @author     :loulan
  * */
-const add = ()=>{
+const add = () => {
   infoRef.value.init();
 }
 
@@ -225,9 +218,21 @@ const add = ()=>{
  * @return
  * @author     :loulan
  * */
-const edit = (data:any) => {
+const edit = (data: any) => {
   infoRef.value.init(data);
 }
+
+
+/**
+ * 角色数据的删除
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const roleDelData:Function = inject("roleDelData",async (param:any):Promise<ResponseResult>=>{
+  return await roleDel(param);
+})
 
 /**
  * 点击删除按钮的时候
@@ -235,12 +240,12 @@ const edit = (data:any) => {
  * @return
  * @author     :loulan
  * */
-const del = (data:any)=>{
+const del = (data: any) => {
   dragonConfirm({
     title: '确认提示',
     content: '您确认删除这条数据吗？'
-  }).then(async ()=>{
-    const res:ResponseResult = await roleDel(data.id);
+  }).then(async () => {
+    const res: ResponseResult = await roleDelData(data.id);
     if (res.status === ResponseStatusEnum.OK) {
       queryRole();
       DragonNotice.success("删除成功");
@@ -255,7 +260,7 @@ const del = (data:any)=>{
  * @exception
  * @author     :loulan
  * */
-const lookUsers = (data:any)=>{
+const lookUsers = (data: any) => {
   lookUserRef.value.init(data);
 }
 
@@ -265,7 +270,7 @@ const lookUsers = (data:any)=>{
  * @return
  * @author     :loulan
  * */
-const permissionEdit = (data:any)=>{
+const permissionEdit = (data: any) => {
   permissionRef.value.init(data.id);
 }
 
@@ -282,8 +287,7 @@ defineExpose({
    * @exception
    * @author     :loulan
    * */
-  queryByDept:(deptId:any)=>{
-    queryParam.deptId = deptId;
+  initSearch: () => {
     queryRole();
   }
 });

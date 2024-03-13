@@ -1,43 +1,34 @@
 <script lang="ts" setup>
 import Info from './info.vue';
-import {onMounted, ref} from "vue";
-import {
-  getPhoneByUserId,
-  pageCurrentUserNextDeptUserList,
-  pageUserList,
-  userDel
-} from "../../../common/api/system/user";
+import UserStationDeptRole from "./user-station-dept-role.vue";
+import StationUserDeptRole from "./station-user-dept-role.vue";
+import UserRoleManager from "./user-role-manager.vue";
+import {inject, onMounted, ref} from "vue";
+import {getPhoneByUserId, pageUserList, userDel} from "../../../common/api/system/user";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {TableColumnData, TableData} from "@arco-design/web-vue";
 import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
 import {core as coreTool} from "owner-tool-js";
-import {SpecialValueEnum} from "../../../common/domain/enums";
-
 
 const props = withDefaults(defineProps<{
-  // 是否是通过角色查询(角色查询是在角色管理中查询用户)
-  isRole: boolean;
   // 高度设置
-  contentHeight: number;
-  // 是否是部门,部门管理也有用户查询，只能查询指定部门
-  isDept:boolean,
-  // 下级部门管理菜单，编辑只能编辑下级部门
-  isNextDept:boolean,
+  contentHeight: number,
 }>(), {
-  isRole: false,
   contentHeight: 0,
-  // 是否是部门,部门管理也有用户查询，只能查询指定部门
-  isDept:false,
-  // 下级部门管理菜单，编辑只能编辑下级部门
-  isNextDept:false,
 })
 
+// 指向组件的ref
 const infoRef = ref();
+
+// 按钮显示的注入数据，（因为该组件被很多其他组件套用，所以这里需要注入判断按钮是否需要显示）
+const userIsVisibleAddButton = inject("userIsVisibleAddButton", true);
+const userIsVisibleEditButton = inject("userIsVisibleEditButton", true);
+const userIsVisibleDelButton = inject("userIsVisibleDelButton", true);
 
 // 表格数据
 const tableData = ref();
 // 表格列配置
-const columns: Array<TableColumnData> = [
+const columns: Array<TableColumnData> = inject("userColumns",[
   {
     title: "姓名/昵称",
     dataIndex: "name",
@@ -68,12 +59,14 @@ const columns: Array<TableColumnData> = [
   {
     title: "部门",
     dataIndex: "deptName",
-    width: 150,
+    width: 200,
+    ellipsis: true,
+    tooltip: true,
     render: (data: { record: TableData, column: TableColumnData, rowIndex: number }) => {
-      if (coreTool.isNotExist(data.record?.deptId)) {
-        return "无";
+      if (coreTool.isNotExist(data.record?.dept)) {
+        return "";
       } else {
-        return data.record.deptName;
+        return data.record.dept.name;
       }
     },
   },
@@ -82,7 +75,14 @@ const columns: Array<TableColumnData> = [
     dataIndex: "roleName",
     width: 150,
     ellipsis: true,
-    tooltip: true
+    tooltip: true,
+    render: (data: { record: TableData, column: TableColumnData, rowIndex: number }) => {
+      if (coreTool.isEmpty(data.record?.roles)) {
+        return "";
+      } else {
+        return data.record.roles.map((o: any) => o.name).join(",");
+      }
+    },
   },
   {
     title: "状态",
@@ -102,57 +102,11 @@ const columns: Array<TableColumnData> = [
 
   {
     title: "操作",
-    width: 150,
+    width: 130,
     fixed: "right",
     slotName: "operate"
   },
-];
-
-// 表格列配置
-const roleDeptColumns: Array<TableColumnData> = [
-  {
-    title: "姓名/昵称",
-    dataIndex: "name",
-    width: 150,
-    fixed: "left",
-  },
-  {
-    title: "用户名",
-    dataIndex: "username",
-    width: 200,
-  },
-  {
-    title: "手机号码",
-    dataIndex: "phone",
-    width: 160,
-    slotName: 'phoneSlot'
-  },
-  {
-    title: "部门",
-    dataIndex: "deptName",
-    width: 150,
-    render: (data: { record: TableData, column: TableColumnData, rowIndex: number }) => {
-      if (coreTool.isNotExist(data.record?.deptId)) {
-        return "无";
-      } else {
-        return data.record.deptName;
-      }
-    },
-  },
-  {
-    title: "岗位角色",
-    dataIndex: "roleName",
-    width: 150,
-    ellipsis: true,
-    tooltip: true
-  },
-  {
-    title: "操作",
-    width: 150,
-    fixed: "right",
-    slotName: "operate"
-  },
-];
+])
 
 
 // 查询参数
@@ -162,13 +116,28 @@ const initQueryParam = {
   phone: undefined,
   roleId: undefined,
   deptId: undefined,
+  stationId: undefined,
   pageCurrent: 1,
   pageSize: 10,
   pageTotal: 0
 };
 const queryParam = ref({...initQueryParam})
 
+// 加载状态
 const loading = ref(false);
+
+
+/**
+ * 分页查询用户的方法
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const pageUsers:Function = inject("pageUserList",async (param:any):Promise<ResponseResult>=>{
+  const res: ResponseResult = await pageUserList(queryParam.value);
+  return res;
+})
 
 /**
  * 分页查询数据
@@ -177,19 +146,9 @@ const loading = ref(false);
  * @author     :loulan
  * */
 const pageList = async () => {
-  if (props.isRole && coreTool.isNotExist(queryParam.value.roleId)) {
-    // 如果是根据角色查询，那么角色id必须存在
-    return;
-  }
-
-  if (props.isDept && coreTool.isNotExist(queryParam.value.deptId)) {
-    // 如果是根据部门id查询那部门id必须存在
-    return;
-  }
-
   // 查询之前进入加载状态
   loading.value = true;
-  const res: ResponseResult = await (props.isNextDept?pageCurrentUserNextDeptUserList(queryParam.value):pageUserList(queryParam.value));
+  const res: ResponseResult = await pageUsers(queryParam.value);
   if (res.status === ResponseStatusEnum.OK) {
     const data = res.data;
     tableData.value = data.records;
@@ -199,13 +158,14 @@ const pageList = async () => {
   loading.value = false;
 }
 
+
 /**
  * 点击查询按钮的时候
  * @param
  * @return
  * @author     :loulan
  * */
-const search = () => {
+const search =  () => {
   queryParam.value.pageCurrent = 1;
   pageList();
 }
@@ -268,12 +228,31 @@ const getPhone = (data: any) => {
   });
 };
 
+
+/**
+ * 用户数据的删除操作
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const userDelData:Function = inject("userDelData", async (param: any): Promise<ResponseResult> => {
+  return await userDel(param);
+})
+
+/**
+ * 点击删除用户数据
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
 const del = (data: any) => {
   dragonConfirm({
     title: '确认提示',
     content: '您确认删除这条数据吗？'
   }).then(async () => {
-    const res: ResponseResult = await userDel(data.id);
+    const res: ResponseResult = await userDelData(data.id);
     if (res.status === ResponseStatusEnum.OK) {
       search();
       DragonNotice.success("删除成功");
@@ -283,36 +262,28 @@ const del = (data: any) => {
 
 
 onMounted(() => {
-  pageList();
+  search();
 })
 
 defineExpose({
   /**
-   * 根据角色查询
-   * @param
-   * @return
-   * @exception
+   * 初始化查询
    * @author     :loulan
    * */
-  searchByRole: (roleId: any) => {
-    queryParam.value = {...initQueryParam};
-    tableData.value = [];
-    queryParam.value.roleId = roleId;
-    pageList();
+  initSearch: ()=>{
+    search();
   },
 
   /**
-   * 根据部门查询
+   * 重置数据
    * @param
    * @return
    * @exception
    * @author     :loulan
    * */
-  searchByDept: (deptId: any) => {
+  reset: ()=>{
     queryParam.value = {...initQueryParam};
     tableData.value = [];
-    queryParam.value.deptId = deptId;
-    pageList();
   }
 });
 </script>
@@ -324,11 +295,10 @@ defineExpose({
     <a-input v-model="queryParam.phone" style="width: 200px;margin-left: 20px" placeholder="请输入手机号码"
              allow-clear/>
     <a-button type="primary" style="margin-left: 20px" @click="search">查询</a-button>
-    <a-button v-if="!props.isRole && !props.isDept" type="primary" status="success" style="margin-left: 20px" @click="add">添加
-    </a-button>
+    <a-button v-if="userIsVisibleAddButton" type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
   </div>
   <div class="bodyDiv">
-    <a-table :columns="(props.isRole || props.isDept)?roleDeptColumns:columns"
+    <a-table :columns="columns"
              :data="tableData"
              :stripe="true"
              page-position="bottom"
@@ -364,14 +334,22 @@ defineExpose({
         </span>
       </template>
       <template #operate="{record}">
-        <a-button type="primary" size="mini" @click="edit(record)">编辑</a-button>
-        <a-button type="primary" status="danger" size="mini" style="margin-left: 10px" @click="del(record)">删除
-        </a-button>
+        <a-dropdown :popup-max-height="false">
+          <a-button type="primary" size="mini">点击操作&nbsp;<icon-down/></a-button>
+          <template #content>
+            <a-doption v-if="userIsVisibleEditButton" @click="edit(record)">
+              <span style="color: blue">编辑</span>
+            </a-doption>
+            <a-doption v-if="userIsVisibleDelButton" @click="del(record)">
+              <span style="color: red">删除</span>
+            </a-doption>
+          </template>
+        </a-dropdown>
       </template>
     </a-table>
   </div>
   <div v-show="false">
-    <info ref="infoRef" :is-next-dept="props.isNextDept" @query="search"></info>
+    <info v-if="userIsVisibleEditButton || userIsVisibleAddButton" ref="infoRef" @query="search"></info>
   </div>
 </template>
 

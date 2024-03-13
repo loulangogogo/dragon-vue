@@ -9,7 +9,6 @@
     <!--48表示头部高度，53表示脚部高度，20表示空隙高度-->
     <div :style="{height:screenHeight - 48 - 53  - 20 +'px'}">
       <menu-permission ref="menuPermissionRef"
-                       :is-next-dept="props.isNextDept"
                        :is-role-permission="true"
                        v-model:menu-check-selected-keys="menuCheckSelectedKeys"
                        v-model:table-check-selected-keys="tableCheckSelectedKeys"
@@ -24,26 +23,13 @@
 
 <script lang="ts" setup>
 
-import {computed, nextTick, ref} from "vue";
+import {computed, inject, provide, ref} from "vue";
 import {useStore} from "vuex";
 import MenuPermission from '../../menu/index.vue';
-import {
-  getPermissionMenuByRoleId,
-  permissionMenuSaveAndUpdate,
-  permissionMenuSaveAndUpdateByCurrentUser
-} from "../../../../common/api/system/role";
+import {getPermissionMenuByRoleId, permissionMenuSaveAndUpdate} from "../../../../common/api/system/role";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {RoleResourcesTypeEnum} from "../../../../common/domain/enums";
 import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
-
-const props = defineProps({
-  // 下级部门管理菜单，只能设置当前用户菜单以及当前用所拥有的权限
-  isNextDept: {
-    type: Boolean,
-    required: false,
-    default: false
-  }
-});
 
 
 const modalVisible = ref(false);
@@ -57,9 +43,51 @@ const screenHeight = computed(() => storeGetters.screenHeight);
 const currentRoleId = ref();
 
 // 权限选择的数据
-const tableCheckSelectedKeys = ref();
-const menuCheckSelectedKeys = ref();
+const tableCheckSelectedKeys = ref<Array<any>>([]);
+const menuCheckSelectedKeys = ref<Array<any>>([]);
 
+// 菜单复选框选中项
+provide("menuCheckSelectedKeys", menuCheckSelectedKeys);
+// 权限复选框选中项
+provide("tableCheckSelectedKeys", tableCheckSelectedKeys);
+// 菜单权限是否显示复选框按钮
+provide("menuPermissionIsVisibleCheckButton", true);
+// 菜单权限是否显示添加按钮
+provide("menuPermissionIsVisibleAddButton", false);
+// 菜单是否显示操作按钮（编辑删除）
+provide("menuIsVisibleOptButton", false);
+// 权限菜单列表
+provide("permissionColumns", [
+  {
+    title: "名称",
+    dataIndex: "name",
+    ellipsis: true,
+    tooltip: true,
+    width: 300,
+  },
+  {
+    title: "组件路径",
+    dataIndex: "url",
+    ellipsis: true,
+    tooltip: true
+  },
+  {
+    title: "请求类型",
+    dataIndex: "method",
+    width: 100,
+  }
+]);
+
+/**
+ * 角色权限数据的提交
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const rolePermissionSubmit:Function = inject("rolePermissionSubmit",async (roleIdParam:number,permissionParam:any):Promise<ResponseResult>=>{
+  return await permissionMenuSaveAndUpdate(roleIdParam,permissionParam);
+})
 
 const submit = () => {
   dragonConfirm({
@@ -67,15 +95,10 @@ const submit = () => {
     content: '您确认提交数据吗？'
   }).then(async () => {
     // 如果是下级部门只能编辑提交当前用户拥有的权限数据
-    const res: ResponseResult = await (props.isNextDept ?
-        permissionMenuSaveAndUpdateByCurrentUser(currentRoleId.value, {
-          menus: menuCheckSelectedKeys.value,
-          permissions: tableCheckSelectedKeys.value
-        }) :
-        permissionMenuSaveAndUpdate(currentRoleId.value, {
-          menus: menuCheckSelectedKeys.value,
-          permissions: tableCheckSelectedKeys.value
-        }));
+    const res: ResponseResult = await rolePermissionSubmit(currentRoleId.value, {
+      menus: menuCheckSelectedKeys.value,
+      permissions: tableCheckSelectedKeys.value
+    });
     if (res.status === ResponseStatusEnum.OK) {
       modalVisible.value = false;
       DragonNotice.success("操作成功");

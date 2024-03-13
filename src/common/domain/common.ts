@@ -55,8 +55,8 @@ export interface UserInfo{
     unionid?: string;
     headerImageFileId?: string;
     headerImageFileInfo?: FileInfo;
-    deptId?:number;
-    deptName?:string;
+    roles?:any;
+    dept?:any;
 }
 
 /*********************************************************
