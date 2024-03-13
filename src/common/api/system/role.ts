@@ -169,3 +169,33 @@ export const permissionMenuSaveAndUpdateByCurrentUser = (roleId: number, data: a
 export const getPermissionMenuByRoleId = (roleId: number) => {
     return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/resourcesRole/getPermissionMenuByRoleId/${roleId}`);
 }
+
+/**
+ * 通过用户获取角色数据
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const getRoleByUserId = (userId: number) => {
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/getByUserId/${userId}`);
+}
+
+/**
+ * 通过用户获取角色数据
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const addRoleResourceDataByRoleAndUser = (roleId:number,userId: number) => {
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/resourcesRole/addDataByRoleAndUser?roleId=${roleId}&userId=${userId}`);
+}
+
+/**
+ * 通过用户获取角色数据
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const deleteRoleResourceDataByRoleAndUser = (roleId:number,userId: number) => {
+    return ask.delete(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/resourcesRole/deleteDataByRoleAndUser?roleId=${roleId}&userId=${userId}`);
+}

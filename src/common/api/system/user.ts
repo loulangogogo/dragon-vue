@@ -12,16 +12,6 @@ export const pageUserList = <T extends pageQuery>(query: T) => {
 }
 
 /**
- * 分页查询当前用户部门及下级用户
- * @param       query 查询条件何分页参数
- * @return
- * @author     :loulan
- * */
-export const pageCurrentUserNextDeptUserList = <T extends pageQuery>(query: T) => {
-    return ask.post(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/pageCurrentUserNextDeptUserList`, query);
-}
-
-/**
  * 插入
  * @param
  * @return
@@ -131,4 +121,14 @@ export const fixCurrentuserPassword = (data:any) => {
  * */
 export const getPhoneByUserId = (userId:any)=>{
     return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/getPhoneByUserId?id=${userId}`);
+}
+
+/**
+ * 修改用户部门角色
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const fixUserDeptRole = (data:any) => {
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/fixUserDeptRole`,data);
 }

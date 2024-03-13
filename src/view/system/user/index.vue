@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import Info from './info.vue';
-import UserStationDeptRole from "./user-station-dept-role.vue";
-import StationUserDeptRole from "./station-user-dept-role.vue";
+import UserDeptRole from "./user-dept-role.vue";
 import UserRoleManager from "./user-role-manager.vue";
 import {inject, onMounted, ref} from "vue";
 import {getPhoneByUserId, pageUserList, userDel} from "../../../common/api/system/user";
@@ -19,11 +18,15 @@ const props = withDefaults(defineProps<{
 
 // 指向组件的ref
 const infoRef = ref();
+const userDeptRoleRef = ref();
+const userRoleManagerRef = ref();
 
 // 按钮显示的注入数据，（因为该组件被很多其他组件套用，所以这里需要注入判断按钮是否需要显示）
 const userIsVisibleAddButton = inject("userIsVisibleAddButton", true);
 const userIsVisibleEditButton = inject("userIsVisibleEditButton", true);
 const userIsVisibleDelButton = inject("userIsVisibleDelButton", true);
+const userIsVisibleDeptRoleButton = inject("userIsVisibleDeptRoleButton", true);
+const userIsVisibleRoleManagerButton = inject("userIsVisibleRoleManagerButton", true);
 
 // 表格数据
 const tableData = ref();
@@ -213,6 +216,28 @@ const edit = (data: any) => {
 }
 
 /**
+ * 角色管理按钮点击
+ * @param       
+ * @return
+ * @exception  
+ * @author     :loulan
+ * */
+const userRoleManagerClick = (data:any)=>{
+  userRoleManagerRef.value.init(data);
+}
+
+/**
+ * 部门岗位按钮进行点击操作
+ * @param       
+ * @return
+ * @exception  
+ * @author     :loulan
+ * */
+const userDeptRoleClick = (data:any)=>{
+  userDeptRoleRef.value.init(data);
+}
+
+/**
  * 根据用户的id获取用户的手机号码
  * @param
  * @return
@@ -337,6 +362,12 @@ defineExpose({
         <a-dropdown :popup-max-height="false">
           <a-button type="primary" size="mini">点击操作&nbsp;<icon-down/></a-button>
           <template #content>
+            <a-doption v-if="userIsVisibleRoleManagerButton" @click="userRoleManagerClick(record)">
+              <span style="color: #30ec06">角色管理</span>
+            </a-doption>
+            <a-doption v-if="userIsVisibleDeptRoleButton" @click="userDeptRoleClick(record)">
+              <span style="color: coral">部门岗位</span>
+            </a-doption>
             <a-doption v-if="userIsVisibleEditButton" @click="edit(record)">
               <span style="color: blue">编辑</span>
             </a-doption>
@@ -350,6 +381,8 @@ defineExpose({
   </div>
   <div v-show="false">
     <info v-if="userIsVisibleEditButton || userIsVisibleAddButton" ref="infoRef" @query="search"></info>
+    <user-dept-role v-if="userIsVisibleDeptRoleButton"  ref="userDeptRoleRef" @query="search"></user-dept-role>
+    <user-role-manager v-if="userIsVisibleRoleManagerButton" ref="userRoleManagerRef" @query="search"></user-role-manager>
   </div>
 </template>
 
