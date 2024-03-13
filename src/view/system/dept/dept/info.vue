@@ -19,7 +19,7 @@
                           title: 'name',
                           icon: 'existIcon'
                         }"
-                       :data="treeData"
+                       :data="props.deptTree"
                        placeholder="请选择父级部门">
         </a-tree-select>
       </a-form-item>
@@ -44,24 +44,19 @@
 
 <script lang="ts" setup>
 
-import {arrayTool, core as coreTool, functionTool} from 'owner-tool-js';
-import {computed, ref} from "vue";
+import {core as coreTool, functionTool} from 'owner-tool-js';
+import {inject, ref} from "vue";
 import {AddEditEnum, StatusEnum} from "../../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {DragonNotice} from "../../../../common/domain/component";
 import {deptSave, deptUpdate} from "../../../../common/api/system/dept";
-import {useStore} from "vuex";
-import {UserInfo} from "../../../../common/domain/common";
 
 const emits = defineEmits(["query"]);
 
 const props = withDefaults(defineProps<{
-  // 高度设置
-  datas: Array<any>;
-  isNextDept: boolean
+  deptTree: Array<any>
 }>(), {
-  datas: undefined,
-  isNextDept:false
+  deptTree: undefined,
 })
 
 // 确定提交按钮的加载状态
@@ -69,26 +64,6 @@ const submitLoading = ref(false);
 
 // 当前是添加还是编辑，默认添加
 const isAddEdit = ref(AddEditEnum.ADD);
-
-const storeGetters = useStore().getters;
-const currentUser = computed<UserInfo>(()=>storeGetters.userInfo);
-
-// 父级菜单的树数据（只需要展示菜单组文件夹的菜单）
-const treeData = computed(() => {
-  if (coreTool.isNotEmpty(props.datas)) {
-    const dirData: Array<any> = functionTool.deepCopy(props.datas);
-    if (props.isNextDept) {
-      dirData.push({
-        id: currentUser.value.deptId,
-        name: currentUser.value.deptName,
-        pid: -2
-      });
-    }
-    return arrayTool.arrayToTree(dirData, "id", "pid", -2);
-  } else {
-    return [];
-  }
-})
 
 // 表单的ref
 const formRef = ref();
@@ -120,7 +95,34 @@ const formRules = {
     required: true,
     message: "请选择父级部门"
   },
+  stationId: {
+    required: true,
+    message: "请选择所属站点"
+  },
 };
+
+
+/**
+ * 部门添加保存数据
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const deptSaveData:Function = inject("deptSaveData",async (param:any):Promise<ResponseResult>=>{
+  return await deptSave(param);
+})
+
+/**
+ * 部门更新数据
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const deptUpdateData:Function = inject("deptUpdateData",async (param:any):Promise<ResponseResult>=>{
+  return await deptUpdate(param);
+})
 
 /**
  * 点击确定按钮
@@ -133,7 +135,7 @@ const submit = () => {
   formRef.value.validate(async (errors: any) => {
     // 如果没有错误进行提交
     if (coreTool.isUndefined(errors)) {
-      const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await deptSave(formData.value) : await deptUpdate(formData.value));
+      const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await deptSaveData(formData.value) : await deptUpdateData(formData.value));
       if (res.status === ResponseStatusEnum.OK) {
         DragonNotice.success("操作成功");
         emits("query");

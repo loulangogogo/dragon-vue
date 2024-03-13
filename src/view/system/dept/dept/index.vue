@@ -1,28 +1,20 @@
 <script lang="ts" setup>
-import {core as coreTool,arrayTool} from 'owner-tool-js';
-import {computed, nextTick, onMounted, ref} from 'vue';
+import {arrayTool, core as coreTool} from 'owner-tool-js';
+import {computed, inject, nextTick, onMounted, ref} from 'vue';
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import Info from './info.vue';
 import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
-import {deptDel, getAllDept, getCurrentUserNextDept} from "../../../../common/api/system/dept";
+import {deptDel, deptUpdate, getAllDept} from "../../../../common/api/system/dept";
 import {SpecialValueEnum} from "../../../../common/domain/enums";
-import {UserInfo} from "../../../../common/domain/common";
-import {useStore} from "vuex";
 
 const emits = defineEmits(["select"]);
 
 const props = withDefaults(defineProps<{
   // 高度设置
   contentHeight: number;
-  isNextDept: boolean
 }>(), {
   contentHeight: 0,
-  isNextDept:false
 })
-
-const storeGetters = useStore().getters;
-const currentUser = computed<UserInfo>(()=>storeGetters.userInfo);
-
 
 // 添加编辑组件的ref
 const infoRef = ref();
@@ -31,58 +23,50 @@ const treeRef = ref();
 // 搜索值
 const searchKey = ref();
 // 原始树数据
-const originListData= ref([]);
-const originTreeData = computed<Array<any>>(():Array<any> => {
-  if (coreTool.isNotEmpty(<any>currentUser.value?.deptId) && originListData.value?.length > 0) {
-    // 返回树数据
-    let pidValue = SpecialValueEnum.TOP;
-    if (props.isNextDept) {
-      // 如果是下级部门查询，那么只能当前用户部门以及下级部门
-      if (currentUser.value.deptId == SpecialValueEnum.TOP) {
-        // 如果当前用户是顶级用户，那么不显示这个顶级部门
-        pidValue = SpecialValueEnum.TOP;
-      } else {
-        // 如果当前用不不是顶级用户，那么就正常展示
-        pidValue = (<any>originListData.value.find((o: any) => currentUser.value.deptId == o.id))?.pid;
-      }
-    }
-    return arrayTool.arrayToTree(originListData.value, "id", "pid", pidValue);
-  } else {
-    return [];
-  }
-})
+const parentTreeData = ref<Array<any>>([]);
+const originTreeData = ref<Array<any>>([]);
+
+// 树的加载状态
+const treeLoading = ref(false);
 
 // 树数据
 const treeData = computed(() => {
   if (coreTool.isEmpty(searchKey.value)) {
-    nextTick(()=>{
+    nextTick(() => {
       treeRef.value.expandAll(false);
     })
 
     return originTreeData.value;
   } else {
-    nextTick(()=>{
+    nextTick(() => {
       // 查询的时候一定要展开节点才能看到查询的内容
       treeRef.value.expandAll(true);
     })
-    console.error("Asdf")
     return searchData(searchKey.value);
   }
 })
 
 /**
- * 获取部门信息
+ * 生成部门树的方法
  * @param
  * @return
+ * @exception
  * @author     :loulan
  * */
-const getDepts = async ()=>{
-  // 如果是下级部门则只能获取当前用户下级所有部门数据
-  const res: ResponseResult = await (props.isNextDept?getCurrentUserNextDept():getAllDept());
+const generateDeptTree: Function = inject("generateDeptTree", async (parentTreeData: Array<any>, deptTreeData: Array<any>) => {
+  const res: ResponseResult = await getAllDept();
   if (res.status === ResponseStatusEnum.OK && res.data) {
-    originListData.value = res.data;
+    if (res.data?.length > 0) {
+      deptTreeData.length = 0;
+      deptTreeData.push(...(arrayTool.arrayToTree(res.data, "id", "pid", SpecialValueEnum.TOP)));
+      parentTreeData.push({
+        id: SpecialValueEnum.TOP,
+        name: "顶级",
+        children: deptTreeData
+      })
+    }
   }
-}
+})
 
 /**
  * 搜索数据,并组合成一个新的数组数据
@@ -133,6 +117,17 @@ const edit = (nodeData: any) => {
 }
 
 /**
+ * 部门删除数据
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const deptDelData: Function = inject("deptDelData", async (param: any): Promise<ResponseResult> => {
+  return await deptDel(param);
+})
+
+/**
  * 点击删除按钮的时候
  * @param
  * @return
@@ -142,13 +137,19 @@ const del = (nodeData: any) => {
   dragonConfirm({
     title: '确认提示',
     content: '您确认删除这条数据吗？'
-  }).then(async ()=>{
-    const res:ResponseResult = await deptDel(nodeData.id);
+  }).then(async () => {
+    const res: ResponseResult = await deptDelData(nodeData.id);
     if (res.status === ResponseStatusEnum.OK) {
       getDepts();
       DragonNotice.success("删除成功");
     }
   })
+}
+
+const getDepts = async () => {
+  treeLoading.value = true;
+  await generateDeptTree(parentTreeData.value, originTreeData.value);
+  treeLoading.value = false;
 }
 
 /**
@@ -157,13 +158,13 @@ const del = (nodeData: any) => {
  * @return
  * @author     :loulan
  * */
-const treeSelect = (selectedKeys: Array<string | number>)=>{
+const treeSelect = (selectedKeys: Array<string | number>) => {
   const deptId = selectedKeys[0];
   emits('select', deptId);
 }
 
-onMounted(async ()=>{
-  await getDepts();
+onMounted(() => {
+  getDepts()
 })
 </script>
 
@@ -171,7 +172,7 @@ onMounted(async ()=>{
   <div class="queryDiv">
     <a-row>
       <a-col :span="20">
-        <a-input-search v-model="searchKey"  placeholder="请输入要进行搜索的名称" allow-clear/>
+        <a-input-search v-model="searchKey" placeholder="请输入要进行搜索的名称" allow-clear/>
       </a-col>
       <a-col :span="4">
         <div align="right">
@@ -180,7 +181,7 @@ onMounted(async ()=>{
       </a-col>
     </a-row>
   </div>
-  <div class="treeDiv">
+  <a-spin :loading="treeLoading" :size="30" style="width: 100%" class="treeDiv">
     <a-tree ref="treeRef"
             block-node
             :data="treeData"
@@ -191,7 +192,7 @@ onMounted(async ()=>{
             @select="treeSelect">
       <template #switcher-icon="{ isLeaf }">
         <icon-caret-right class="treeSwitcherIcon" v-if="isLeaf"/>
-        <icon-caret-down class="treeSwitcherIcon" v-if="!isLeaf" />
+        <icon-caret-down class="treeSwitcherIcon" v-if="!isLeaf"/>
       </template>
       <template #extra="nodeData">
         <a-space align="center">
@@ -204,15 +205,17 @@ onMounted(async ()=>{
         </a-space>
       </template>
     </a-tree>
-  </div>
+  </a-spin>
+
+
   <div v-show="false">
-    <Info ref="infoRef" :datas="originListData" :is-next-dept="props.isNextDept" @query="getDepts"></Info>
+    <Info ref="infoRef"  :dept-tree="parentTreeData" @query="getDepts"></Info>
   </div>
 </template>
 
 <style scoped>
 /*查询条件部分样式设置*/
-.queryDiv{
+.queryDiv {
   height: 35px;
   line-height: 35px;
   overflow: hidden;
@@ -221,7 +224,7 @@ onMounted(async ()=>{
 /*树部分样式设置*/
 .treeDiv {
   /*其中35是查询部分高度，5属于安全高度*/
-  height: v-bind(contentHeight-40+ 'px');
+  height: v-bind(contentHeight-45+ 'px');
   overflow: auto;
 }
 
@@ -229,15 +232,17 @@ onMounted(async ()=>{
 .treeNodeOperateIconDiv {
   width: 25px;
 }
+
 .treeNodeOperateIcon {
   font-size: 20px;
 }
+
 .treeNodeOperateIcon:hover {
   font-size: 25px;
 }
 
 
-.treeSwitcherIcon{
+.treeSwitcherIcon {
   font-size: 16px;
 }
 </style>
