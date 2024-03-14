@@ -6,9 +6,9 @@
  ** @version 0.0.0
  *********************************************************/
 export enum EnvEnum {
-    DEV = 0,
-    PROD = 1,
-    TEST = 2,
+    DEV = "dev",
+    PROD = "prod",
+    ERROR = "error env"
 }
 
 
