@@ -78,6 +78,23 @@ provide("permissionColumns", [
   }
 ]);
 
+// 组件菜单列表
+provide("componentColumns", [
+  {
+    title: "名称",
+    dataIndex: "name",
+    ellipsis: true,
+    tooltip: true,
+    width: 300,
+  },
+  {
+    title: "组件路径",
+    dataIndex: "code",
+    ellipsis: true,
+    tooltip: true
+  }
+]);
+
 /**
  * 角色权限数据的提交
  * @param

@@ -62,7 +62,7 @@ const infoRef = ref();
 const loading = ref();
 
 // 表格列配置(授权展示和菜单展示不一样)
-const columns: Array<TableColumnData> = inject("permissionColumns",[
+const columns: Array<TableColumnData> = inject("componentColumns",[
   {
     title: "名称",
     dataIndex: "name",
