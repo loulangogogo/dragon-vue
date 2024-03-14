@@ -102,7 +102,11 @@ const columns: Array<TableColumnData> = inject("userColumns",[
     dataIndex: "birthday",
     width: 150,
   },
-
+  {
+    title: "注册时间",
+    dataIndex: "crtTime",
+    width: 180,
+  },
   {
     title: "操作",
     width: 130,

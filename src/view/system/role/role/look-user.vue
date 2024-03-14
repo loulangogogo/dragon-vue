@@ -67,6 +67,8 @@ defineExpose({
 
 provide("pageUserList", inject("pageUserList",pageUsers));
 provide("userIsVisibleAddButton", false);
+provide("userIsVisibleDeptRoleButton", false);
+provide("userIsVisibleRoleManagerButton", false);
 provide("userColumns",[
   {
     title: "姓名/昵称",
@@ -91,10 +93,9 @@ provide("userColumns",[
     width: 70,
   },
   {
-    title: "操作",
-    width: 130,
-    fixed: "right",
-    slotName: "operate"
+    title: "注册时间",
+    dataIndex: "crtTime",
+    width: 180,
   },
 ])
 </script>

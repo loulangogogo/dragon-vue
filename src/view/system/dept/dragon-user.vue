@@ -53,6 +53,7 @@ provide("pageUserList", async (param: any): Promise<ResponseResult> => {
   return await pageUsers(param);
 });
 provide("userIsVisibleAddButton", false);
+provide("userIsVisibleRoleManagerButton", false);
 
 // 用户的table列表展示内容
 provide("userColumns",[
@@ -65,7 +66,7 @@ provide("userColumns",[
   {
     title: "用户名",
     dataIndex: "username",
-    width: 200,
+    width: 150,
   },
   {
     title: "手机号码",
@@ -76,7 +77,7 @@ provide("userColumns",[
   {
     title: "岗位角色",
     dataIndex: "roleName",
-    width: 150,
+    width: 100,
     ellipsis: true,
     tooltip: true,
     render: (data: { record: TableData, column: TableColumnData, rowIndex: number }) => {
@@ -91,6 +92,11 @@ provide("userColumns",[
     title: "状态",
     dataIndex: "statusName",
     width: 70,
+  },
+  {
+    title: "注册时间",
+    dataIndex: "crtTime",
+    width: 180,
   },
   {
     title: "操作",
