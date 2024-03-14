@@ -1,12 +1,15 @@
 <template>
-  <div id="appHome">
+  <div v-if="loadingSuccess===false" :style="{height: screenHeight+'px'}" style="display: flex;justify-content: center;align-items: center">
+    <a-spin dot :loading="!loadingSuccess" :size="40"/>
+  </div>
+  <div v-show="loadingSuccess" id="appHome">
     <router-view/>
   </div>
 </template>
 
 <script setup lang="ts">
 
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {useStore} from "vuex";
 import {windowsTool} from 'owner-tool-js';
 /***************************************************************************************************************/
@@ -14,6 +17,11 @@ import {windowsTool} from 'owner-tool-js';
 let screenHeight = ref(0);
 
 const store = useStore();
+
+// 项目是否加载成功的状态。（没有加载成功要显示加载图标）
+const loadingSuccess = computed<boolean>(():boolean=>{
+  return store.getters.loadingSuccess;
+})
 
 /***************************************************************************************************************/
 onMounted(()=>{

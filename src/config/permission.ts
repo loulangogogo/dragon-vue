@@ -55,6 +55,9 @@ router.beforeEach(async (to, from) => {
  * */
 router.afterEach((to, from, failure) => {
     console.log("afterEach-" + to.path);
+
+    // 设置项目加载状态已经完成
+    store.commit("setLoadingSuccess", true);
 })
 
 /**

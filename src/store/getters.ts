@@ -9,6 +9,10 @@ import {PermissionComponent, Menu, UserInfo} from "../common/domain/common";
 import state from "./state";
 
 export default {
+    // 项目是否加载完成
+    loadingSuccess: (state: any): boolean => state.loadingSuccess,
+
+
     // 获取浏览器可视部分高度
     screenHeight: (state: any): number => state.screenHeight,
     // 获取浏览器可视部分宽度
