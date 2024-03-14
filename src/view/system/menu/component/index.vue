@@ -72,7 +72,7 @@ const columns: Array<TableColumnData> = inject("permissionColumns",[
   },
   {
     title: "组件路径",
-    dataIndex: "url",
+    dataIndex: "code",
     ellipsis: true,
     tooltip: true
   },
