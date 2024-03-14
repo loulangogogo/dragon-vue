@@ -36,7 +36,7 @@
 <script lang="ts" setup>
 
 import {arrayTool, core as coreTool} from 'owner-tool-js';
-import {onMounted, ref, watch} from "vue";
+import {inject, onMounted, ref, watch} from "vue";
 import {SpecialValueEnum, StatusEnum} from "../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {DragonNotice} from "../../../common/domain/component";
@@ -75,7 +75,6 @@ const formRules = {
   }
 };
 
-const deptData = ref<Array<any>>([]);
 const deptTreeData = ref<Array<any>>([]);
 
 const roleOptions = ref<Array<any>>([]);
@@ -95,6 +94,21 @@ const deptChange = (val: any) => {
 
 
 /**
+ * 注入用户部门角色的获取部门数据的方法
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const userDeptRoleGetDeptData = inject("userDeptRoleGetDeptData",async (deptTreeData:Array<any>) =>{
+  deptTreeData.length = 0;
+  const res: ResponseResult = await getAllDept(StatusEnum.ON);
+  if (ResponseStatusEnum.OK == res.status) {
+    deptTreeData.push(...arrayTool.arrayToTree(res.data, "id", "pid", SpecialValueEnum.TOP))
+  }
+})
+
+/**
  * 获取部门数据
  * @param
  * @return
@@ -102,11 +116,7 @@ const deptChange = (val: any) => {
  * @author     :loulan
  * */
 const getDeptData = async () => {
-  const res: ResponseResult = await getAllDept(StatusEnum.ON);
-  if (ResponseStatusEnum.OK == res.status) {
-    deptData.value = res.data;
-    deptTreeData.value = arrayTool.arrayToTree(deptData.value, "id", "pid", SpecialValueEnum.TOP);
-  }
+  await userDeptRoleGetDeptData(deptTreeData.value);
 }
 
 

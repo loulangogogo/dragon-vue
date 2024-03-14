@@ -97,19 +97,6 @@ const logout = ()=>{
     windowsTool.localStorageTool.del(LocalStorageEnum.token);
     router.push("/login");
 }
-
-
-onMounted(async ()=>{
-  // 登录之后获取当前用户个人信息
-  const res:ResponseResult = await currentUserInfo();
-  if (res.status == ResponseStatusEnum.OK && res.data) {
-    const userInfo: UserInfo = res.data;
-    store.commit("setUserInfo", userInfo);
-  } else {
-    // 获取当前用户信息失败，理论上因该退出重新登录的
-    console.error("获取用户信息错误。");
-  }
-})
 </script>
 
 <style scoped>

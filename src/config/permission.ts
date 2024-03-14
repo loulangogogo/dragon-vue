@@ -3,6 +3,8 @@ import store from "../store";
 import {core as coreTool,windowsTool} from 'owner-tool-js';
 import {LocalStorageEnum} from "../common/domain/storage";
 import {generateMenuRouter,currentUserComponentPermission} from "../router/routerMenu";
+import {ResponseResult, ResponseStatusEnum} from "../common/domain/response";
+import {currentUserInfo} from "../common/api/frame";
 
 /**
  * 路由全局前置守卫
@@ -24,6 +26,19 @@ router.beforeEach(async (to, from) => {
             await currentUserComponentPermission();
             await generateMenuRouter();
             return {...to,replace: true};
+        }
+
+        // 如果当前用户数据不存在，那么就需要去获取当前用户的数据，（因为各个地方阶段都在使用当前用户的信息）
+        if (coreTool.isNotExist(store.getters.userInfo?.id)) {
+            const res:ResponseResult = await currentUserInfo();
+            if (res.status == ResponseStatusEnum.OK && res.data) {
+                store.commit("setUserInfo", res.data);
+            } else {
+                // 获取当前用户信息失败，理论上因该退出重新登录的
+                console.error("获取当前用户信息错误。");
+                return false;
+            }
+            return {...to,replace: true}; /*重新路由*/
         }
     }
     return true;

@@ -27,7 +27,7 @@ export const queryCurrentUserAllMenu = () => {
  * @return
  * @author     :loulan
  * */
-export const getPermissionByMenuId = (menuId:number,type:number=NaN) => {
+export const getPermissionByMenuId = (menuId:number,type:number) => {
     return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/permission/getPermissionByMenuId/${menuId}?type=${type}`);
 }
 
@@ -37,7 +37,7 @@ export const getPermissionByMenuId = (menuId:number,type:number=NaN) => {
  * @return
  * @author     :loulan
  * */
-export const getCurrentUserPermissionByCurrentUserMenuId = (menuId:number,type:number=NaN) => {
+export const getCurrentUserPermissionByCurrentUserMenuId = (menuId:number,type:number) => {
     return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/permission/getCurrentUserPermissionByCurrentUserMenuId/${menuId}?type=${type}`);
 }
 

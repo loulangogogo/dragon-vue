@@ -46,6 +46,11 @@ const treeData = computed(() => {
   }
 })
 
+// 是否显示编辑删除按钮
+const deptIsVisibleEditDelButton = inject("deptIsVisibleEditDelButton", true);
+const deptIsVisibleAddButton = inject("deptIsVisibleAddButton", true);
+
+
 /**
  * 生成部门树的方法
  * @param
@@ -54,10 +59,11 @@ const treeData = computed(() => {
  * @author     :loulan
  * */
 const generateDeptTree: Function = inject("generateDeptTree", async (parentTreeData: Array<any>, deptTreeData: Array<any>) => {
+  deptTreeData.length = 0;
+  parentTreeData.length = 0;
   const res: ResponseResult = await getAllDept();
   if (res.status === ResponseStatusEnum.OK && res.data) {
     if (res.data?.length > 0) {
-      deptTreeData.length = 0;
       deptTreeData.push(...(arrayTool.arrayToTree(res.data, "id", "pid", SpecialValueEnum.TOP)));
       parentTreeData.push({
         id: SpecialValueEnum.TOP,
@@ -174,7 +180,7 @@ onMounted(() => {
       <a-col :span="20">
         <a-input-search v-model="searchKey" placeholder="请输入要进行搜索的名称" allow-clear/>
       </a-col>
-      <a-col :span="4">
+      <a-col v-if="deptIsVisibleAddButton" :span="4">
         <div align="right">
           <a-button type="primary" status="success" @click="add">添加</a-button>
         </div>
@@ -194,7 +200,7 @@ onMounted(() => {
         <icon-caret-right class="treeSwitcherIcon" v-if="isLeaf"/>
         <icon-caret-down class="treeSwitcherIcon" v-if="!isLeaf"/>
       </template>
-      <template #extra="nodeData">
+      <template v-if="deptIsVisibleEditDelButton" #extra="nodeData">
         <a-space align="center">
           <div class="treeNodeOperateIconDiv" align="center">
             <icon-edit class="treeNodeOperateIcon" style="color: blue" @click="edit(nodeData)"/>
