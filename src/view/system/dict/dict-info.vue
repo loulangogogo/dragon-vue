@@ -99,6 +99,7 @@ const submit = () => {
   formRef.value.validate(async (errors: any) => {
     // 如果没有错误进行提交
     if (coreTool.isUndefined(errors)) {
+      formData.value.type = props.type;
       const res: ResponseResult = (isAddEdit.value == AddEditEnum.ADD ? await dictSave(formData.value) : await dictUpdate(formData.value));
       if (res.status === ResponseStatusEnum.OK) {
         DragonNotice.success("操作成功");
@@ -107,6 +108,7 @@ const submit = () => {
     }
     modalVisible.value = false;
   })
+  submitLoading.value = false;
 }
 
 

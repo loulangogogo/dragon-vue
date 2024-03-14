@@ -48,7 +48,7 @@ import Info from './dict-info.vue';
 import {onMounted, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {TableColumnData} from "@arco-design/web-vue";
-import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
+import {dragonConfirm, DragonMessage, DragonNotice} from "../../../common/domain/component";
 import {dictDel, pageDictList} from "../../../common/api/system/dict";
 import {AddEditEnum, StatusEnum} from "../../../common/domain/enums";
 import {core as coreTool, functionTool} from "owner-tool-js";
@@ -166,6 +166,10 @@ const pageSizeChange = (pageSize: number) => {
  * @author     :loulan
  * */
 const add = ()=>{
+  if (coreTool.isNotExist(queryParam.type)) {
+    DragonMessage.warning("请选择字典类型");
+    return;
+  }
   infoRef.value.init();
 }
 
@@ -176,6 +180,10 @@ const add = ()=>{
  * @author     :loulan
  * */
 const edit = (data:any) => {
+  if (coreTool.isNotExist(queryParam.type)) {
+    DragonMessage.warning("请选择字典类型");
+    return;
+  }
   infoRef.value.init(data);
 }
 
