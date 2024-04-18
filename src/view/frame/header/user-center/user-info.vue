@@ -65,15 +65,12 @@
   <a-modal v-model:visible="imageModalVisible" title="头像设置" title-align="start" :width="300" :mask-closable="false"
     layout="horizontal" :auto-label-width="true" @close="imageModalClose">
     <div style="display: flex;justify-content: center;align-items: center;height: 270px;">
-      <a-upload :show-file-list="false" :custom-request="uploadFileEvent" :fileList="file ? [file] : []"
-        :disabled="headerImageUploading" class="uploadHeaderImage">
+      <a-upload :show-file-list="false" :on-before-upload="uploadFileEvent"  :fileList="file ? [file] : []" class="uploadHeaderImage">
         <template #upload-button>
           <div v-if="file && file.url" class="upload-image"
             style="display: flex;justify-content: center;align-items: center;background-size:100% 100%;position: relative;"
             :style="{ backgroundImage: 'url(' + file.url + ')' }">
-            <a-progress v-if="headerImageUploading" :percent="file.percent" type="circle" :status="imageIsUploadNormal?'success':'danger'" size="medium" :animation="true"
-              :stroke-width="6" />
-            <div v-else class="arco-upload-list-picture-mask"
+            <div class="arco-upload-list-picture-mask"
               style="display: flex;justify-content: center;align-items: center;">
               <IconEdit size="40" />
             </div>
@@ -97,16 +94,16 @@
 <script setup lang="ts">
 
 // 表单的ref
-import { SexEnum } from "../../../../common/domain/enums";
-import { ref, onMounted, nextTick, computed } from "vue";
-import { useStore } from "vuex";
-import { core as coreTool, functionTool, numberTool } from 'owner-tool-js';
-import { currentUserInfoUpdate } from "../../../../common/api/frame";
-import { ResponseResult, ResponseStatusEnum } from "../../../../common/domain/response";
-import { FileInfo, UserInfo } from "../../../../common/domain/common";
-import { DragonMessage, DragonNotice } from "../../../../common/domain/component";
-import { FileItem, RequestOption, UploadRequest, ValidatedError, FileStatus } from "@arco-design/web-vue";
-import { uploadFile } from '../../../../common/api/file';
+import {SexEnum} from "../../../../common/domain/enums";
+import {ref} from "vue";
+import {useStore} from "vuex";
+import {core as coreTool, functionTool} from 'owner-tool-js';
+import {currentUserInfoUpdate} from "../../../../common/api/frame";
+import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
+import {FileInfo, UserInfo} from "../../../../common/domain/common";
+import {DragonMessage, DragonNotice} from "../../../../common/domain/component";
+import {ValidatedError} from "@arco-design/web-vue";
+import {uploadFile} from '../../../../common/api/file';
 
 const store = useStore();
 
@@ -140,14 +137,6 @@ const file = ref();
 // 点击确定加载状态按钮
 const submitLoading = ref(false);
 
-// 判断头像图片是否处于上传状态
-const headerImageUploading = computed((): boolean => {
-  return coreTool.isExist(file) && file.value?.percent > 0 && file.value?.percent < 1;
-});
-
-// 头像上传进度条的定时器
-let headrImageUploadTimer: number | undefined = undefined
-
 const formRef = ref();
 
 // 表单要提交的数据对象初始化值
@@ -171,78 +160,46 @@ const formRules = {
 
 
 /**
- * 自定义文件上传
+ * 文件头像的上传
  * @param
  * @return
+ * @exception
  * @author     :loulan
  * */
-const uploadFileEvent = (option: RequestOption): UploadRequest => {
-  if (headerImageUploading.value) {
-    // 如果有文件正在上传中，不能再继续上传
-    DragonMessage.warning("当前有文件正在上传中……");
-    return {};
-  }
+const uploadFileEvent = (optionFile: File): Promise<boolean | File> => {
+  let tempFile: File | undefined = optionFile;
 
-  let tempFile:File|undefined = option.fileItem.file;
-  if (!tempFile){
+  if (!tempFile) {
     DragonMessage.warning("上传文件为空");
-    return {};
+    return new Promise<boolean>((resolve: any) => resolve(false));
   }
-  if (tempFile.size > 1000000){
+
+  if (tempFile.size > 1000000) {
     DragonMessage.warning("上传图片不能超过1M");
-    return {};
+    return new Promise<boolean>((resolve: any) => resolve(false));
   }
-
-
-  // 上传的时候显示进度条正常
-  imageIsUploadNormal.value = true;
 
   // 先生成要提交的文件对象
   const formData = new FormData();
-  formData.append('file', <Blob>option.fileItem.file);
-
-  // 前端进行文件展示
-  let tempUrl = file.value.url;
-  functionTool.combineObj(file.value,option.fileItem);
-  file.value.url = tempUrl;
-  // 设置上传进度为0
-  file.value.percent = 0;
-
-  // 设置一个假的的上传进度条，超过0.95就只能等后端返回的数据了。
-  headrImageUploadTimer = setInterval(() => {
-    let temp: number = file.value.percent + 0.01;
-
-    // 当进度条超过0.95就停止定时器
-    if (temp > 0.95 && coreTool.isExist(headrImageUploadTimer)) {
-      clearInterval(headrImageUploadTimer);
-    }
-
-    file.value.percent = Number.parseFloat(numberTool.formatNumber(temp, 2));
-  }, 100);
+  formData.append("file", <Blob>optionFile);
 
   // 后端上传数据
-  uploadFile(false, formData).then((res:ResponseResult)=>{
+  uploadFile(false, formData).then((res: ResponseResult) => {
     if (res.status === ResponseStatusEnum.OK) {
       const resData: any = res.data;
       file.value.url = resData.url;
       file.value.id=resData.id;
       file.value.percent = 1;
-    } else {
-      // 这里将进度条变成红色
-      imageIsUploadNormal.value = false;
+    }else {
       // 设置上传进度为0
       file.value.percent = 0;
     }
+  });
 
-    // 无论上传成功失败都要停止进度条定时器
-    if (coreTool.isExist(headrImageUploadTimer)) {
-        clearInterval(headrImageUploadTimer);
-    }
-  })
-  
 
-  return {};
+  return new Promise<boolean>((resolve: any) => resolve(false));
 }
+
 
 /**
  * 提交修改个人头像
