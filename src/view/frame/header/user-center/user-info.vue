@@ -8,7 +8,7 @@
         <a-col :span="5">
           <a-avatar shape="circle" @click="dealHeaderImageClick" :size="120">
             <img alt="无" style="width: 120px;height: 120px;"
-              :src="userInfo.headerImageFileInfo?.url" />
+                 :src="userInfo.headerImageFileInfo?.url"/>
           </a-avatar>
         </a-col>
         <a-col :span="19">
@@ -37,13 +37,13 @@
 
   <!--绑定和解绑手机-->
   <a-modal v-model:visible="modalVisible" title="编辑" title-align="start" width="550px" :mask-closable="false"
-    layout="horizontal" :auto-label-width="true" @close="close">
+           layout="horizontal" :auto-label-width="true" @close="close">
     <a-form ref="formRef" :model="formData" :rules="formRules">
       <a-form-item field="username" label="用户名" show-colon>
         <span class="spanContent">{{ coreTool.isEmpty(formData.username) ? "无" : formData.username }}</span>
       </a-form-item>
       <a-form-item field="name" label="姓名" show-colon>
-        <a-input v-model="formData.name" placeholder="请输入姓名" />
+        <a-input v-model="formData.name" placeholder="请输入姓名"/>
       </a-form-item>
       <a-form-item field="sex" label="性别" show-colon>
         <a-radio-group v-model="formData.sex">
@@ -52,7 +52,7 @@
         </a-radio-group>
       </a-form-item>
       <a-form-item field="birthday" label="出生日期" show-colon>
-        <a-date-picker v-model="formData.birthday" placeholder="请输入出生日期" style="width: 100%" />
+        <a-date-picker v-model="formData.birthday" placeholder="请输入出生日期" style="width: 100%"/>
       </a-form-item>
     </a-form>
     <template #footer>
@@ -63,21 +63,22 @@
 
   <!-- 头像更换绑定 -->
   <a-modal v-model:visible="imageModalVisible" title="头像设置" title-align="start" :width="300" :mask-closable="false"
-    layout="horizontal" :auto-label-width="true" @close="imageModalClose">
+           layout="horizontal" :auto-label-width="true" @close="imageModalClose">
     <div style="display: flex;justify-content: center;align-items: center;height: 270px;">
-      <a-upload :show-file-list="false" :on-before-upload="uploadFileEvent"  :fileList="file ? [file] : []" class="uploadHeaderImage">
+      <a-upload :show-file-list="false" :on-before-upload="uploadFileEvent" :fileList="file ? [file] : []"
+                class="uploadHeaderImage">
         <template #upload-button>
           <div v-if="file && file.url" class="upload-image"
-            style="display: flex;justify-content: center;align-items: center;background-size:100% 100%;position: relative;"
-            :style="{ backgroundImage: 'url(' + file.url + ')' }">
+               style="display: flex;justify-content: center;align-items: center;background-size:100% 100%;position: relative;"
+               :style="{ backgroundImage: 'url(' + file.url + ')' }">
             <div class="arco-upload-list-picture-mask"
-              style="display: flex;justify-content: center;align-items: center;">
-              <IconEdit size="40" />
+                 style="display: flex;justify-content: center;align-items: center;">
+              <IconEdit size="40"/>
             </div>
           </div>
           <div v-else class="arco-upload-picture-card">
             <div class="arco-upload-picture-card-text">
-              <IconPlus size="40" />
+              <IconPlus size="40"/>
               <div style="margin-top: 10px; font-weight: 600">图片上传</div>
             </div>
           </div>
@@ -95,15 +96,16 @@
 
 // 表单的ref
 import {SexEnum} from "../../../../common/domain/enums";
-import {ref} from "vue";
+import {h, ref} from "vue";
 import {useStore} from "vuex";
 import {core as coreTool, functionTool} from 'owner-tool-js';
 import {currentUserInfoUpdate} from "../../../../common/api/frame";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
 import {FileInfo, UserInfo} from "../../../../common/domain/common";
 import {DragonMessage, DragonNotice} from "../../../../common/domain/component";
-import {ValidatedError} from "@arco-design/web-vue";
+import {Modal, ModalReturn, Progress, ValidatedError} from "@arco-design/web-vue";
 import {uploadFile} from '../../../../common/api/file';
+import {multipartUpload} from "../../../../common/tool/fileTool";
 
 const store = useStore();
 
@@ -111,7 +113,7 @@ const store = useStore();
 const emits = defineEmits(["reset-user-info"]);
 
 // 用户信息
-const { userInfo } = defineProps<{
+const {userInfo} = defineProps<{
   userInfo: UserInfo
 }>();
 
@@ -188,14 +190,13 @@ const uploadFileEvent = (optionFile: File): Promise<boolean | File> => {
     if (res.status === ResponseStatusEnum.OK) {
       const resData: any = res.data;
       file.value.url = resData.url;
-      file.value.id=resData.id;
+      file.value.id = resData.id;
       file.value.percent = 1;
-    }else {
+    } else {
       // 设置上传进度为0
       file.value.percent = 0;
     }
   });
-
 
   return new Promise<boolean>((resolve: any) => resolve(false));
 }
@@ -207,12 +208,12 @@ const uploadFileEvent = (optionFile: File): Promise<boolean | File> => {
  * @return
  * @author     :loulan
  * */
-const submitHearImage = async()=>{
-  if(coreTool.isNotExist(file) || coreTool.isEmpty(file.value?.id)){
+const submitHearImage = async () => {
+  if (coreTool.isNotExist(file) || coreTool.isEmpty(file.value?.id)) {
     DragonMessage.warning("头像图片未设置。");
   }
   submitLoading.value = true;
-  formData.value.headerImageFileId=file.value.id;
+  formData.value.headerImageFileId = file.value.id;
   const res: ResponseResult = await currentUserInfoUpdate(formData.value);
   if (res.status === ResponseStatusEnum.OK) {
     imageModalVisible.value = false;
@@ -252,15 +253,15 @@ const submit = () => {
  * */
 const dealUserinfo = () => {
   // 先复制初始化的值
-  functionTool.combineObj(formData.value,formInitData);
+  functionTool.combineObj(formData.value, formInitData);
   // 然后数据对象进行赋值
-  const currentUserInfo:UserInfo = store.getters.userInfo;
-  formData.value.name=currentUserInfo.name;
+  const currentUserInfo: UserInfo = store.getters.userInfo;
+  formData.value.name = currentUserInfo.name;
   formData.value.username = currentUserInfo.username;
   formData.value.sex = currentUserInfo.sex;
   formData.value.sexName = currentUserInfo.sexName;
   formData.value.birthday = currentUserInfo.birthday;
-  formData.value.headerImageFileId  = undefined;
+  formData.value.headerImageFileId = undefined;
 
   modalVisible.value = true;
 }
@@ -273,11 +274,11 @@ const dealUserinfo = () => {
  * */
 const dealHeaderImageClick = () => {
   // 先赋值初始化的值
-  functionTool.combineObj(formData.value,formInitData);
+  functionTool.combineObj(formData.value, formInitData);
 
-  file.value = functionTool.combineObj({},fileInitData);
-  const headerImageFileInfo:FileInfo = store.getters.userInfo.headerImageFileInfo;
-  if (coreTool.isExist(headerImageFileInfo)){
+  file.value = functionTool.combineObj({}, fileInitData);
+  const headerImageFileInfo: FileInfo = store.getters.userInfo.headerImageFileInfo;
+  if (coreTool.isExist(headerImageFileInfo)) {
     file.value.url = headerImageFileInfo.url;
   }
   file.value.percent = 0;
@@ -294,10 +295,10 @@ const dealHeaderImageClick = () => {
  * */
 const imageModalClose = () => {
   // 初始化清空
-  functionTool.combineObj(formData.value,formInitData);
+  functionTool.combineObj(formData.value, formInitData);
 
   //初始化清空
-  file.value = functionTool.combineObj({},fileInitData);
+  file.value = functionTool.combineObj({}, fileInitData);
 
   imageIsUploadNormal.value = true;
 }
@@ -310,7 +311,7 @@ const imageModalClose = () => {
  * */
 const close = () => {
   // 初始化清空
-  functionTool.combineObj(formData.value,formInitData);
+  functionTool.combineObj(formData.value, formInitData);
 }
 </script>
 
