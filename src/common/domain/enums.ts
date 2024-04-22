@@ -217,3 +217,20 @@ export enum PhoneMessageTypeEnum {
     FIX_PASSWORD = 50,
 }
 
+/*********************************************************
+ ** 生成文件的状态枚举
+ ** <br><br>
+ ** Date: Created in 2024/4/22 15:34
+ ** @author loulan
+ ** @version 0.0.0
+ *********************************************************/
+export enum FileGenerateStatusEnum{
+    // 等待中
+    WAIT=0,
+    // 已生成
+    SUCCESS=10,
+    // 生成失败
+    FAIL=20,
+    // 正在生成
+    ING=30,
+}

@@ -39,9 +39,12 @@
 <script lang="ts" setup>
 import {onMounted, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
-import {StatusEnum} from "../../../common/domain/enums";
+import {FileGenerateStatusEnum, StatusEnum} from "../../../common/domain/enums";
 import {TableColumnData} from "@arco-design/web-vue";
 import {generateFilePageList} from "../../../common/api/system/generateFile";
+import {core as coreTool} from "owner-tool-js";
+import {DragonMessage} from "../../../common/domain/component";
+import {downloadFileByPath} from "../../../common/api/file";
 
 const props = defineProps({
   contentHeight: {
@@ -172,13 +175,50 @@ const pageSizeChange = (pageSize: number) => {
 
 
 /**
- * 用户的编辑
+ * 生成文件的下载
  * @param
  * @return
  * @author     :loulan
  * */
-const download = (data:any) => {
+const download = async (data:any) => {
+  if (data?.generateStatus != FileGenerateStatusEnum.SUCCESS) {
+    DragonMessage.error("文件未生成！");
+    return;
+  }
 
+  if (coreTool.isNotExist(data.path)) {
+    DragonMessage.error("文件路径错误！");
+    return;
+  }
+
+  const isPublic:boolean = data.isPublic;
+  if (isPublic) {
+    const res:any = await downloadFileByPath(data.path);
+
+    const blob = new Blob(res.data,{ type: 'application/octet-stream' });
+    let url = window.URL.createObjectURL(blob);
+    let link:any = document.createElement('a');
+    link.style.display = 'none';
+    link.href = url;
+    link.setAttribute('download',data.name);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+    // window.open(data.url);
+  } else {
+    const res:any = await downloadFileByPath(data.path);
+    const blob = new Blob(res,{ type: 'application/octet-stream' });
+    let url = window.URL.createObjectURL(blob);
+    let link:any = document.createElement('a');
+    link.style.display = 'none';
+    link.href = url;
+    link.setAttribute('download',data.name);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
 }
 
 
