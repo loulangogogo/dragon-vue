@@ -1,5 +1,6 @@
 import {uploadMultipartFile, uploadMultipartFileEnd, uploadMultipartFileStart} from "../api/file";
 import {ResponseResult, ResponseStatusEnum} from "../domain/response";
+import {ref, Ref} from "vue";
 
 
 /**
@@ -40,17 +41,19 @@ export const calculateHash = (optionFile: File, algorithm: string = 'SHA-256'): 
 }
 
 /**
- * 异步进行multipart文件上传。
- * @param file 需要上传的文件对象。
+ * 异步进行multipart分片上传文件。
+ * @param file 要上传的文件对象。
+ * @param precent 上传进度的ref对象，默认为0。用于实时更新上传进度。
  * @returns 返回一个Promise，成功时携带上传结果数据，失败时拒绝并返回错误信息。
  */
-export const multipartUpload = async (file:File):Promise<any> => {
-
+export const multipartUpload = async (file:File,precent:Ref<number>=ref(0)):Promise<any> => {
     // 文件的总大小
     const totalSize:number = file.size;
     // 文件名称
     const fileName:string = file.name;
 
+
+    /************************初始化分片上传**************************/
     // 设置初始的uploadId，这个数据由后段返回
     let uploadId:string = '';
     // 设置分片的大小，也是设置一个初始化，实际数据由后段返回
@@ -67,10 +70,13 @@ export const multipartUpload = async (file:File):Promise<any> => {
     }
 
 
-    // 循环上传分片
+    /************************循环上传分片**************************/
     // 计算分片数量
     const totalChunks:number = Math.ceil(totalSize / chunkSize);
     for (let i:number = 0; i < totalChunks; i++) {
+        // 显示上传进度
+        precent.value = i / totalChunks * 100;
+
         // 计算分片的起始和结束位置
         const start:number = i * chunkSize;
         // 计算分片的结束位置
@@ -91,9 +97,11 @@ export const multipartUpload = async (file:File):Promise<any> => {
         }
     }
 
-    // 调用说明分片上传结束，并获取上传文件地址等等
+    /************************调用说明分片上传结束，并获取上传文件地址等等**************************/
     const resEnd: ResponseResult = await uploadMultipartFileEnd(uploadId);
     if (resEnd.status == ResponseStatusEnum.OK) {
+        // 上传完成，修改上传进度为100%
+        precent.value = 100;
         return new Promise((resolve, reject) => {
             return resolve(resEnd.data);
         })
@@ -104,22 +112,5 @@ export const multipartUpload = async (file:File):Promise<any> => {
     }
 }
 
-
-
-// const modalReturn:ModalReturn = Modal.open({
-//     content: () => h(Progress, {
-//             type: "circle",
-//             percent: 0.8,
-//
-//         },
-//     ),
-//     width: "auto",
-//     footer: false,
-//     closable: false,
-//     maskClosable: false,
-//     modalStyle:{
-//         backgroundColor: "rgba(255,255,255,0.8)"
-//     }
-// });
 
 
