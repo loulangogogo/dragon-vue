@@ -27,9 +27,9 @@ export const uploadImage = (isPrivate:boolean,file:any) => {
  * @return 返回一个请求Promise，用于下载文件
  * @author loulan
  * */
-export const downloadFileByPath = (path:string) => {
+export const downloadByteFileByPath = (path:string) => {
     // 使用import.meta.env获取环境变量，并构造请求URL，发起下载文件的请求
-    return ask.get(`${import.meta.env.VITE_REQUEST_HANDLER_PRE}/file/download-file-by-Path?path=${path}`)
+    return ask.get(`${import.meta.env.VITE_REQUEST_HANDLER_PRE}/file/download-file-byte-by-path?path=${path}`)
 }
 
 
@@ -77,3 +77,33 @@ export const uploadMultipartFileEnd = (uploadId:string) => {
     // 使用import.meta.env获取环境变量，并构造请求URL，发起结束上传的请求
     return ask.get(`${import.meta.env.VITE_REQUEST_HANDLER_PRE}/file/uploadMultipartFile-end?uploadId=${uploadId}`)
 }
+
+/**
+ * 下载文件范围开始，需要先获取文件的大小以及分块大小等信息
+ *
+ * @param path string - 需要下载的文件路径
+ * @return 返回一个Promise，该Promise解析为下载操作的结果
+ * @author loulan
+ * */
+export const downloadFileRangeStart = (path:string) => {
+    // 发起请求获取文件范围下载的起始部分
+    return ask.get(`${import.meta.env.VITE_REQUEST_HANDLER_PRE}/file/download-range-file-start?path=${path}`);
+}
+
+/**
+ * 通过路径下载指定范围的文件
+ * @param path 文件路径
+ * @param start 下载的起始位置
+ * @param end 下载的结束位置
+ * @return 返回一个Promise对象，代表下载操作的异步结果
+ * @author loulan
+ * */
+export const downloadRangeFileByPath = (path:string,start:number,end:number) => {
+    // 发起下载范围文件的请求
+    return ask.post(`${import.meta.env.VITE_REQUEST_HANDLER_PRE}/file/download-range-file-by-path`,{
+        path,
+        start,
+        end
+    });
+}
+

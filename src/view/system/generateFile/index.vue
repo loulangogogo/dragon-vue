@@ -44,7 +44,7 @@ import {TableColumnData} from "@arco-design/web-vue";
 import {generateFilePageList} from "../../../common/api/system/generateFile";
 import {core as coreTool} from "owner-tool-js";
 import {DragonMessage} from "../../../common/domain/component";
-import {downloadFileByPath} from "../../../common/api/file";
+import {downloadFile, multipartDownload} from "../../../common/tool/fileTool";
 
 const props = defineProps({
   contentHeight: {
@@ -193,31 +193,18 @@ const download = async (data:any) => {
 
   const isPublic:boolean = data.isPublic;
   if (isPublic) {
-    const res:any = await downloadFileByPath(data.path);
-
-    const blob = new Blob(res.data,{ type: 'application/octet-stream' });
-    let url = window.URL.createObjectURL(blob);
-    let link:any = document.createElement('a');
-    link.style.display = 'none';
-    link.href = url;
-    link.setAttribute('download',data.name);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-    // window.open(data.url);
+    window.open(data.url);
   } else {
-    const res:any = await downloadFileByPath(data.path);
-    const blob = new Blob(res,{ type: 'application/octet-stream' });
-    let url = window.URL.createObjectURL(blob);
-    let link:any = document.createElement('a');
-    link.style.display = 'none';
-    link.href = url;
-    link.setAttribute('download',data.name);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
+    downloadFile(data.path).then((url:any)=>{
+      let link:any = document.createElement('a');
+      link.style.display = 'none';
+      link.href = url;
+      link.setAttribute('download',data.name);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    })
   }
 }
 
