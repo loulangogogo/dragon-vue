@@ -1,8 +1,10 @@
 <template>
   <div class="headerDiv">
-    <a-select v-model="queryParam.status" :scrollbar="false" style="width: 200px;margin-left: 20px" placeholder="请输入状态" allow-clear>
-      <a-option :value="StatusEnum.ON">启用</a-option>
-      <a-option :value="StatusEnum.OFF">禁用</a-option>
+    <a-select v-model="queryParam.generateStatus" :scrollbar="false" style="width: 200px;margin-left: 20px" placeholder="请选择生成状态" allow-clear>
+      <a-option :value="FileGenerateStatusEnum.WAIT">排队中</a-option>
+      <a-option :value="FileGenerateStatusEnum.ING">生成中</a-option>
+      <a-option :value="FileGenerateStatusEnum.SUCCESS">已生成</a-option>
+      <a-option :value="FileGenerateStatusEnum.FAIL">生成失败</a-option>
     </a-select>
     <a-button type="primary" style="margin-left: 20px" @click="search">查询</a-button>
   </div>
@@ -44,7 +46,7 @@ import {TableColumnData} from "@arco-design/web-vue";
 import {generateFilePageList} from "../../../common/api/system/generateFile";
 import {core as coreTool} from "owner-tool-js";
 import {DragonMessage} from "../../../common/domain/component";
-import {downloadFile, multipartDownload} from "../../../common/tool/fileTool";
+import {downloadByUrl, downloadFile, multipartDownload} from "../../../common/tool/fileTool";
 
 const props = defineProps({
   contentHeight: {
@@ -112,8 +114,7 @@ const columns:Array<TableColumnData> = [
 ];
 // 查询参数
 const queryParam = reactive({
-  code: undefined,
-  status: undefined,
+  generateStatus: undefined,
   pageCurrent: 1,
   pageSize: 10,
   pageTotal: 0
@@ -193,17 +194,10 @@ const download = async (data:any) => {
 
   const isPublic:boolean = data.isPublic;
   if (isPublic) {
-    window.open(data.url);
+    downloadByUrl(data.url, data.name);
   } else {
     downloadFile(data.path).then((url:any)=>{
-      let link:any = document.createElement('a');
-      link.style.display = 'none';
-      link.href = url;
-      link.setAttribute('download',data.name);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      downloadByUrl(url, data.name);
     })
   }
 }

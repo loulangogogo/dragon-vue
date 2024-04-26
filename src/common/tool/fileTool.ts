@@ -1,14 +1,15 @@
 import {
     downloadByteFileByPath,
-    downloadFileRangeStart, downloadRangeFileByPath, uploadFile,
+    downloadFileRangeStart,
+    downloadRangeFileByPath,
+    uploadFile,
     uploadMultipartFile,
     uploadMultipartFileEnd,
     uploadMultipartFileStart
 } from "../api/file";
 import {ResponseResult, ResponseStatusEnum} from "../domain/response";
 import {ref, Ref} from "vue";
-import {core, core as coreTool} from "owner-tool-js";
-import is = core.is;
+import {core as coreTool} from "owner-tool-js";
 import {DragonMessage} from "../domain/component";
 
 
@@ -51,12 +52,13 @@ export const calculateHash = (optionFile: File, algorithm: string = 'SHA-256'): 
 
 /**
  * 上传文件的函数
+ * 【POST /file/upload-multipart-file/*】需要这个权限
  * @param file 要上传的文件对象，类型为File
  * @param isPrivate 是否为私有文件，默认为false，即公开
  * @return 返回一个Promise对象，成功时resolve返回响应数据，失败时reject返回错误信息
  * @author loulan
  * */
-export const upload = (file:File,isPrivate:boolean=false) : Promise<any> => {
+export const upload = (file: File, isPrivate: boolean = false): Promise<any> => {
 
     if (file.size > 20000000) {
         DragonMessage.warning("文件不能超过20M");
@@ -83,12 +85,15 @@ export const upload = (file:File,isPrivate:boolean=false) : Promise<any> => {
 
 /**
  * 异步进行multipart分片上传文件。
+ * 【POST /file/uploadMultipartFile-start】需要这个权限
+ * 【PUT /file/uploadMultipartFile】需要这个权限
+ * 【GET /file/uploadMultipartFile-end】需要这个权限
  * @param file 要上传的文件对象。
  * @param isPrivate 是否为私有文件，默认为false，即公开
  * @param precent 上传进度的ref对象，默认为0。用于实时更新上传进度。
  * @returns 返回一个Promise，成功时携带上传结果数据，失败时拒绝并返回错误信息。
  */
-export const multipartUpload = async (file: File,isPrivate:boolean=false, precent: Ref<number> = ref(0)): Promise<any> => {
+export const multipartUpload = async (file: File, isPrivate: boolean = false, precent: Ref<number> = ref(0)): Promise<any> => {
     // 文件的总大小
     const totalSize: number = file.size;
     // 文件名称
@@ -156,6 +161,8 @@ export const multipartUpload = async (file: File,isPrivate:boolean=false, precen
 
 /**
  * 多分片下载文件的函数。
+ * 【GET /file/download-range-file-start】需要这个权限
+ * 【POST /file/download-range-file-by-path】需要这个权限
  *
  * @param path 文件的下载路径，不能为空。
  * @param precent 用于显示下载进度的引用，默认值为0。
@@ -194,10 +201,10 @@ export const multipartDownload = async (path: string, precent: Ref<number> = ref
         // 计算分片的起始和结束位置
         const start: number = i * chunkSize;
         // 计算分片的结束位置
-        const end: number = start + chunkSize >= totalSize ?totalSize:start + chunkSize;
+        const end: number = start + chunkSize >= totalSize ? totalSize : start + chunkSize;
 
         // 分片下载，下载的是start到end整个块，所以这里需要-1，因为快是从0开始的
-        const res: ResponseResult = await downloadRangeFileByPath(path, start, end-1);
+        const res: ResponseResult = await downloadRangeFileByPath(path, start, end - 1);
         if (res.status == ResponseStatusEnum.OK) {
             /**
              * 将基于base64编码的字符串转换为Blob数组。
@@ -206,10 +213,10 @@ export const multipartDownload = async (path: string, precent: Ref<number> = ref
              * 返回值:
              *   一个Blob数组，包含转换后的二进制数据。
              */
-            const binaryString:String = atob(res.data);
-            const u8Array:Uint8Array = new Uint8Array(binaryString.length);
+            const binaryString: String = atob(res.data);
+            const u8Array: Uint8Array = new Uint8Array(binaryString.length);
             // 循环遍历二进制字符串的每个字符，将其转换为Uint8Array中的数值
-            for (let i:number = 0; i < binaryString.length; i++) {
+            for (let i: number = 0; i < binaryString.length; i++) {
                 u8Array[i] = binaryString.charCodeAt(i);
             }
             blobs.push(u8Array);
@@ -222,7 +229,7 @@ export const multipartDownload = async (path: string, precent: Ref<number> = ref
     }
 
     /************************下载完成，生成下载的地址**************************/
-    const fileBlob:Blob = new Blob(blobs, { type: 'application/octet-stream' });
+    const fileBlob: Blob = new Blob(blobs, {type: 'application/octet-stream'});
     const url: string = window.URL.createObjectURL(fileBlob);
     precent.value = 100;
     return new Promise((resolve, reject) => {
@@ -232,12 +239,13 @@ export const multipartDownload = async (path: string, precent: Ref<number> = ref
 
 /**
  * 下载文件
+ * 【GET /file/download-file-byte-by-path】需要这个权限
  * @param path 需要下载的文件路径
  * @return 返回一个Promise，成功时解析为文件的URL，失败时reject错误信息
  * @exception 当下载失败时，会抛出异常
  * @author loulan
  * */
-export const downloadFile = (path:string): Promise<any> => {
+export const downloadFile = (path: string): Promise<any> => {
     return new Promise((resolve, reject) => {
         // 通过路径下载字节文件
         downloadByteFileByPath(path).then((res: ResponseResult) => {
@@ -262,6 +270,28 @@ export const downloadFile = (path:string): Promise<any> => {
         });
     });
 }
+
+
+/**
+ * 通过给定的URL下载文件。
+ * @param url 文件的URL地址。
+ * @param fileName 下载后文件的命名，默认为空字符串。如果为空，则使用URL中提供的文件名。
+ * @return 无返回值。
+ * @exception 当URL无效或网络问题时，可能会抛出异常。
+ * @author loulan
+ * */
+export const downloadByUrl = (url: string, fileName: string=""): void =>{
+    // 创建一个隐藏的<a>元素
+    let link:any = document.createElement('a');
+    link.style.display = 'none';
+    link.href = url; // 设置链接地址
+    link.setAttribute('download',fileName); // 设置下载后的文件名
+    document.body.appendChild(link); // 将链接添加到页面中
+    link.click(); // 模拟点击开始下载
+    document.body.removeChild(link); // 下载完成后移除链接
+    window.URL.revokeObjectURL(url); // 释放URL对象
+}
+
 
 
 
