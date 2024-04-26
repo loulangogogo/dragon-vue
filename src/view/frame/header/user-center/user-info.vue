@@ -105,7 +105,7 @@ import {FileInfo, UserInfo} from "../../../../common/domain/common";
 import {DragonMessage, DragonNotice} from "../../../../common/domain/component";
 import {Modal, ModalReturn, Progress, ValidatedError} from "@arco-design/web-vue";
 import {uploadFile} from '../../../../common/api/file';
-import {multipartUpload} from "../../../../common/tool/fileTool";
+import {multipartUpload, upload} from "../../../../common/tool/fileTool";
 
 const store = useStore();
 
@@ -132,7 +132,6 @@ const fileInitData = {
   url: "",
   path: undefined,
   name: undefined,
-  percent: 0
 }
 const file = ref();
 
@@ -181,21 +180,10 @@ const uploadFileEvent = (optionFile: File): Promise<boolean | File> => {
     return new Promise<boolean>((resolve: any) => resolve(false));
   }
 
-  // 先生成要提交的文件对象
-  const formData = new FormData();
-  formData.append("file", <Blob>optionFile);
-
   // 后端上传数据
-  uploadFile(false, formData).then((res: ResponseResult) => {
-    if (res.status === ResponseStatusEnum.OK) {
-      const resData: any = res.data;
+  upload(optionFile,false).then((resData:any) => {
       file.value.url = resData.url;
       file.value.id = resData.id;
-      file.value.percent = 1;
-    } else {
-      // 设置上传进度为0
-      file.value.percent = 0;
-    }
   });
 
   return new Promise<boolean>((resolve: any) => resolve(false));
@@ -281,7 +269,6 @@ const dealHeaderImageClick = () => {
   if (coreTool.isExist(headerImageFileInfo)) {
     file.value.url = headerImageFileInfo.url;
   }
-  file.value.percent = 0;
 
   imageIsUploadNormal.value = true;
   imageModalVisible.value = true;

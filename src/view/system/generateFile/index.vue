@@ -32,7 +32,7 @@
              @page-size-change="pageSizeChange"
              @page-change="pageChange">
       <template #operate="{record}">
-        <a-button type="primary" size="mini" @click="download(record)">点击下载</a-button>
+        <a-button type="primary" size="mini" @click="downloadFile(record)">点击下载</a-button>
       </template>
     </a-table>
   </div>
@@ -46,7 +46,7 @@ import {TableColumnData} from "@arco-design/web-vue";
 import {generateFilePageList} from "../../../common/api/system/generateFile";
 import {core as coreTool} from "owner-tool-js";
 import {DragonMessage} from "../../../common/domain/component";
-import {downloadByUrl, downloadFile, multipartDownload} from "../../../common/tool/fileTool";
+import {downloadByUrl, download, multipartDownload} from "../../../common/tool/fileTool";
 
 const props = defineProps({
   contentHeight: {
@@ -84,6 +84,11 @@ const columns:Array<TableColumnData> = [
     title: "状态",
     dataIndex: "generateStatusName",
     width: 180,
+  },
+  {
+    title: "所属站点",
+    dataIndex: "stationName",
+    width: 150,
   },
   {
     title: "所属用户",
@@ -181,7 +186,7 @@ const pageSizeChange = (pageSize: number) => {
  * @return
  * @author     :loulan
  * */
-const download = async (data:any) => {
+const downloadFile = async (data:any) => {
   if (data?.generateStatus != FileGenerateStatusEnum.SUCCESS) {
     DragonMessage.error("文件未生成！");
     return;
@@ -196,7 +201,7 @@ const download = async (data:any) => {
   if (isPublic) {
     downloadByUrl(data.url, data.name);
   } else {
-    downloadFile(data.path).then((url:any)=>{
+    download(data.path).then((url:any)=>{
       downloadByUrl(url, data.name);
     })
   }

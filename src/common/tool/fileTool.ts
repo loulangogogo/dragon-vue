@@ -245,7 +245,7 @@ export const multipartDownload = async (path: string, precent: Ref<number> = ref
  * @exception 当下载失败时，会抛出异常
  * @author loulan
  * */
-export const downloadFile = (path: string): Promise<any> => {
+export const download = (path: string): Promise<any> => {
     return new Promise((resolve, reject) => {
         // 通过路径下载字节文件
         downloadByteFileByPath(path).then((res: ResponseResult) => {
