@@ -9,6 +9,7 @@ import {ResponseResult, ResponseStatusEnum} from "../domain/response";
 import {ref, Ref} from "vue";
 import {core, core as coreTool} from "owner-tool-js";
 import is = core.is;
+import {DragonMessage} from "../domain/component";
 
 
 /**
@@ -56,6 +57,12 @@ export const calculateHash = (optionFile: File, algorithm: string = 'SHA-256'): 
  * @author loulan
  * */
 export const upload = (file:File,isPrivate:boolean=false) : Promise<any> => {
+
+    if (file.size > 20000000) {
+        DragonMessage.warning("文件不能超过20M");
+        return new Promise<boolean>((reject: any) => reject("文件不能超过20M"));
+    }
+
     return new Promise((resolve, reject) => {
         // 准备上传数据，将文件包装在formData中
         const formData: FormData = new FormData();
@@ -217,6 +224,7 @@ export const multipartDownload = async (path: string, precent: Ref<number> = ref
     /************************下载完成，生成下载的地址**************************/
     const fileBlob:Blob = new Blob(blobs, { type: 'application/octet-stream' });
     const url: string = window.URL.createObjectURL(fileBlob);
+    precent.value = 100;
     return new Promise((resolve, reject) => {
         resolve(url);
     })
