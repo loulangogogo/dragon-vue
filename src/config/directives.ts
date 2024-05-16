@@ -6,6 +6,10 @@
  ** @version 0.0.0
  *********************************************************/
 import app from './app';
+import HasComponent from "../common/directive/hasComponent";
+
+// 添加指令
+app.directive("has-component", HasComponent);
 
 app.directive("test",{
     created(el, binding, vnode, prevVnode) {
