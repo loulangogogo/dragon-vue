@@ -386,7 +386,9 @@ defineExpose({
   <div v-show="false">
     <info v-if="userIsVisibleEditButton || userIsVisibleAddButton" ref="infoRef" @query="search"></info>
     <user-dept-role v-if="userIsVisibleDeptRoleButton" ref="userDeptRoleRef" @query="search"></user-dept-role>
-    <user-role-manager v-if="userIsVisibleRoleManagerButton" v-has-component="'user-manager-role-manager'" ref="userRoleManagerRef" @query="search"></user-role-manager>
+    <template v-has-component="'user-manager-role-manager'">
+      <user-role-manager v-if="userIsVisibleRoleManagerButton" ref="userRoleManagerRef" @query="search"></user-role-manager>
+    </template>
   </div>
 </template>
 
