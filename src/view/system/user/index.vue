@@ -7,7 +7,7 @@ import {getPhoneByUserId, pageUserList, userDel} from "../../../common/api/syste
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {TableColumnData, TableData} from "@arco-design/web-vue";
 import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
-import {core as coreTool} from "owner-tool-js";
+import {arrayTool, core as coreTool} from "owner-tool-js";
 
 const props = withDefaults(defineProps<{
   // 高度设置
@@ -83,7 +83,9 @@ const columns: Array<TableColumnData> = inject("userColumns",[
       if (coreTool.isEmpty(data.record?.roles)) {
         return "";
       } else {
-        return data.record.roles.map((o: any) => o.name).join(",");
+        return data.record?.roles.map((o: any) => {
+          return o?.name;
+        }).join(",");
       }
     },
   },
