@@ -3,7 +3,7 @@
     <a-form-item field="account" label="手机" v-if="props.isVisibleAccount">
       <a-input-number :model-value="props.account"
                       @clear="()=>$emit('update:account',undefined)"
-                      @input="(val)=>$emit('update:account',val)"
+                      @input="(val:any)=>$emit('update:account',val)"
                       placeholder="请输入你的手机号码……"
                       allow-clear
                       class="phoneInputNumber">
@@ -15,7 +15,7 @@
     <a-form-item field="verifyCode" label="验证码" v-if="props.isVisibleVerifyCode">
       <a-input :model-value="props.verifyCode"
                @clear="()=>$emit('update:verifyCode',undefined)"
-               @input="(val)=>$emit('update:verifyCode',val)"
+               @input="(val:any)=>$emit('update:verifyCode',val)"
                placeholder="请输入你的短信验证码……" allow-clear>
         <template #suffix>
           <countdown-seconds v-if="isStartCountdown" :seconds="90" :start="isStartCountdown" @finish="()=>isStartCountdown=false"></countdown-seconds>

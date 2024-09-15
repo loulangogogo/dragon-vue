@@ -3,13 +3,13 @@
     <a-form-item field="account" label="邮箱" v-if="props.isVisibleAccount">
       <a-input :model-value="props.account"
                @clear="()=>$emit('update:account',undefined)"
-               @input="(val)=>$emit('update:account',val)"
+               @input="(val:any)=>$emit('update:account',val)"
                placeholder="请输入你的邮箱……" allow-clear/>
     </a-form-item>
     <a-form-item field="verifyCode" label="验证码" v-if="props.isVisibleVerifyCode">
       <a-input :model-value="props.verifyCode"
                @clear="()=>$emit('update:verifyCode',undefined)"
-               @input="(val)=>$emit('update:verifyCode',val)"
+               @input="(val:any)=>$emit('update:verifyCode',val)"
                placeholder="请输入你的邮箱验证码……" allow-clear>
         <template #suffix>
           <countdown-seconds v-if="isStartCountdown" :seconds="90" :start="isStartCountdown" @finish="()=>isStartCountdown=false"></countdown-seconds>
