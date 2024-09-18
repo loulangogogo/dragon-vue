@@ -1,5 +1,5 @@
 <template>
-  <a-dropdown trigger="click" position="br" @select="selectOption" style="min-width: 150px" @popup-visible-change="(visible) => dropdownStatus=visible">
+  <a-dropdown trigger="click" position="br" @select="selectOption" style="min-width: 150px" @popup-visible-change="(visible:any) => dropdownStatus=visible">
     <div class="userImg">
       <span style="color: white;font-weight: bolder;margin-right: 5px;">
         {{userInfo.name}}
