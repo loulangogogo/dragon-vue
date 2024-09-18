@@ -38,7 +38,7 @@
         <template #second>
           <div style="padding-left: 5px">
             <a-form-item field="code" label="编码">
-              <a-input v-model="formData.code" placeholder="编码自动生成" :disabled="true"/>
+              <a-input v-model="formData.code" placeholder="编码(不填写自动生成)" :disabled="isAddEdit===AddEditEnum.EDIT"/>
               <template #extra>
                 <div>只能是英文字母，数字和下划线。</div>
               </template>
