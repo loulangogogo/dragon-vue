@@ -37,24 +37,21 @@
 </template>
 
 <script lang="ts" setup>
-import {useStore} from 'vuex';
+import {useSystemStore} from "../../../store";
 import {windowsTool} from 'owner-tool-js';
 import {LocalStorageEnum} from "../../../common/domain/storage";
 import {useRouter} from "vue-router";
-import {computed, onMounted, ref} from "vue";
-import {currentUserInfo} from "../../../common/api/frame";
-import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
-import {UserInfo} from "../../../common/domain/common";
+import {computed, ref} from "vue";
 import IdeaFun from './idea-fun.vue';
 import UnregisterUser from './unregister-user.vue';
-import { dragonConfirm } from '../../../common/domain/component';
+import {dragonConfirm} from '../../../common/domain/component';
 
 const router = useRouter();
-const store = useStore();
-const frameHeaderHeight = computed(() => store.getters.frameHeaderHeight);
+const store = useSystemStore();
+const frameHeaderHeight = computed(() => store.frameHeaderHeight);
 
 // 用户的姓名进行展示
-const userInfo = computed(() => store.getters.userInfo);
+const userInfo = computed(() => store.userInfo);
 
 // 下拉弹框的显示状态
 const dropdownStatus = ref();

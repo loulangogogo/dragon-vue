@@ -2,8 +2,6 @@
 import app from './app';
 // 路由
 import router from '../router/index';
-// 状态管理器
-import store from '../store/index';
 // 引入权限管理配置
 import './permission';
 // ui组件
@@ -16,7 +14,6 @@ import '/public/static/icon/ali/iconfont.css';
 
 
 app.use(router)
-    .use(store)
     .use(ArcoVue)
     .use(ArcoVueIcon)
     .mount('#app');

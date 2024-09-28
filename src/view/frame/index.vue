@@ -24,21 +24,21 @@ import FrameHeader from './header.vue';
 import FrameSider from './sider.vue';
 import FrameContent from './content.vue';
 import FrameFooter from './footer.vue';
-import {useStore} from 'vuex';
+import {useSystemStore} from "../../store";
 import {ref} from "vue";
 
 // 是否折叠
 const collapsed = ref(false);
 
-const storeGetters = useStore().getters;
-const frameHeaderHeight = storeGetters.frameHeaderHeight;
-const frameFooterHeight = storeGetters.frameFooterHeight;
-const frameSiderMaxWidth = storeGetters.frameSiderMaxWidth;
+const store = useSystemStore();
+const frameHeaderHeight = store.frameHeaderHeight;
+const frameFooterHeight = store.frameFooterHeight;
+const frameSiderMaxWidth = store.frameSiderMaxWidth;
 
 
 // 分割组件的变量（初始值是左边最大）
 let splitValue = ref(frameSiderMaxWidth);
-let beforeCollapsedSplitValue:number|string = splitValue.value;
+let beforeCollapsedSplitValue:number = splitValue.value;
 const collapsedWidth: number = 48; // 菜单部分的折叠宽度
 
 

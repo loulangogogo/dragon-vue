@@ -6,7 +6,7 @@
  ** @version 0.0.0
  *********************************************************/
 import {PermissionComponent} from "../domain/common";
-import store from "../../store";
+import {useSystemStore} from "../../store";
 import {core as coreTool} from "owner-tool-js";
 
 /**
@@ -17,7 +17,7 @@ import {core as coreTool} from "owner-tool-js";
  * */
 export const hasComponent = (code: string): boolean => {
     // 从store的getters中获取权限组件列表
-    const permissions: Array<PermissionComponent> = store.getters?.components;
+    const permissions: Array<PermissionComponent> = useSystemStore().components;
     // 检查权限列表是否为空，若为空则直接返回false
     if (coreTool.isEmpty(permissions)) {
         return false;

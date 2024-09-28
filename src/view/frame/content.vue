@@ -9,14 +9,14 @@
 
 <script lang="ts" setup>
 import TitleBlock from "./content/title-block.vue";
-import {useStore} from "vuex";
+import {useSystemStore} from "../../store";
 import {computed, getCurrentInstance, ref} from "vue";
 defineEmits(["changeCollapsed"]);
 
 
-const storeGetters = useStore().getters;
-const frameContentTitleHeight = storeGetters.frameContentTitleHeight-1; // 这里进行-1是因为边框底部设置了线宽1px
-const frameContentHeight = computed(()=>storeGetters.frameContentHeight);
+const store = useSystemStore();
+const frameContentTitleHeight = store.frameContentTitleHeight-1; // 这里进行-1是因为边框底部设置了线宽1px
+const frameContentHeight = computed(()=>store.frameContentHeight);
 
 
 </script>

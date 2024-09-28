@@ -97,7 +97,7 @@
 // 表单的ref
 import {SexEnum} from "../../../../common/domain/enums";
 import {h, ref} from "vue";
-import {useStore} from "vuex";
+import {useSystemStore} from "../../../../store";
 import {core as coreTool, functionTool} from 'owner-tool-js';
 import {currentUserInfoUpdate} from "../../../../common/api/frame";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
@@ -107,7 +107,7 @@ import {Modal, ModalReturn, Progress, ValidatedError} from "@arco-design/web-vue
 import {uploadFile} from '../../../../common/api/file';
 import {multipartUpload, upload} from "../../../../common/tool/fileTool";
 
-const store = useStore();
+const store = useSystemStore();
 
 // 绑定修改数据之后需要重新获取当前用户信息，修改存在store中的当前用户信息
 const emits = defineEmits(["reset-user-info"]);
@@ -243,7 +243,7 @@ const dealUserinfo = () => {
   // 先复制初始化的值
   functionTool.combineObj(formData.value, formInitData);
   // 然后数据对象进行赋值
-  const currentUserInfo: UserInfo = store.getters.userInfo;
+  const currentUserInfo: UserInfo = store.userInfo;
   formData.value.name = currentUserInfo.name;
   formData.value.username = currentUserInfo.username;
   formData.value.sex = currentUserInfo.sex;
@@ -265,9 +265,9 @@ const dealHeaderImageClick = () => {
   functionTool.combineObj(formData.value, formInitData);
 
   file.value = functionTool.combineObj({}, fileInitData);
-  const headerImageFileInfo: FileInfo = store.getters.userInfo.headerImageFileInfo;
+  const headerImageFileInfo: FileInfo| undefined = store.userInfo.headerImageFileInfo;
   if (coreTool.isExist(headerImageFileInfo)) {
-    file.value.url = headerImageFileInfo.url;
+    file.value.url = headerImageFileInfo?.url;
   }
 
   imageIsUploadNormal.value = true;

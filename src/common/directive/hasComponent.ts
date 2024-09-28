@@ -6,14 +6,14 @@
  ** @version 0.0.0
  *********************************************************/
 // 状态管理器
-import store from '../../store/index';
+import {useSystemStore} from '../../store';
 import {PermissionComponent} from "../domain/common";
 
 export default {
     mounted(el: any, binding: any, vnode: any, prevVnode: any) {
         const {value} = binding
         // 获取所有权限数据
-        const permissions: Array<PermissionComponent> = store.getters?.components;
+        const permissions: Array<PermissionComponent> = useSystemStore().components;
 
         let hasPermissions: boolean = false;
         if (value && value instanceof Array && value.length > 0) {

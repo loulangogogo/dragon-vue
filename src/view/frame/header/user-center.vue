@@ -26,11 +26,11 @@ import Email from './user-center/email.vue';
 import Wechat from './user-center/wechat.vue';
 import Password from "./user-center/password.vue";
 import UserData from './user-center/user-info.vue';
-import {computed, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {currentUserInfo} from "../../../common/api/frame";
 import {dragonConfirm} from "../../../common/domain/component";
-import {useStore} from "vuex";
+import {useSystemStore} from "../../../store";
 import {functionTool} from "owner-tool-js";
 
 const props = defineProps({
@@ -41,10 +41,10 @@ const props = defineProps({
   }
 });
 
-const store = useStore();
+const store = useSystemStore();
 // 同步获取用户信息
 const userInfo = ref<any>({});
-watch(() => store.getters.userInfo,
+watch(() => store.userInfo,
     (val) => {
       functionTool.combineObj(userInfo.value, val);
     }, {
@@ -62,7 +62,7 @@ const resetUserInfo = async () => {
   // 登录之后获取当前用户个人信息
   const res: ResponseResult = await currentUserInfo();
   if (res.status == ResponseStatusEnum.OK && res.data) {
-    store.commit("setUserInfo", res.data);
+    store.userInfo = res.data;
   } else {
     dragonConfirm({
       content: "更新用户信息失败，请刷新当前页面。"

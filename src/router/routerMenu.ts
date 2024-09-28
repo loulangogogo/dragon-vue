@@ -7,7 +7,7 @@
  *********************************************************/
 
 import frame from '../view/frame/index.vue';
-import store from "../store";
+import {useSystemStore} from "../store";
 import router from "./index";
 import {RouteRecordRaw,} from "vue-router";
 import {Menu} from "../common/domain/common";
@@ -16,6 +16,8 @@ import {ResponseResult, ResponseStatusEnum} from "../common/domain/response";
 import {core as coreTool} from "owner-tool-js";
 
 const viteComponents = import.meta.glob("../**/*.vue");
+
+const store = useSystemStore();
 
 /**
  * Description :创建当前用户的路由
@@ -66,7 +68,7 @@ export const generateMenuRouter = async ()=>{
     const res:ResponseResult = await currentUserMenu();
     if (res.status == ResponseStatusEnum.OK && res.data) {
         const menus: Array<Menu> = res.data;
-        store.commit("setMenus", menus);
+        store.menus = menus;
         let menuRouter:RouteRecordRaw = createrMenuRouter(menus);
         router.addRoute(menuRouter);
     } else {
@@ -84,6 +86,6 @@ export const generateMenuRouter = async ()=>{
 export const currentUserComponentPermission = async ()=>{
     const res: ResponseResult = await currentUserComponent();
     if (ResponseStatusEnum.OK == res.status && coreTool.isExist(res.data)) {
-        store.commit("setUserComponents", res.data);
+        store.components = res.data;
     }
 }

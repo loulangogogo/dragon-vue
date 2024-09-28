@@ -10,29 +10,29 @@
 <script setup lang="ts">
 
 import {computed, onMounted, ref, watch} from "vue";
-import {useStore} from "vuex";
+import {useSystemStore} from "./store";
 import {windowsTool} from 'owner-tool-js';
 /***************************************************************************************************************/
 
 let screenHeight = ref(0);
 
-const store = useStore();
+const store = useSystemStore();
 
 // 项目是否加载成功的状态。（没有加载成功要显示加载图标）
 const loadingSuccess = computed<boolean>(():boolean=>{
-  return store.getters.loadingSuccess;
+  return store.loadingSuccess;
 })
 
 /***************************************************************************************************************/
 onMounted(()=>{
   // 浏览器的页面监听器不会再刚打开页面的时候监听，注释再页面宽高发生变化的时候才会监听，所以再这里额外的添加一个获取高度的代码
   screenHeight.value = windowsTool.pageViewHeight();
-  store.commit("setScreenHeight", screenHeight.value);
-  store.commit("setScreenWidth", windowsTool.pageViewWidth());
+  store.screenHeight = screenHeight.value;
+  store.screenWidth = windowsTool.pageViewWidth();
   windowsTool.watchPageView((width:number,height:number)=>{
     screenHeight.value = height;
-    store.commit("setScreenHeight", height);
-    store.commit("setScreenWidth", width);
+    store.screenHeight = height;
+    store.screenWidth = width;
     console.log("当前高度为：" + height);
   })
 })

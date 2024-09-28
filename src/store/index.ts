@@ -1,10 +1,8 @@
-import {createStore} from 'vuex';
+import {defineStore} from 'pinia'
 import state from "./state";
 import getters from "./getters";
-import mutations from './mutations';
 
-export default createStore({
-    state,
-    getters,
-    mutations
+export const useSystemStore = defineStore('system',{
+    state: () => (state),
+    getters
 })

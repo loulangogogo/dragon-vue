@@ -24,7 +24,7 @@
 <script lang="ts" setup>
 
 import {computed, inject, provide, ref} from "vue";
-import {useStore} from "vuex";
+import {useSystemStore} from "../../../../store";
 import MenuPermission from '../../menu/index.vue';
 import {getPermissionMenuByRoleId, permissionMenuSaveAndUpdate} from "../../../../common/api/system/role";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
@@ -36,8 +36,8 @@ const modalVisible = ref(false);
 
 const menuPermissionRef = ref();
 
-const storeGetters = useStore().getters;
-const screenHeight = computed(() => storeGetters.screenHeight);
+const store = useSystemStore();
+const screenHeight = computed(() => store.screenHeight);
 
 // 当前角色id
 const currentRoleId = ref();

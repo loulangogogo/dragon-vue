@@ -9,17 +9,17 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted, ref} from "vue";
-import {useStore} from "vuex";
+import {computed} from "vue";
+import {useSystemStore} from "../../../store";
 import {arrayTool} from 'owner-tool-js';
 import {Menu} from "../../../common/domain/common";
 import MenuVisible from "./menu-visible.vue";
 
 
-const storeGetters = useStore().getters;
-const frameSiderHeight = computed(() => storeGetters.frameSiderHeight);
+const store = useSystemStore();
+const frameSiderHeight = computed(() => store.frameSiderHeight);
 const menus = computed((): Array<Menu> => {
-  return arrayTool.arrayToTree(storeGetters.menus, "id", "pid", -1);
+  return arrayTool.arrayToTree(store.menus, "id", "pid", -1);
 });
 
 

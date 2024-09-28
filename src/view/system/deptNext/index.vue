@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import DragonDept from '../dept/index.vue';
-import {computed, inject, provide} from "vue";
+import {computed, provide} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
-import {getAllDept, getCurrentUserNextDept} from "../../../common/api/system/dept";
+import {getCurrentUserNextDept} from "../../../common/api/system/dept";
 import {arrayTool, core as coreTool} from "owner-tool-js";
-import {PermissionTypeEnum, SpecialValueEnum, StatusEnum} from "../../../common/domain/enums";
-import {useStore} from "vuex";
+import {PermissionTypeEnum, StatusEnum} from "../../../common/domain/enums";
+import {useSystemStore} from "../../../store";
 import {UserInfo} from "../../../common/domain/common";
 import {getCurrentUserPermissionByCurrentUserMenuId, queryCurrentUserAllMenu} from "../../../common/api/system/menu";
 import {permissionMenuSaveAndUpdateByCurrentUser} from "../../../common/api/system/role";
@@ -17,8 +17,8 @@ const props = withDefaults(defineProps<{
   contentHeight: 0,
 })
 
-const storeGetters = useStore().getters;
-const currentUser = computed<UserInfo>(() => storeGetters.userInfo);
+const store = useSystemStore();
+const currentUser = computed<UserInfo>(() => store.userInfo);
 
 // 生成部门树
 provide("generateDeptTree", async (parentTreeData: Array<any>, deptTreeData: Array<any>) => {

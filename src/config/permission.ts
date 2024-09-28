@@ -1,10 +1,12 @@
 import router from '../router/index';
-import store from "../store";
+import {useSystemStore} from "../store";
 import {core as coreTool,windowsTool} from 'owner-tool-js';
 import {LocalStorageEnum} from "../common/domain/storage";
 import {generateMenuRouter,currentUserComponentPermission} from "../router/routerMenu";
 import {ResponseResult, ResponseStatusEnum} from "../common/domain/response";
 import {currentUserInfo} from "../common/api/frame";
+
+const store = useSystemStore();
 
 /**
  * 路由全局前置守卫
@@ -22,17 +24,17 @@ router.beforeEach(async (to, from) => {
         }
 
         // 如果菜单数据为空，那么就获取菜单并重新生成菜单路由(整个数据的获取必须在token存在，也就是登录成功之后才能进行)
-        if (coreTool.isEmpty(store.getters.menus)) {
+        if (coreTool.isEmpty(store.menus)) {
             await currentUserComponentPermission();
             await generateMenuRouter();
             return {...to,replace: true};
         }
 
         // 如果当前用户数据不存在，那么就需要去获取当前用户的数据，（因为各个地方阶段都在使用当前用户的信息）
-        if (coreTool.isNotExist(store.getters.userInfo?.id)) {
+        if (coreTool.isNotExist(store.userInfo?.id)) {
             const res:ResponseResult = await currentUserInfo();
             if (res.status == ResponseStatusEnum.OK && res.data) {
-                store.commit("setUserInfo", res.data);
+                store.userInfo = res.data;
             } else {
                 // 获取当前用户信息失败，理论上因该退出重新登录的
                 console.error("获取当前用户信息错误。");
@@ -57,7 +59,7 @@ router.afterEach((to, from, failure) => {
     console.log("afterEach-" + to.path);
 
     // 设置项目加载状态已经完成
-    store.commit("setLoadingSuccess", true);
+    store.loadingSuccess = true;
 })
 
 /**
