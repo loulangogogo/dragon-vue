@@ -5,6 +5,14 @@
     <a-select v-model="queryParam.optType" :scrollbar="false" style="width: 200px;margin-left: 20px" placeholder="请输入操作类型" allow-clear>
       <a-option v-for="(optType,index) in optTypes" :key="index" :value="optType.code">{{optType.name}}</a-option>
     </a-select>
+    <a-range-picker
+        show-time
+        allow-clear
+        v-model="queryParam.crtTimeRange"
+        format="YYYY-MM-dd HH:mm:ss"
+        :placeholder="['创建开始时间','创建结束时间']"
+        style="width: 350px;margin-left: 20px"
+    />
     <a-button type="primary" style="margin-left: 20px" @click="search">查询</a-button>
   </div>
   <div class="bodyDiv">
@@ -106,15 +114,19 @@ const queryParam = reactive({
   userId: undefined,
   ClientId: undefined,
   type: 20,
+  crtTimeRange: [],
   pageCurrent: 1,
-  pageSize: 10,
+  pageSize: 20,
   pageTotal: 0
 })
 
 const loading = ref(true);
 
 // 操作类型
-const optTypes = ref([]);
+const optTypes = ref<Array<{
+  code: number,
+  name: string
+}>>([]);
 
 /**
  * 分页查询数据
