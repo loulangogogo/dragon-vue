@@ -48,7 +48,7 @@ import {onMounted, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
 import {TableColumnData} from "@arco-design/web-vue";
 import {pageLogList} from "../../common/api/log/log";
-import {getEnum} from "../../common/tool/dragonTool";
+import {getEnum, getEnums} from "../../common/tool/dragonTool";
 
 const props = defineProps({
   contentHeight: {
@@ -105,7 +105,7 @@ const queryParam = reactive({
   clientCode: undefined,
   userId: undefined,
   ClientId: undefined,
-  type: 20,
+  type: 31,
   pageCurrent: 1,
   pageSize: 10,
   pageTotal: 0
@@ -175,7 +175,7 @@ const pageSizeChange = (pageSize: number) => {
  * @author     :loulan
  * */
 const selectEnum = async ()=>{
-  let data = await getEnum("org.loulan.application.dragon.common.core.enums.DgLogOptTypeBusEnum");
+  let data = await getEnum("org.loulan.application.dragon.common.core.enums.DgLogOptTypeExceptionEnum");
   optTypes.value = data;
 }
 

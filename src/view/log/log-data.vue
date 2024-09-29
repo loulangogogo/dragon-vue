@@ -3,9 +3,7 @@
     <a-input v-model="queryParam.userName" style="width: 200px" placeholder="请输入用户名" allow-clear/>
     <a-input v-model="queryParam.clientCode" style="width: 200px;margin-left: 20px" placeholder="请输入客户端" allow-clear/>
     <a-select v-model="queryParam.optType" :scrollbar="false" style="width: 200px;margin-left: 20px" placeholder="请输入操作类型" allow-clear>
-      <a-option :value="10">添加</a-option>
-      <a-option :value="11">编辑</a-option>
-      <a-option :value="12">删除</a-option>
+      <a-option v-for="(optType,index) in optTypes" :key="index" :value="optType.code">{{optType.name}}</a-option>
     </a-select>
     <a-button type="primary" style="margin-left: 20px" @click="search">查询</a-button>
   </div>
@@ -50,6 +48,7 @@ import {onMounted, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../common/domain/response";
 import {TableColumnData} from "@arco-design/web-vue";
 import {pageLogList} from "../../common/api/log/log";
+import {getEnum, getEnums} from "../../common/tool/dragonTool";
 
 const props = defineProps({
   contentHeight: {
@@ -88,7 +87,7 @@ const columns:Array<TableColumnData> = [
     dataIndex: "city"
   },
   {
-    title: "登录时间",
+    title: "创建时间",
     dataIndex: "crtTime",
     width: 200,
   },
@@ -113,6 +112,9 @@ const queryParam = reactive({
 })
 
 const loading = ref(true);
+
+// 操作类型
+const optTypes = ref([]);
 
 /**
  * 分页查询数据
@@ -166,7 +168,20 @@ const pageSizeChange = (pageSize: number) => {
   pageList();
 }
 
+/**
+ * 获取需要的枚举数据
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+const selectEnum = async ()=>{
+  let data = await getEnum("org.loulan.application.dragon.common.core.enums.DgLogOptTypeDataEnum");
+  optTypes.value = data;
+}
+
+
 onMounted(() => {
+  selectEnum();
   pageList();
 })
 </script>
