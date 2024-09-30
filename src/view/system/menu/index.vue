@@ -7,15 +7,19 @@
         </div>
       </template>
       <template #second>
-        <div>
+        <div v-if="permissionUrlIsVisible">
           <a-split class="menuSplitV" v-model:size="menuSplitSizeV" direction="vertical" min="0.3" max="0.7">
             <template #first>
-              <dragon-permission :height="contentHeight*menuSplitSizeV-3" ref="permissionRef"></dragon-permission>
+              <dragon-permission :height="contentHeight*menuSplitSizeV-3" ref="permissionRef"
+                                 @selectPermission="selectPermission"></dragon-permission>
             </template>
             <template #second>
-              <dragon-component :height="contentHeight*(1-menuSplitSizeV)-3" ref="componentRef"></dragon-component>
+              <dragon-permission-url :height="contentHeight*(1-menuSplitSizeV)-3" ref="urlRef"></dragon-permission-url>
             </template>
           </a-split>
+        </div>
+        <div v-else>
+          <dragon-permission :height="contentHeight*menuSplitSizeV-3" ref="permissionRef" @selectPermission="selectPermission"></dragon-permission>
         </div>
       </template>
     </a-split>
@@ -25,9 +29,8 @@
 <script lang="ts" setup>
 import DragonMenu from './menu/index.vue';
 import DragonPermission from './permission/index.vue';
-import DragonComponent from './component/index.vue';
-import {ref} from "vue";
-import {watch} from "vue";
+import DragonPermissionUrl from './permissionUrl/index.vue'
+import {inject, ref} from "vue";
 
 const props = defineProps({
   contentHeight: {
@@ -43,7 +46,10 @@ const menuRef = ref();
 const menuSplitSizeV = ref(0.5);
 
 const permissionRef = ref();
-const componentRef = ref();
+const urlRef = ref();
+
+// 是否显示权限url部分
+const permissionUrlIsVisible = inject("permissionUrlIsVisible", true);
 
 /**
  * 当菜单被点击的时候
@@ -53,7 +59,20 @@ const componentRef = ref();
  * */
 const selectMenu = async (menuId: number) => {
   permissionRef.value.init(menuId);
-  componentRef.value.init(menuId);
+  if (permissionUrlIsVisible) {
+    urlRef.value.clear();
+  }
+}
+
+/**
+ * 当权限被点击的时候
+ * @param       permissionId 权限id
+ * @author     :loulan
+ * */
+const selectPermission = async (permissionId: number) => {
+  if (permissionUrlIsVisible) {
+    urlRef.value.init(permissionId);
+  }
 }
 </script>
 

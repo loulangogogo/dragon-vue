@@ -1,15 +1,17 @@
 <template>
   <div class="headerDiv">
     <a-input-search v-model="searchKey" placeholder="请输入要进行搜索的名称" style="width: 50%" allow-clear/>
-    <a-button v-if="menuPermissionIsVisibleAddButton" type="primary" status="success" style="margin-left: 20px" @click="add">添加</a-button>
+    <a-button v-if="menuPermissionIsVisibleAddButton" type="primary" status="success" style="margin-left: 20px"
+              @click="add">添加
+    </a-button>
   </div>
   <div class="bodyDiv">
     <a-table :columns="columns"
              :data="tableData"
+             :hoverable="true"
              :stripe="true"
              :show-header="false"
              size="medium"
-             page-position="bottom"
              :pagination="false"
              :scroll="{
                 y:'100%'
@@ -21,12 +23,18 @@
                type: 'checkbox',
                fixed: true,
                width: 50
-             }:undefined"
+             }:{
+               type: 'radio',
+               fixed: true,
+               width: 50
+             }"
              :loading="loading"
              v-model:selected-keys="tableCheckSelectedKeys"
-             :bordered="{cell:true}">
+             :bordered="{cell:true}"
+             @row-click="rowClick">
       <template #fieldStatus="{record}">
-        <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF" @change="(val:any)=>statusChange(val,record)"/>
+        <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF"
+                  @change="(val:any)=>statusChange(val,record)"/>
       </template>
       <template #operate="{record}">
         <icon-edit class="operateIcon" style="color: blue" @click="edit(record)"/>
@@ -41,29 +49,32 @@
 
 <script lang="ts" setup>
 import Info from './info.vue';
-import {computed, inject, ref} from "vue";
+import {computed, inject, ref, watch} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/response";
-import {PermissionTypeEnum, StatusEnum} from "../../../../common/domain/enums";
+import {StatusEnum} from "../../../../common/domain/enums";
 import {TableColumnData} from "@arco-design/web-vue";
 import {getPermissionByMenuId, permissionDel, permissionUpdate} from "../../../../common/api/system/menu";
 import {core as coreTool} from "owner-tool-js";
 import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
+import {Ref, UnwrapRef} from "@vue/reactivity";
+
+const emits = defineEmits(["selectPermission"]);
 
 const props = defineProps({
   height: {
     type: Number,
     required: true,
     default: 0
-  },
+  }
 });
 
 const infoRef = ref();
 
 // 加载状态
-const loading = ref(false);
+const loading = ref();
 
 // 表格列配置(授权展示和菜单展示不一样)
-const columns: Array<TableColumnData> = inject("permissionColumns",[
+const columns: Array<TableColumnData> = inject("permissionColumns", [
   {
     title: "名称",
     dataIndex: "name",
@@ -72,15 +83,10 @@ const columns: Array<TableColumnData> = inject("permissionColumns",[
     width: 300,
   },
   {
-    title: "组件路径",
-    dataIndex: "url",
+    title: "编码",
+    dataIndex: "code",
     ellipsis: true,
     tooltip: true
-  },
-  {
-    title: "请求类型",
-    dataIndex: "method",
-    width: 100,
   },
   {
     title: "状态",
@@ -96,15 +102,20 @@ const columns: Array<TableColumnData> = inject("permissionColumns",[
   },
 ]);
 
+// 表哥radio选项数据
+const tableRadioSeletedKeys: Ref<Array<any>> = ref([]);
+
 // 菜单复选框的选中项
-const tableCheckSelectedKeys:Array<any> = inject("tableCheckSelectedKeys",[])
+const tableCheckSelectedKeys: Ref<Array<any>> = inject("tableCheckSelectedKeys", tableRadioSeletedKeys)
 // 是否显示复选框
-const menuPermissionIsVisibleCheckButton = inject("menuPermissionIsVisibleCheckButton", false);
+const menuPermissionIsVisibleCheckButton: boolean = inject("menuPermissionIsVisibleCheckButton", false);
 // 是否显示添加按钮
-const menuPermissionIsVisibleAddButton = inject("menuPermissionIsVisibleAddButton", true);
+const menuPermissionIsVisibleAddButton: boolean = inject("menuPermissionIsVisibleAddButton", true);
+
 
 // 查询参数
 const searchKey = ref();
+// 查询到的原始数据
 const originTableData = ref();
 const tableData = computed(() => {
   if (coreTool.isEmpty(searchKey.value)) {
@@ -117,14 +128,41 @@ const tableData = computed(() => {
 const menuId = ref();
 
 /**
+ * 监听单选数据的改变，需要去查询对应权限的url
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+watch(() => tableRadioSeletedKeys, async (val) => {
+  if (coreTool.isExist(val) && val.value.length > 0) {
+    emits("selectPermission", val.value[0]);
+  }
+}, {
+  deep: true,
+  immediate: true
+});
+
+/**
+ * 当点击行选中的时候
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const rowClick = (record: any) => {
+  tableRadioSeletedKeys.value = [record.id];
+}
+
+/**
  * 权限数据的查询
  * @param
  * @return
  * @exception
  * @author     :loulan
  * */
-const permissionQuery: Function = inject("permissionQuery",async (menuIdParam:any,permissionType:PermissionTypeEnum):Promise<ResponseResult> =>{
-  return await getPermissionByMenuId(menuIdParam, permissionType);
+const permissionQuery: Function = inject("permissionQuery", async (menuIdParam: any): Promise<ResponseResult> => {
+  return await getPermissionByMenuId(menuIdParam);
 });
 
 /**
@@ -135,7 +173,7 @@ const permissionQuery: Function = inject("permissionQuery",async (menuIdParam:an
  * */
 const query = async () => {
   loading.value = true;
-  const res: ResponseResult = await permissionQuery(menuId.value,PermissionTypeEnum.URL);
+  const res: ResponseResult = await permissionQuery(menuId.value);
   if (res.status === ResponseStatusEnum.OK) {
     const datas: Array<any> = res.data;
     if (coreTool.isNotEmpty(datas)) {
@@ -153,7 +191,7 @@ const query = async () => {
  * @return
  * @author     :loulan
  * */
-const statusChange = async (val:number,data:any) => {
+const statusChange = async (val: number, data: any) => {
   const res: ResponseResult = await permissionUpdate({
     id: data.id,
     status: val
@@ -190,8 +228,8 @@ const del = (data: any) => {
   dragonConfirm({
     title: '确认提示',
     content: '您确认删除这条数据吗？'
-  }).then(async ()=>{
-    const res:ResponseResult = await permissionDel(data.id);
+  }).then(async () => {
+    const res: ResponseResult = await permissionDel(data.id);
     if (res.status === ResponseStatusEnum.OK) {
       query();
       DragonNotice.success("删除成功");
@@ -199,6 +237,7 @@ const del = (data: any) => {
   })
 }
 
+// 定义开放的方法
 defineExpose({
   init: (paramMenuId: number) => {
     menuId.value = paramMenuId;

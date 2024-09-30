@@ -56,6 +56,8 @@ provide("menuPermissionIsVisibleCheckButton", true);
 provide("menuPermissionIsVisibleAddButton", false);
 // 菜单是否显示操作按钮（编辑删除）
 provide("menuIsVisibleOptButton", false);
+// 是否显示权限url部分
+provide("permissionUrlIsVisible", false);
 // 权限菜单列表
 provide("permissionColumns", [
   {
@@ -66,34 +68,13 @@ provide("permissionColumns", [
     width: 300,
   },
   {
-    title: "组件路径",
-    dataIndex: "url",
-    ellipsis: true,
-    tooltip: true
-  },
-  {
-    title: "请求类型",
-    dataIndex: "method",
-    width: 100,
-  }
-]);
-
-// 组件菜单列表
-provide("componentColumns", [
-  {
-    title: "名称",
-    dataIndex: "name",
-    ellipsis: true,
-    tooltip: true,
-    width: 300,
-  },
-  {
-    title: "组件路径",
+    title: "编码",
     dataIndex: "code",
     ellipsis: true,
     tooltip: true
   }
 ]);
+
 
 /**
  * 角色权限数据的提交

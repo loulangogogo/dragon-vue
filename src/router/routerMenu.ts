@@ -11,7 +11,7 @@ import {useSystemStore} from "../store";
 import router from "./index";
 import {RouteRecordRaw,} from "vue-router";
 import {Menu} from "../common/domain/common";
-import {currentUserComponent, currentUserMenu} from "../common/api/frame";
+import {currentUserPermission, currentUserMenu} from "../common/api/frame";
 import {ResponseResult, ResponseStatusEnum} from "../common/domain/response";
 import {core as coreTool} from "owner-tool-js";
 
@@ -84,7 +84,7 @@ export const generateMenuRouter = async ()=>{
  * @author     :loulan
  * */
 export const currentUserComponentPermission = async ()=>{
-    const res: ResponseResult = await currentUserComponent();
+    const res: ResponseResult = await currentUserPermission();
     if (ResponseStatusEnum.OK == res.status && coreTool.isExist(res.data)) {
         store.components = res.data;
     }

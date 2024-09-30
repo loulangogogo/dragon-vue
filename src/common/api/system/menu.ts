@@ -27,8 +27,8 @@ export const queryCurrentUserAllMenu = () => {
  * @return
  * @author     :loulan
  * */
-export const getPermissionByMenuId = (menuId:number,type:number) => {
-    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/permission/getPermissionByMenuId/${menuId}?type=${type}`);
+export const getPermissionByMenuId = (menuId:number) => {
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/permission/getPermissionByMenuId/${menuId}`);
 }
 
 /**
