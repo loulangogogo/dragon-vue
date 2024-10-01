@@ -66,12 +66,6 @@ provide("permissionColumns", [
     ellipsis: true,
     tooltip: true,
     width: 300,
-  },
-  {
-    title: "编码",
-    dataIndex: "code",
-    ellipsis: true,
-    tooltip: true
   }
 ]);
 
