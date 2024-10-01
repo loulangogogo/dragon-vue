@@ -8,7 +8,6 @@
   <div class="bodyDiv">
     <a-table :columns="columns"
              :data="tableData"
-             :hoverable="true"
              :stripe="true"
              :show-header="false"
              size="medium"
@@ -29,9 +28,10 @@
                width: 50
              }"
              :loading="loading"
-             v-model:selected-keys="tableCheckSelectedKeys"
              :bordered="{cell:true}"
-             @row-click="rowClick">
+             v-model:selected-keys="tableCheckSelectedKeys"
+             style="user-select: none"
+             @row-dblclick="rowClick">
       <template #fieldStatus="{record}">
         <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF"
                   @change="(val:any)=>statusChange(val,record)"/>
@@ -134,9 +134,9 @@ const menuId = ref();
  * @exception
  * @author     :loulan
  * */
-watch(() => tableRadioSeletedKeys, async (val) => {
-  if (coreTool.isExist(val) && val.value.length > 0) {
-    emits("selectPermission", val.value[0]);
+watch(() => tableRadioSeletedKeys.value[0], async (val,oldVal) => {
+  if (coreTool.isExist(val) && val != oldVal ) {
+    emits("selectPermission", val);
   }
 }, {
   deep: true,

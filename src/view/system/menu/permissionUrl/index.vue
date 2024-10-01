@@ -18,7 +18,8 @@
              column-resizable
              row-key="id"
              :loading="loading"
-             :bordered="{cell:true}">
+             :bordered="{cell:true}"
+             style="user-select: none">
       <template #fieldStatus="{record}">
         <a-switch v-model="record.status" :checked-value="StatusEnum.ON" :unchecked-value="StatusEnum.OFF" @change="(val:any)=>statusChange(val,record)"/>
       </template>
