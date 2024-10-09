@@ -29,6 +29,7 @@
              column-resizable
              :bordered="{cell:true}"
              :loading="loading"
+             style="user-select: none"
              @page-size-change="pageSizeChange"
              @page-change="pageChange">
       <template #operate="{record}">
@@ -76,17 +77,17 @@ const columns:Array<TableColumnData> = [
   {
     title: "字典编码",
     dataIndex: "code",
-    width: 300,
+    width: 150,
   },
   {
     title: "排序",
     dataIndex: "orderNum",
-    width: 300,
+    width: 70,
   },
   {
     title: "状态",
     dataIndex: "statusName",
-    width: 100,
+    width: 70,
   },
   {
     title: "操作",

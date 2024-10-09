@@ -23,11 +23,19 @@
              :scroll="{
                 y:'100%'
               }"
+             :row-selection="{
+               type: 'radio',
+               fixed: true,
+               width: 50
+             }"
+             row-key="id"
              :scrollbar="false"
              column-resizable
              :bordered="{cell:true}"
              :loading="loading"
-             @row-click="clickRow"
+             v-model:selected-keys="tableRadioSelectedKey"
+             style="user-select: none"
+             @row-dblclick="clickRow"
              @page-size-change="pageSizeChange"
              @page-change="pageChange">
       <template #operate="{record}">
@@ -44,11 +52,13 @@
 <script lang="ts" setup>
 
 import Info from './type-info.vue';
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {TableColumnData, TableData} from "@arco-design/web-vue";
 import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
 import {dictTypeDel, dictTypePageList} from "../../../common/api/system/dictType";
+import {Ref} from "@vue/reactivity";
+import {core as coreTool} from "owner-tool-js";
 
 const emits = defineEmits(["query"]);
 
@@ -63,7 +73,11 @@ const props = defineProps({
 const infoRef = ref();
 
 // 表格数据
-const tableData = ref();
+const tableData = ref<Array<{
+  id: number;
+  name: string;
+  code: string;
+}>>();
 // 表格列配置
 const columns:Array<TableColumnData> = [
   {
@@ -95,6 +109,30 @@ const queryParam = reactive({
 
 const loading = ref(true);
 
+// 被选中的数据
+const tableRadioSelectedKey: Ref<Array<any>> = ref([]);
+
+/**
+ * 监听单选数据的改变，需要去查询对应权限的url
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+watch(() => tableRadioSelectedKey.value[0], async (val,oldVal) => {
+  if (coreTool.isExist(val) && val != oldVal ) {
+    tableData.value?.forEach(item=>{
+      if (item.id === val) {
+        emits('query', item);
+        return;
+      }
+    })
+  }
+}, {
+  deep: true,
+  immediate: true
+});
+
 /**
  * 点击行的时候
  * @param
@@ -103,7 +141,7 @@ const loading = ref(true);
  * @author     :loulan
  * */
 const clickRow = (record:TableData)=>{
-  emits('query', record);
+  tableRadioSelectedKey.value = [record.id];
 }
 
 /**
