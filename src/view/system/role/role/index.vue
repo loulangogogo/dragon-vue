@@ -33,7 +33,7 @@
       </template>
       <template #operate="{record}">
         <a-space>
-          <a-button type="primary" status="warning" size="mini" @click="permissionEdit(record)">权限编辑</a-button>
+          <a-button type="primary" status="warning" size="mini" v-if="hasComponent('role-give-permission','dept-role-give-permission','nextDept-role-give-permission')" @click="permissionEdit(record)">权限编辑</a-button>
           <a-button v-if="(roleTypeId != RoleTypeSpecialEnum.CLIENT) && roleIsVisibleLookUserButton" type="primary" status="success" size="mini"
                     @click="lookUsers(record)">查看用户
           </a-button>
@@ -45,7 +45,7 @@
   </div>
   <div v-show="false">
     <Info ref="infoRef" :role-type-id="roleTypeId" @query-role="queryRole"></Info>
-    <permission ref="permissionRef"></permission>
+    <permission v-if="hasComponent('role-give-permission','dept-role-give-permission','nextDept-role-give-permission')" ref="permissionRef"></permission>
     <look-user v-if="roleIsVisibleLookUserButton" ref="lookUserRef"></look-user>
   </div>
 </template>
@@ -59,6 +59,7 @@ import {ResponseResult, ResponseStatusEnum} from "../../../../common/domain/resp
 import {roleDel, rolePageList, roleUpdate} from "../../../../common/api/system/role";
 import {RoleTypeSpecialEnum, StatusEnum} from "../../../../common/domain/enums";
 import {dragonConfirm, DragonNotice} from "../../../../common/domain/component";
+import {hasComponent} from "../../../../common/tool/permissionTool";
 
 const props = withDefaults(defineProps<{
   // 高度

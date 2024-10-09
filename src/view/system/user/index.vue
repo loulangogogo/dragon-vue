@@ -8,6 +8,7 @@ import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/respons
 import {TableColumnData, TableData} from "@arco-design/web-vue";
 import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
 import {arrayTool, core as coreTool} from "owner-tool-js";
+import {hasComponent} from "../../../common/tool/permissionTool";
 
 const props = withDefaults(defineProps<{
   // 高度设置
@@ -368,7 +369,7 @@ defineExpose({
         <a-dropdown :popup-max-height="false">
           <a-button type="primary" size="mini">点击操作&nbsp;<icon-down/></a-button>
           <template #content>
-            <a-doption v-if="userIsVisibleRoleManagerButton" v-has-component="'user-manager-role-manager'" @click="userRoleManagerClick(record)">
+            <a-doption v-if="userIsVisibleRoleManagerButton && hasComponent('user-manager-role-manager')" @click="userRoleManagerClick(record)">
               <span style="color: #30ec06">角色管理</span>
             </a-doption>
             <a-doption v-if="userIsVisibleDeptRoleButton"  @click="userDeptRoleClick(record)">
@@ -377,7 +378,7 @@ defineExpose({
             <a-doption v-if="userIsVisibleEditButton"  @click="edit(record)">
               <span style="color: blue">编辑</span>
             </a-doption>
-            <a-doption v-if="userIsVisibleDelButton" v-has-component="'user-manager-delete'" @click="del(record)">
+            <a-doption v-if="userIsVisibleDelButton && hasComponent('user-manager-delete')" @click="del(record)">
               <span style="color: red">删除</span>
             </a-doption>
           </template>
@@ -388,7 +389,7 @@ defineExpose({
   <div v-show="false">
     <info v-if="userIsVisibleEditButton || userIsVisibleAddButton" ref="infoRef" @query="search"></info>
     <user-dept-role v-if="userIsVisibleDeptRoleButton" ref="userDeptRoleRef" @query="search"></user-dept-role>
-    <template v-has-component="'user-manager-role-manager'">
+    <template v-if="hasComponent('user-manager-role-manager')">
       <user-role-manager v-if="userIsVisibleRoleManagerButton" ref="userRoleManagerRef" @query="search"></user-role-manager>
     </template>
   </div>
