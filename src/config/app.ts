@@ -6,7 +6,7 @@ import { createPinia } from 'pinia'
 
 const dragonApp = createApp(App).use(createPinia())
 
-// 添加指令
-dragonApp.directive("has-component", HasComponent);
+// 添加指令(暂不使用自定义指令，vue也不建议使用自定义指令)
+// dragonApp.directive("has-component", HasComponent);
 
 export default dragonApp;
