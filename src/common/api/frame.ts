@@ -17,7 +17,7 @@ export const currentUserInfo = () => {
  * @author     :loulan
  * */
 export const unregisterCurrentUser = (data:any) => {
-    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/register-user/unregister`,data);
+    return ask.put(`${import.meta.env.VITE_REQUEST_AUTH_PRE}/register/unregister`,data);
 }
 
 /**
