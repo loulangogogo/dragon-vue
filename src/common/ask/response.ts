@@ -6,6 +6,7 @@ import router from "../../router";
 export default (response: AxiosResponse) => {
     if (response.status === 200) {
         const res: ResponseResult = response.data;
+        const isNoResponseErrorMsg:boolean = response.config?.headers?.isNoResponseErrorMsg;
 
         if (res.status === ResponseStatusEnum.TOKEN_CHECK_ERROR) {
             //如果是token错误,如果可以的话最好记录错误信息
@@ -22,7 +23,7 @@ export default (response: AxiosResponse) => {
                 }
             });
             return Promise.reject(response);
-        } else if (res.status === ResponseStatusEnum.FAIT) {
+        } else if (res.status === ResponseStatusEnum.FAIT && !isNoResponseErrorMsg) {
             Modal.info({
                 title: "提示信息",
                 titleAlign: "start",
