@@ -32,7 +32,7 @@ import {PhoneMessageTypeEnum} from "../domain/enums";
 import {FieldRule, ValidatedError} from "@arco-design/web-vue";
 import {core as coreTool} from "owner-tool-js";
 import {ResponseResult, ResponseStatusEnum} from "../domain/response";
-import {DragonNotice} from "../domain/component";
+import {DragonMessage, DragonNotice} from "../domain/component";
 import {sendPhoneCurrentUserVerifyCode, sendPhoneLoginVerifyCode, sendPhoneVerifyCode} from "../api/phone";
 import CountdownSeconds from "./countdown-seconds.vue";
 
@@ -85,7 +85,6 @@ const sendVerifyCode = () => {
   formRef.value.validateField("account", async (errors: undefined | Record<string, ValidatedError>) => {
     // 当errors为undefined的时候表示校验成功没有错误
     if (coreTool.isUndefined(errors)) {
-      isStartCountdown.value = true;
       let res: ResponseResult = {};
       // 根据不同类型，进行验证码的发送
       if (PhoneMessageTypeEnum.LOGIN === props.type) {
@@ -110,7 +109,8 @@ const sendVerifyCode = () => {
 
       // 判断发送成功与否
       if (res.status === ResponseStatusEnum.OK) {
-        // 暂时不进行任何操作
+        DragonMessage.success("验证码已发送，请注意查收。");
+        isStartCountdown.value = true;
       } else {
         isStartCountdown.value = false;
       }
