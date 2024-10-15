@@ -191,7 +191,11 @@ defineExpose({
   init: async (data: any) => {
     formData.value.userId = data.id;
     formData.value.deptId = data.dept?.id;
-    formData.value.roleId = data.roles?.find((o: any) => formData.value.deptId == o.deptId)?.id;
+    formData.value.roleId =
+        coreTool.isExist(formData.value?.deptId)?
+        data.roles?.find((o: any) => formData.value?.deptId == o.deptId)?.id
+        :
+        undefined;
     modalVisible.value = true;
   }
 });

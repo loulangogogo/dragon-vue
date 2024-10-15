@@ -3,7 +3,7 @@
 import userComponent from "../user/index.vue";
 import {inject, provide, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
-import {pageUserList} from "../../../common/api/system/user";
+import {pageUserList, userDel, userDeleteDept} from "../../../common/api/system/user";
 import {core as coreTool} from "owner-tool-js";
 import {TableColumnData, TableData} from "@arco-design/web-vue";
 
@@ -54,6 +54,9 @@ provide("pageUserList", async (param: any): Promise<ResponseResult> => {
 });
 provide("userIsVisibleAddButton", false);
 provide("userIsVisibleRoleManagerButton", false);
+provide("userDelData", async (param: any): Promise<ResponseResult> => {
+  return await userDeleteDept(param);
+})
 
 // 用户的table列表展示内容
 provide("userColumns",[
