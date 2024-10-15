@@ -15,15 +15,6 @@
       <a-form-item v-if="isAddEdit == AddEditEnum.ADD" field="password" label="密码">
         <a-input v-model="formData.password" placeholder="请输入密码"/>
       </a-form-item>
-      <a-form-item field="sex" label="性别">
-        <a-radio-group v-model="formData.sex">
-          <a-radio :value="SexEnum.MAN">男</a-radio>
-          <a-radio :value="SexEnum.MEN">女</a-radio>
-        </a-radio-group>
-      </a-form-item>
-      <a-form-item field="birthday" label="出生日期">
-        <a-date-picker v-model="formData.birthday" placeholder="请输入出生日期" style="width: 100%"/>
-      </a-form-item>
       <a-form-item v-if="false" field="idCard" label="身份证号码">
         <a-input v-model="formData.idCard" placeholder="请输入身份证号码"/>
       </a-form-item>
@@ -68,17 +59,11 @@ const initFormData: {
   username: any,
   name: any,
   password:any,
-  sex: any,
-  birthday: any,
-  idCard: any,
   status: number,
 } = {
   username: undefined,
   name: undefined,
   password: undefined,
-  sex: undefined,
-  birthday: undefined,
-  idCard: undefined,
   status: UserStatusEnum.NORMAL,
 };
 const formData = ref({...initFormData});
@@ -90,10 +75,6 @@ const formRules = {
   username: {
     required: true,
     message: "用户名不能为空"
-  },
-  sex: {
-    required: true,
-    message: "性别不能为空"
   },
   status: {
     required: true,

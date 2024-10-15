@@ -48,10 +48,6 @@ export interface UserInfo{
     phone?: string;
     email?: string;
     status?: number;
-    sex?: number;
-	sexName?: string;
-    birthday?: string;
-    idCard?: string;
     unionid?: string;
     headerImageFileId?: string;
     headerImageFileInfo?: FileInfo;

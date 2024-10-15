@@ -21,14 +21,6 @@
               <template #label><span class="spanContentTitle">姓名：</span></template>
               <span class="spanContent">{{ coreTool.isEmpty(userInfo.name) ? "无" : userInfo.name }}</span>
             </a-form-item>
-            <a-form-item>
-              <template #label><span class="spanContentTitle">性别：</span></template>
-              <span class="spanContent">{{ coreTool.isEmpty(userInfo.sexName) ? "无" : userInfo.sexName }}</span>
-            </a-form-item>
-            <a-form-item>
-              <template #label><span class="spanContentTitle">出生日期：</span></template>
-              <span class="spanContent">{{ coreTool.isEmpty(userInfo.birthday) ? "无" : userInfo.birthday }}</span>
-            </a-form-item>
           </a-form>
         </a-col>
       </a-row>
@@ -44,15 +36,6 @@
       </a-form-item>
       <a-form-item field="name" label="姓名" show-colon>
         <a-input v-model="formData.name" placeholder="请输入姓名"/>
-      </a-form-item>
-      <a-form-item field="sex" label="性别" show-colon>
-        <a-radio-group v-model="formData.sex">
-          <a-radio :value="SexEnum.MAN">男</a-radio>
-          <a-radio :value="SexEnum.MEN">女</a-radio>
-        </a-radio-group>
-      </a-form-item>
-      <a-form-item field="birthday" label="出生日期" show-colon>
-        <a-date-picker v-model="formData.birthday" placeholder="请输入出生日期" style="width: 100%"/>
       </a-form-item>
     </a-form>
     <template #footer>
@@ -144,9 +127,6 @@ const formRef = ref();
 const formInitData = {
   username: undefined,
   name: undefined,
-  sex: undefined,
-  sexName: undefined,
-  birthday: undefined,
   headerImageFileId: undefined
 }
 
@@ -246,9 +226,6 @@ const dealUserinfo = () => {
   const currentUserInfo: UserInfo = store.userInfo;
   formData.value.name = currentUserInfo.name;
   formData.value.username = currentUserInfo.username;
-  formData.value.sex = currentUserInfo.sex;
-  formData.value.sexName = currentUserInfo.sexName;
-  formData.value.birthday = currentUserInfo.birthday;
   formData.value.headerImageFileId = undefined;
 
   modalVisible.value = true;

@@ -56,11 +56,6 @@ const columns: Array<TableColumnData> = inject("userColumns",[
     width: 200,
   },
   {
-    title: "身份证号码",
-    dataIndex: "idCard",
-    width: 200,
-  },
-  {
     title: "部门",
     dataIndex: "deptName",
     width: 200,
@@ -94,16 +89,6 @@ const columns: Array<TableColumnData> = inject("userColumns",[
     title: "状态",
     dataIndex: "statusName",
     width: 70,
-  },
-  {
-    title: "性别",
-    dataIndex: "sexName",
-    width: 70,
-  },
-  {
-    title: "出生日期",
-    dataIndex: "birthday",
-    width: 150,
   },
   {
     title: "注册时间",
