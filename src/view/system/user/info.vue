@@ -15,9 +15,6 @@
       <a-form-item v-if="isAddEdit == AddEditEnum.ADD" field="password" label="密码">
         <a-input v-model="formData.password" placeholder="请输入密码"/>
       </a-form-item>
-      <a-form-item v-if="false" field="idCard" label="身份证号码">
-        <a-input v-model="formData.idCard" placeholder="请输入身份证号码"/>
-      </a-form-item>
       <a-form-item field="status" label="用户状态">
         <a-radio-group v-model="formData.status">
           <a-radio :value="UserStatusEnum.NORMAL">正常</a-radio>
