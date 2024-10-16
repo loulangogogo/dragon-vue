@@ -42,16 +42,6 @@ export const userDel = (id:number) => {
 }
 
 /**
- * 根据id删除用户部门数据
- * @param
- * @return
- * @author     :loulan
- * */
-export const userDeleteDept = (id:number) => {
-    return ask.delete(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/userDeleteDept/${id}`);
-}
-
-/**
  * 当前用户绑定微信
  * @param
  * @return

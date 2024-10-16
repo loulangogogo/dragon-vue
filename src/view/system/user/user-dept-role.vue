@@ -5,7 +5,7 @@
            width="550px"
            :mask-closable="false"
            @close="close">
-    <a-form ref="formRef" :model="formData" :rules="formRules">
+    <a-form ref="formRef" :model="formData">
       <a-form-item field="deptId" label="部门">
         <a-tree-select v-model="formData.deptId"
                        :field-names="{
@@ -39,7 +39,7 @@ import {arrayTool, core as coreTool} from 'owner-tool-js';
 import {inject, onMounted, ref, watch} from "vue";
 import {SpecialValueEnum, StatusEnum} from "../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
-import {DragonNotice} from "../../../common/domain/component";
+import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
 import {fixUserDeptRole} from "../../../common/api/system/user";
 import {getAllDept} from "../../../common/api/system/dept";
 import {getRoleByDept} from "../../../common/api/system/role";
@@ -64,16 +64,6 @@ const initFormData: {
   roleId: undefined
 };
 const formData = ref({...initFormData});
-const formRules = {
-  deptId: {
-    required: true,
-    message: "部门不能为空"
-  },
-  roleId: {
-    required: true,
-    message: "岗位不能为空"
-  }
-};
 
 const deptTreeData = ref<Array<any>>([]);
 
@@ -126,7 +116,39 @@ const getDeptData = async () => {
  * @return
  * @author     :loulan
  * */
-const submit = () => {
+const submit = async () => {
+  // 先进行数据的检查，如果部门为空，这个岗位角色必须为空，如果部门不为空，则岗位角色必须不为空
+  if (coreTool.isExist(formData.value.deptId)) {
+    if (coreTool.isNotExist(formData.value.roleId)) {
+      DragonNotice.error("岗位不能为空");
+      return;
+    } else {
+      // 进行数据更新
+      updateData();
+    }
+  } else {
+    // 如果部门为空，那么岗位角色直接设置为空
+    formData.value.roleId = undefined;
+
+    // 清空数据要进行提示
+    dragonConfirm({
+      title: '确认提示',
+      content: '您确认要清除用户的部门岗位吗？'
+    }).then(()=>{
+      // 进行数据的更新
+      updateData();
+    })
+  }
+}
+
+/**
+ * 进行部门岗位角色数据的更新
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const updateData = () => {
   submitLoading.value = true;
   formRef.value.validate(async (errors: any) => {
     // 如果没有错误进行提交
