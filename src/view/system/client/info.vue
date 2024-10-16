@@ -20,11 +20,18 @@
           <a-option :value="GrantTypeEnum.CLIENT_CREDENTIALS">客户端模式</a-option>
           <a-option :value="GrantTypeEnum.IMPLICIT">隐式授权码模式</a-option>
           <a-option :value="GrantTypeEnum.PASSWORD">密码模式</a-option>
-          <a-option :value="GrantTypeEnum.WECHAT_MINI_PROGRAM">微信小程序</a-option>
-          <a-option :value="GrantTypeEnum.WECHAT_SCAN">微信扫码</a-option>
-          <a-option :value="GrantTypeEnum.PHONE">手机模式</a-option>
-          <a-option :value="GrantTypeEnum.EMAIL">邮箱模式</a-option>
           <a-option :value="GrantTypeEnum.REFRESH_TOKEN">REFRESH_TOKEN</a-option>
+          <a-option :value="GrantTypeEnum.PHONE">手机模式</a-option>
+          <a-option :value="GrantTypeEnum.PHONE_RAL">手机注册登陆模式</a-option>
+          <a-option :value="GrantTypeEnum.EMAIL">邮箱模式</a-option>
+          <a-option :value="GrantTypeEnum.EMAIL_RAL">邮箱注册登陆模式</a-option>
+          <a-option :value="GrantTypeEnum.WECHAT_MINI_PROGRAM">微信小程序</a-option>
+          <a-option :value="GrantTypeEnum.WECHAT_MINI_PROGRAM_PHONE_RAL">微信小程序手机注册登陆</a-option>
+          <a-option :value="GrantTypeEnum.WECHAT_MINI_PROGRAM_RAL">微信小程序注册登陆</a-option>
+          <a-option :value="GrantTypeEnum.WECHAT_SCAN">微信扫码</a-option>
+          <a-option :value="GrantTypeEnum.WECHAT_SCAN_RAL">微信扫码注册登陆</a-option>
+          <a-option :value="GrantTypeEnum.WECHAT_APP">微信移动应用</a-option>
+          <a-option :value="GrantTypeEnum.WECHAT_APP_RAL">微信移动应用注册登陆</a-option>
         </a-select>
       </a-form-item>
       <a-form-item field="redirectUri" label="重定向URI">

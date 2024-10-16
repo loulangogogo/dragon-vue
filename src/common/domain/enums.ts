@@ -161,12 +161,19 @@ export enum GrantTypeEnum {
     AUTHORIZATION_CODE = "authorization_code",
     IMPLICIT = "implicit",
     PASSWORD = "password",
-    PHONE = "phone",
-    EMAIL = "email",
-    WECHAT_MINI_PROGRAM = "wechat_mini_program",
-    WECHAT_SCAN = "wechat_scan",
     REFRESH_TOKEN = "refresh_token",
     CLIENT_CREDENTIALS = "client_credentials",
+    WECHAT_MINI_PROGRAM = "wechat_mini_program",
+    WECHAT_MINI_PROGRAM_PHONE_RAL = "wechat_mini_program_phone_register_and_login",
+    WECHAT_MINI_PROGRAM_RAL = "wechat_mini_program_register_and_login",
+    WECHAT_SCAN = "wechat_scan",
+    WECHAT_SCAN_RAL = "wechat_scan_register_and_login",
+    WECHAT_APP = "wechat_app",
+    WECHAT_APP_RAL = "wechat_app_register_and_login",
+    PHONE = "phone",
+    PHONE_RAL = "phone_register_and_login",
+    EMAIL = "email",
+    EMAIL_RAL = "email_register_and_login",
 }
 
 /*********************************************************
