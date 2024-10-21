@@ -49,7 +49,12 @@ export const userDel = (id:number) => {
  * */
 export const currentUserBindingWechat = (ticket:string)=>{
     // mode=30，表示通过微信公众号的方式进行解绑
-    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserBindWechat?key=${ticket}&mode=30`);
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserBindWechat?key=${ticket}&mode=30`,<{}>{
+        headers: {
+            // 如果不能正常返回不提示错误信息
+            isNoResponseErrorMsg: true
+        }
+    });
 }
 
 /**
@@ -60,7 +65,12 @@ export const currentUserBindingWechat = (ticket:string)=>{
  * */
 export const currentUserUnbindingWechat = (ticket:string)=>{
     // mode=30，表示通过微信公众号的方式进行解绑
-    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserUnbindWechat?key=${ticket}&mode=30`);
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/user/currentUserUnbindWechat?key=${ticket}&mode=30`,<{}>{
+        headers: {
+            // 如果不能正常返回不提示错误信息
+            isNoResponseErrorMsg: true
+        }
+    });
 }
 
 /**

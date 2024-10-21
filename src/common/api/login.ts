@@ -21,20 +21,20 @@ export const getToken = (loginData: LoginData) => {
     // 根据登陆类型设置参数
     switch (loginData.grant_type) {
         case GrantTypeEnum.PASSWORD:
-            urlSearchParams.append("username", loginData.account?.toString()!);
+            urlSearchParams.append("username", <string>loginData.account!);
             urlSearchParams.append("password", loginData.password?.toString()!);
             urlSearchParams.append("captchaUuid", loginData.captchaUuid?.toString()!);
             urlSearchParams.append("captchaCode", loginData.captchaCode?.toString()!);
             break;
         case GrantTypeEnum.WECHAT_SCAN:
-            urlSearchParams.append("code", loginData.account?.toString()!);
+            urlSearchParams.append("code", <string>loginData.account!);
             break;
         case GrantTypeEnum.PHONE:
-            urlSearchParams.append("username", loginData.account?.toString()!);
+            urlSearchParams.append("username", <string>loginData.account!);
             urlSearchParams.append("password", loginData.password?.toString()!);
             break;
         case GrantTypeEnum.EMAIL:
-            urlSearchParams.append("username", loginData.account?.toString()!);
+            urlSearchParams.append("username", <string>loginData.account!);
             urlSearchParams.append("password", loginData.password?.toString()!);
             break;
         default:
@@ -46,7 +46,7 @@ export const getToken = (loginData: LoginData) => {
     }
 
 
-    return ask.post(`${import.meta.env.VITE_REQUEST_AUTH_PRE}/security/token?${urlSearchParams.toString()}`,{},{
+    return ask.post(`${import.meta.env.VITE_REQUEST_AUTH_PRE}/security/token?${urlSearchParams.toString()}`,{},<{}>{
         headers:{
             isNoResponseErrorMsg: GrantTypeEnum.WECHAT_SCAN == loginData.grant_type,
         }
