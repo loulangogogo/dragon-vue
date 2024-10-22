@@ -1,16 +1,18 @@
 <template>
   <table class="contentTitleTable">
+    <tbody>
     <tr>
       <td :style="{width: height+'px'}">
-        <span @click="changeCollapsed" class="collapsedSpanClass">
-            <icon-menu-fold :size="height*4/6" v-if="!collapsed"/>
-            <icon-menu-unfold :size="height*4/6" v-else/>
-        </span>
+          <span @click="changeCollapsed" class="collapsedSpanClass">
+              <icon-menu-fold :size="height*4/6" v-if="!collapsed"/>
+              <icon-menu-unfold :size="height*4/6" v-else/>
+          </span>
       </td>
       <td style="position: relative">
         <title-block-middle></title-block-middle>
       </td>
     </tr>
+    </tbody>
   </table>
 </template>
 
