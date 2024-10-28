@@ -181,6 +181,16 @@ export const getRoleByUserId = (userId: number) => {
 }
 
 /**
+ * 通过客户端获取角色数据，10是客户端资源关联类型
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const getRoleByClientId = (clientId: number) => {
+    return ask.get(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/role/getByResourceId?resourceId=${clientId}&resourceType=10`);
+}
+
+/**
  * 通过用户获取角色数据
  * @param
  * @return
@@ -198,4 +208,24 @@ export const addRoleResourceDataByRoleAndUser = (roleId:number,userId: number) =
  * */
 export const deleteRoleResourceDataByRoleAndUser = (roleId:number,userId: number) => {
     return ask.delete(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/resourcesRole/deleteDataByRoleAndUser?roleId=${roleId}&userId=${userId}`);
+}
+
+/**
+ * 通过客户端获取角色数据
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const addRoleResourceDataByRoleAndClient = (roleId:number,Client: number) => {
+    return ask.put(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/resourcesRole/addDataByRoleAndClient?roleId=${roleId}&clientId=${Client}`);
+}
+
+/**
+ * 删除客户端角色
+ * @param
+ * @return
+ * @author     :loulan
+ * */
+export const deleteRoleResourceDataByRoleAndClient = (roleId:number,Client: number) => {
+    return ask.delete(`${import.meta.env.VITE_REQUEST_SYSTEM_PRE}/resourcesRole/deleteDataByRoleAndClient?roleId=${roleId}&clientId=${Client}`);
 }

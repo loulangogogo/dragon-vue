@@ -32,22 +32,25 @@
              @page-size-change="pageSizeChange"
              @page-change="pageChange">
       <template #operate="{record}">
-        <a-button type="primary" size="mini" @click="edit(record)">编辑</a-button>
+        <a-button type="primary" status="success" size="mini" @click="roleManager(record)">角色管理</a-button>
+        <a-button type="primary" size="mini" style="margin-left: 10px"  @click="edit(record)">编辑</a-button>
         <a-button type="primary" status="danger" size="mini" style="margin-left: 10px" @click="del(record)">删除</a-button>
       </template>
     </a-table>
   </div>
   <div v-show="false">
     <info ref="infoRef" @query="search"></info>
+    <client-role ref="clientRoleRef" @query="search"></client-role>
   </div>
 </template>
 
 <script lang="ts" setup>
 
 import Info from './info.vue';
+import ClientRole from "./client-role.vue";
 import {onMounted, reactive, ref} from "vue";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
-import {GrantTypeEnum,StatusEnum} from "../../../common/domain/enums";
+import {StatusEnum} from "../../../common/domain/enums";
 import {TableColumnData} from "@arco-design/web-vue";
 import {dragonConfirm, DragonNotice} from "../../../common/domain/component";
 import {clientDel, pageClientList} from "../../../common/api/system/client";
@@ -60,7 +63,10 @@ const props = defineProps({
   }
 });
 
+// info的ref
 const infoRef = ref();
+// 客户端角色的ref
+const clientRoleRef = ref();
 
 // 表格数据
 const tableData = ref();
@@ -122,7 +128,7 @@ const columns:Array<TableColumnData> = [
   },
   {
     title: "操作",
-    width: 150,
+    width: 230,
     fixed: "right",
     slotName: "operate"
   },
@@ -137,6 +143,17 @@ const queryParam = reactive({
 })
 
 const loading = ref(true);
+
+/**
+ * 客户端的角色管理
+ * @param
+ * @return
+ * @exception
+ * @author     :loulan
+ * */
+const roleManager = (data:any)=>{
+  clientRoleRef.value.init(data);
+}
 
 /**
  * 分页查询数据

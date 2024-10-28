@@ -37,15 +37,6 @@
       <a-form-item field="redirectUri" label="重定向URI">
         <a-input v-model="formData.redirectUri" placeholder="请输入重定向地址"/>
       </a-form-item>
-      <a-form-item field="roleIds" label="角色">
-        <a-select v-model="formData.roleIds" :scrollbar="false" placeholder="请选择角色数据" multiple>
-          <a-optgroup label="客户端角色">
-            <template v-for="(role,index) in roleSelectData.roleOptions" :key="index">
-              <a-option :value="role.id">{{ role.name }}</a-option>
-            </template>
-          </a-optgroup>
-        </a-select>
-      </a-form-item>
       <a-form-item field="accessTokenValidity" label="token有效时间" :label-col-props="{span: 6, offset: 0}"
                    :wrapper-col-props="{span: 18, offset: 0}">
         <a-input-number v-model="formData.accessTokenValidity" placeholder="请输入token有效时间" hide-button>
@@ -85,12 +76,11 @@
 <script lang="ts" setup>
 
 import {core as coreTool, functionTool} from 'owner-tool-js';
-import {reactive, ref, onMounted} from "vue";
-import {AddEditEnum, GrantTypeEnum, RoleTypeSpecialEnum, StatusEnum} from "../../../common/domain/enums";
+import {ref} from "vue";
+import {AddEditEnum, GrantTypeEnum, StatusEnum} from "../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {DragonNotice} from "../../../common/domain/component";
 import {clientSave, clientUpdate} from "../../../common/api/system/client";
-import {getRoleByType, getRoleList, getRoleType} from "../../../common/api/system/role";
 
 const emits = defineEmits(["query"]);
 
@@ -114,7 +104,6 @@ const initFormData = {
   refreshTokenValidity: 3600,
   autoApprove: false,
   status: StatusEnum.ON,
-  roleIds: undefined
 };
 // 表单数据
 const formData = ref({...initFormData})
@@ -132,26 +121,12 @@ const formRules = {
     required: true,
     message: "授权类型不能为空"
   },
-  roleIds: {
-    required: true,
-    message: "角色不能为空"
-  },
   status: {
     required: true,
     message: "状态不能为空"
   }
 };
 
-// 角色下拉框的数据
-const roleSelectData:{
-  roleOptions:Array<{
-    name:string,
-    id:number,
-    typeId: number
-  }>,
-} = reactive({
-  roleOptions: []
-})
 
 /**
  * 点击确定按钮
@@ -192,14 +167,6 @@ const close = () => {
   submitLoading.value = false;
 }
 
-onMounted(async () => {
-  if (coreTool.isEmpty(<any>roleSelectData.roleOptions)) {
-    const res: ResponseResult = await getRoleByType(RoleTypeSpecialEnum.CLIENT);
-    if (ResponseStatusEnum.OK == res.status) {
-      roleSelectData.roleOptions = res.data;
-    }
-  }
-})
 
 defineExpose({
   init: (data: object) => {
