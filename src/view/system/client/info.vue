@@ -14,6 +14,12 @@
       <a-form-item field="name" label="名称">
         <a-input v-model="formData.name" placeholder="请输入客户端名称"/>
       </a-form-item>
+      <a-form-item field="type" label="类型">
+        <a-select v-model="formData.type" placeholder="请选择客户端类型" :scrollbar="false" :multiple="false">
+          <a-option :value="ClientTypeEnum.ADMIN">管理端</a-option>
+          <a-option :value="ClientTypeEnum.OTHER">其它</a-option>
+        </a-select>
+      </a-form-item>
       <a-form-item field="authorizedGrantTypes" label="授权类型">
         <a-select v-model="formData.authorizedGrantTypes" placeholder="请选择授权类型" :scrollbar="false" :multiple="true">
           <a-option :value="GrantTypeEnum.AUTHORIZATION_CODE">授权码模式</a-option>
@@ -77,7 +83,7 @@
 
 import {core as coreTool, functionTool} from 'owner-tool-js';
 import {ref} from "vue";
-import {AddEditEnum, GrantTypeEnum, StatusEnum} from "../../../common/domain/enums";
+import {AddEditEnum, ClientTypeEnum, GrantTypeEnum, StatusEnum} from "../../../common/domain/enums";
 import {ResponseResult, ResponseStatusEnum} from "../../../common/domain/response";
 import {DragonNotice} from "../../../common/domain/component";
 import {clientSave, clientUpdate} from "../../../common/api/system/client";
@@ -98,6 +104,7 @@ const modalVisible = ref(false);
 const initFormData = {
   code: undefined,
   name: undefined,
+  type: ClientTypeEnum.OTHER,
   authorizedGrantTypes: undefined,
   redirectUri: undefined,
   accessTokenValidity: 3600,
@@ -116,6 +123,10 @@ const formRules = {
   name: {
     required: true,
     message: "名称不能为空"
+  },
+  type: {
+    required: true,
+    message: "类型不能为空"
   },
   authorizedGrantTypes: {
     required: true,
