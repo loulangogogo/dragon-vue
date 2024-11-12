@@ -1,5 +1,6 @@
 # Vue 3789 + TypeScript + Vite
 void set(){
+    99999999
     this.set()
 }
 
