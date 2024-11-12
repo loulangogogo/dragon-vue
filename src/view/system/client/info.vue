@@ -79,6 +79,7 @@
   </a-modal>
 </template>
 
+
 <script lang="ts" setup>
 
 import {core as coreTool, functionTool} from 'owner-tool-js';
